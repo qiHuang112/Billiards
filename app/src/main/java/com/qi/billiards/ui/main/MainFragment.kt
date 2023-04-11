@@ -1,32 +1,41 @@
 package com.qi.billiards.ui.main
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
+import android.widget.TextView
+import androidx.navigation.fragment.findNavController
 import com.qi.billiards.R
+import com.qi.billiards.ui.base.BaseFragment
 
-class MainFragment : Fragment() {
+class MainFragment : BaseFragment() {
 
-    companion object {
-        fun newInstance() = MainFragment()
-    }
+    override fun getLayoutId() = R.layout.fragment_main
 
-    private lateinit var viewModel: MainViewModel
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
-        // TODO: Use the ViewModel
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        return inflater.inflate(R.layout.fragment_main, container, false)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        view.findViewById<TextView>(R.id.tv_zhui_fen).setOnClickListener {
+            val action = MainFragmentDirections.actionMainFragmentToZhuiFenFragment()
+            findNavController().navigate(action)
+        }
+        view.findViewById<TextView>(R.id.tv_zhong_ba).setOnClickListener {
+            val action = MainFragmentDirections.actionMainFragmentToZhongBaFragment()
+            findNavController().navigate(action)
+        }
+        view.findViewById<TextView>(R.id.tv_history).setOnClickListener {
+            val action = MainFragmentDirections.actionMainFragmentToHistoryFragment()
+            findNavController().navigate(action)
+        }
+        view.findViewById<TextView>(R.id.tv_new_player).setOnClickListener {
+            val action = MainFragmentDirections.actionMainFragmentToNewPlayerFragment()
+            findNavController().navigate(action)
+        }
+        view.findViewById<TextView>(R.id.tv_score).setOnClickListener {
+            val action = MainFragmentDirections.actionMainFragmentToScoreFragment()
+            findNavController().navigate(action)
+        }
+        view.findViewById<TextView>(R.id.tv_appendix).setOnClickListener {
+            val action = MainFragmentDirections.actionMainFragmentToAppendixFragment()
+            findNavController().navigate(action)
+        }
     }
 
 }

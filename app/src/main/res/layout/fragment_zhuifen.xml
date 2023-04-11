@@ -8,38 +8,38 @@
     tools:context=".ui.main.MainFragment">
 
     <TextView
-        android:id="@+id/tv_zhui_fen"
+        android:id="@+id/tv_start"
         style="@style/HomeButtonStyle"
         android:layout_width="120dp"
         android:layout_height="wrap_content"
-        android:text="追分"
-        app:layout_constraintBottom_toTopOf="@+id/tv_zhong_ba"
+        android:text="开始"
+        app:layout_constraintBottom_toTopOf="@+id/tv_new_rule"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed" />
 
     <TextView
-        android:id="@+id/tv_zhong_ba"
+        android:id="@+id/tv_new_rule"
         style="@style/HomeButtonStyle"
         android:layout_width="120dp"
         android:layout_height="wrap_content"
-        android:text="中八"
-        app:layout_constraintBottom_toTopOf="@id/tv_history"
+        android:text="新增规则"
+        app:layout_constraintBottom_toTopOf="@id/tv_history_rule"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_zhui_fen" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_start" />
 
     <TextView
-        android:id="@+id/tv_history"
+        android:id="@+id/tv_history_rule"
         style="@style/HomeButtonStyle"
         android:layout_width="120dp"
         android:layout_height="wrap_content"
-        android:text="历史记录"
+        android:text="历史规则"
         app:layout_constraintBottom_toTopOf="@id/tv_new_player"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_zhong_ba" />
+        app:layout_constraintTop_toBottomOf="@id/tv_new_rule" />
 
     <TextView
         android:id="@+id/tv_new_player"
@@ -47,31 +47,9 @@
         android:layout_width="120dp"
         android:layout_height="wrap_content"
         android:text="新增玩家"
-        app:layout_constraintBottom_toTopOf="@id/tv_score"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_history" />
-
-    <TextView
-        android:id="@+id/tv_score"
-        style="@style/HomeButtonStyle"
-        android:layout_width="120dp"
-        android:layout_height="wrap_content"
-        android:text="分数统计"
-        app:layout_constraintBottom_toTopOf="@id/tv_appendix"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_new_player" />
-
-    <TextView
-        android:id="@+id/tv_appendix"
-        style="@style/HomeButtonStyle"
-        android:layout_width="120dp"
-        android:layout_height="wrap_content"
-        android:text="附录"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_score" />
+        app:layout_constraintTop_toBottomOf="@id/tv_history_rule" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

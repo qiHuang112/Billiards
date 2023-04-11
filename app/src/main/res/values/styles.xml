@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="HomeButtonStyle">
+        <item name="android:textSize">18dp</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:padding">8dp</item>
+        <item name="android:layout_margin">12dp</item>
+        <item name="android:background">@drawable/shape_home_button</item>
+        <item name="android:gravity">center</item>
+    </style>
+</resources>

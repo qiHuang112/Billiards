@@ -1,13 +1,151 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_total_score"
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:itemCount="3"
+        tools:listitem="@layout/item_total_score" />
+
+    <TextView
+        android:id="@+id/tv_foul"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
         android:gravity="center"
-        android:textSize="28dp"
-        android:text="fragment_zhuifen_start.xml"
-        android:layout_height="match_parent"/>
+        android:minWidth="80dp"
+        android:text="自然犯规"
+        android:textColor="@color/black"
+        android:textSize="20dp"
+        app:layout_constraintEnd_toStartOf="@id/tv_foul_r"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rv_total_score" />
+
+    <TextView
+        android:id="@+id/tv_foul_r"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:minWidth="80dp"
+        android:text="解球犯规"
+        android:textColor="@color/black"
+        android:textSize="20dp"
+        app:layout_constraintEnd_toStartOf="@id/tv_win"
+        app:layout_constraintStart_toEndOf="@+id/tv_foul"
+        app:layout_constraintTop_toBottomOf="@+id/rv_total_score" />
+
+    <TextView
+        android:id="@+id/tv_win"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:minWidth="80dp"
+        android:text="自然普胜"
+        android:textColor="@color/black"
+        android:textSize="20dp"
+        app:layout_constraintEnd_toStartOf="@id/tv_win_r"
+        app:layout_constraintStart_toEndOf="@+id/tv_foul_r"
+        app:layout_constraintTop_toBottomOf="@+id/rv_total_score" />
+
+    <TextView
+        android:id="@+id/tv_win_r"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:minWidth="80dp"
+        android:text="解球普胜"
+        android:textColor="@color/black"
+        android:textSize="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tv_win"
+        app:layout_constraintTop_toBottomOf="@+id/rv_total_score" />
+
+    <TextView
+        android:id="@+id/tv_xiaojin"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:minWidth="80dp"
+        android:text="自然小金"
+        android:textColor="@color/black"
+        android:textSize="20dp"
+        app:layout_constraintEnd_toStartOf="@id/tv_xiaojin_r"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_win_r" />
+
+    <TextView
+        android:id="@+id/tv_xiaojin_r"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:minWidth="80dp"
+        android:text="解球小金"
+        android:textColor="@color/black"
+        android:textSize="20dp"
+        app:layout_constraintEnd_toStartOf="@id/tv_dajin"
+        app:layout_constraintStart_toEndOf="@+id/tv_xiaojin"
+        app:layout_constraintTop_toBottomOf="@+id/tv_win_r" />
+
+    <TextView
+        android:id="@+id/tv_dajin"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:minWidth="80dp"
+        android:text="大金"
+        android:textColor="@color/black"
+        android:textSize="20dp"
+        app:layout_constraintEnd_toStartOf="@id/tv_undo"
+        app:layout_constraintStart_toEndOf="@+id/tv_xiaojin_r"
+        app:layout_constraintTop_toBottomOf="@+id/tv_win_r" />
+
+    <TextView
+        android:id="@+id/tv_undo"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:minWidth="80dp"
+        android:text="撤销"
+        android:textColor="@color/black"
+        android:textSize="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tv_dajin"
+        app:layout_constraintTop_toBottomOf="@+id/tv_win_r" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_score_operator"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        app:layout_constraintBottom_toTopOf="@id/tv_next"
+        app:layout_constraintTop_toBottomOf="@id/tv_xiaojin"
+        tools:itemCount="5"
+        tools:listitem="@layout/item_score_operator" />
+
+    <TextView
+        android:id="@+id/tv_next"
+        style="@style/HomeButtonStyle"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:text="下一局"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/tv_end"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_end"
+        style="@style/HomeButtonStyle"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:text="结束"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/tv_next" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

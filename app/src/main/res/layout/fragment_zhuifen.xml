@@ -4,8 +4,25 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.main.MainFragment">
+    android:layout_height="match_parent">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_current_rule"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        tools:listitem="@layout/item_current_rule"
+        tools:itemCount="5"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_current_player"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        tools:listitem="@layout/item_current_player"
+        tools:itemCount="3"
+        app:layout_constraintTop_toBottomOf="@+id/rv_current_rule" />
 
     <TextView
         android:id="@+id/tv_start"
@@ -13,43 +30,8 @@
         android:layout_width="120dp"
         android:layout_height="wrap_content"
         android:text="开始"
-        app:layout_constraintBottom_toTopOf="@+id/tv_new_rule"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="packed" />
-
-    <TextView
-        android:id="@+id/tv_new_rule"
-        style="@style/HomeButtonStyle"
-        android:layout_width="120dp"
-        android:layout_height="wrap_content"
-        android:text="新增规则"
-        app:layout_constraintBottom_toTopOf="@id/tv_history_rule"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_start" />
-
-    <TextView
-        android:id="@+id/tv_history_rule"
-        style="@style/HomeButtonStyle"
-        android:layout_width="120dp"
-        android:layout_height="wrap_content"
-        android:text="历史规则"
-        app:layout_constraintBottom_toTopOf="@id/tv_new_player"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_new_rule" />
-
-    <TextView
-        android:id="@+id/tv_new_player"
-        style="@style/HomeButtonStyle"
-        android:layout_width="120dp"
-        android:layout_height="wrap_content"
-        android:text="新增玩家"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_history_rule" />
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

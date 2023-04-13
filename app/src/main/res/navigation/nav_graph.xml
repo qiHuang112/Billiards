@@ -34,7 +34,7 @@
 
     <fragment
         android:id="@+id/zhuiFenFragment"
-        android:name="com.qi.billiards.ui.main.ZhuiFenFragment"
+        android:name="com.qi.billiards.ui.main.zhuifen.ZhuiFenFragment"
         android:label="ZhuiFen Fragment"
         tools:layout="@layout/fragment_zhuifen">
 
@@ -42,12 +42,6 @@
             android:id="@+id/action_zhuiFenFragment_to_zhuiFenStartFragment"
             app:destination="@id/zhuiFenStartFragment" />
 
-        <action
-            android:id="@+id/action_zhuiFenFragment_to_zhuiFenNewRuleFragment"
-            app:destination="@id/zhuiFenNewRuleFragment" />
-        <action
-            android:id="@+id/action_zhuiFenFragment_to_zhuiFenHistoryRuleFragment"
-            app:destination="@id/zhuiFenHistoryRuleFragment" />
         <action
             android:id="@+id/action_zhuiFenFragment_to_newPlayerFragment"
             app:destination="@id/newPlayerFragment" />
@@ -57,18 +51,16 @@
         android:id="@+id/zhuiFenStartFragment"
         android:name="com.qi.billiards.ui.main.zhuifen.ZhuiFenStartFragment"
         android:label="ZhuiFen Start Fragment"
-        tools:layout="@layout/fragment_zhuifen_start" />
-
-    <fragment
-        android:id="@+id/zhuiFenNewRuleFragment"
-        android:name="com.qi.billiards.ui.main.zhuifen.ZhuiFenNewRuleFragment"
-        android:label="ZhuiFen NewRule Fragment"
-        tools:layout="@layout/fragment_zhuifen_new_rule" />
-    <fragment
-        android:id="@+id/zhuiFenHistoryRuleFragment"
-        android:name="com.qi.billiards.ui.main.zhuifen.ZhuiFenHistoryRuleFragment"
-        android:label="ZhuiFen HistoryRule Fragment"
-        tools:layout="@layout/fragment_zhuifen_history_rule" />
+        tools:layout="@layout/fragment_zhuifen_start" >
+        <argument
+            android:name="itemId"
+            app:argType="string"
+            android:defaultValue="default value" />
+        <argument
+            android:name="itemTitle"
+            app:argType="string"
+            android:defaultValue="" />
+    </fragment>
     <fragment
         android:id="@+id/newPlayerFragment"
         android:name="com.qi.billiards.ui.main.NewPlayerFragment"

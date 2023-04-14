@@ -32,12 +32,12 @@ class ZhuiFenFragment : BaseFragment() {
     companion object {
         private fun getDefaultRules(): List<Rule> {
             return listOf(
-                Rule("初始分数", "25"),
-                Rule("犯规罚分", "1"),
-                Rule("普胜得分", "4"),
-                Rule("小金得分", "7"),
-                Rule("大金得分", "7"),
-                Rule("基数", "5"),
+                Rule("初始分数", 25),
+                Rule("犯规罚分", 1),
+                Rule("普胜得分", 4),
+                Rule("小金得分", 7),
+                Rule("大金得分", 7),
+                Rule("基数", 5),
             )
         }
 
@@ -51,7 +51,7 @@ class ZhuiFenFragment : BaseFragment() {
 
         data class Rule(
             var name: String,
-            var score: String,
+            var score: Int,
         )
 
         data class Player(

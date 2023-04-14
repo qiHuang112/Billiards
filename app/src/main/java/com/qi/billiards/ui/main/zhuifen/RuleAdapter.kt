@@ -8,8 +8,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.qi.billiards.R
-import com.qi.billiards.ui.util.DefaultConfig
-import com.qi.billiards.ui.util.safeToInt
+import com.qi.billiards.config.DefaultConfig
+import com.qi.billiards.util.safeToInt
 
 class RuleAdapter(
     private val rules: List<ZhuiFenFragment.Companion.Rule>
@@ -26,14 +26,14 @@ class RuleAdapter(
         val rule = rules[position]
         holder.tvName.text = rule.name
 
-        holder.etNumber.setText(rule.score)
-        holder.etNumber.setSelection(rule.score.length)
+        holder.etNumber.setText("${rule.score}")
+        holder.etNumber.setSelection("${rule.score}".length)
         holder.ivAdd.setOnClickListener {
-            rule.score = "${holder.etNumber.toString().safeToInt() + 1}"
+            rule.score = holder.etNumber.toString().safeToInt() + 1
             notifyItemChanged(position)
         }
         holder.ivMinus.setOnClickListener {
-            rule.score = "${holder.etNumber.toString().safeToInt() - 1}"
+            rule.score = holder.etNumber.toString().safeToInt() - 1
             notifyItemChanged(position)
         }
         holder.tvReset.setOnClickListener {

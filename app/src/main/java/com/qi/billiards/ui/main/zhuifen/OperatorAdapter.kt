@@ -6,9 +6,10 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.qi.billiards.R
+import com.qi.billiards.config.ZhuiFenScoreConfig
 
 class OperatorAdapter(
-    private val operators: MutableList<Operator>
+    private val operators: MutableList<Operator>,
 ) : RecyclerView.Adapter<OperatorAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -41,14 +42,17 @@ class OperatorAdapter(
 
         class Operator(
             val op: Int,
-            val currentPlayersAndScore: List<ZhuiFenStartFragment.Companion.PlayerAndScore>
+            val currentPlayersAndScore: List<ZhuiFenStartFragment.Companion.PlayerAndScore>,
+            val scoreConfig: ZhuiFenScoreConfig
         ) {
             override fun toString(): String {
                 return getDescriptionAndModifyTotalScore(this)
             }
         }
 
-        private fun getDescriptionAndModifyTotalScore(operator: Operator): String {
+        private fun getDescriptionAndModifyTotalScore(
+            operator: Operator,
+        ): String {
 
             val playerAndScoreList = operator.currentPlayersAndScore
 
@@ -62,25 +66,25 @@ class OperatorAdapter(
 
             val description = when (operator.op) {
                 ZhuiFenStartFragment.OP_FOUL -> {
-                    "${cur.name} 自然犯规，扣分1分，${last.name} 得分1分"
+                    "${cur.name} 自然犯规，扣分${operator.scoreConfig.foul}分，${last.name} 得分${operator.scoreConfig.foul}分"
                 }
                 ZhuiFenStartFragment.OP_FOUL_R -> {
-                    "${cur.name} 解球犯规，扣分1分，${next.name} 得分1分"
+                    "${cur.name} 解球犯规，扣分${operator.scoreConfig.foul}分，${next.name} 得分${operator.scoreConfig.foul}分"
                 }
                 ZhuiFenStartFragment.OP_WIN -> {
-                    "${cur.name} 自然普胜，得分4分，${last.name} 扣分4分"
+                    "${cur.name} 自然普胜，得分${operator.scoreConfig.win}分，${last.name} 扣分${operator.scoreConfig.win}分"
                 }
                 ZhuiFenStartFragment.OP_WIN_R -> {
-                    "${cur.name} 解球普胜，得分4分，${next.name} 扣分4分"
+                    "${cur.name} 解球普胜，得分${operator.scoreConfig.win}分，${next.name} 扣分${operator.scoreConfig.win}分"
                 }
                 ZhuiFenStartFragment.OP_XIAOJIN -> {
-                    "${cur.name} 自然小金，得分7分，${last.name} 扣分7分"
+                    "${cur.name} 自然小金，得分${operator.scoreConfig.xiaojin}分，${last.name} 扣分${operator.scoreConfig.xiaojin}分"
                 }
                 ZhuiFenStartFragment.OP_XIAOJIN_R -> {
-                    "${cur.name} 解球小金，得分7分，${next.name} 扣分7分"
+                    "${cur.name} 解球小金，得分${operator.scoreConfig.xiaojin}分，${next.name} 扣分${operator.scoreConfig.xiaojin}分"
                 }
                 ZhuiFenStartFragment.OP_DAJIN -> {
-                    "${cur.name} 自然大金，得分${7 * size}分，其余人扣分7分"
+                    "${cur.name} 自然大金，得分${operator.scoreConfig.dajin * (size - 1)}分，其余人扣分${operator.scoreConfig.dajin}分"
                 }
                 else -> ""
             }

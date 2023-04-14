@@ -1,4 +1,4 @@
-package com.qi.billiards.ui.util
+package com.qi.billiards.util
 
 import android.content.Context
 import android.util.DisplayMetrics

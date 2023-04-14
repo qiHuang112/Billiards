@@ -6,8 +6,8 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.qi.billiards.R
-import com.qi.billiards.ui.util.dp2Px
-import com.qi.billiards.ui.util.getScreenWidth
+import com.qi.billiards.util.dp2Px
+import com.qi.billiards.util.getScreenWidth
 
 class TotalScoreAdapter(
     private val playerAndScoreList: List<ZhuiFenStartFragment.Companion.PlayerAndScore>,

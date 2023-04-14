@@ -11,17 +11,26 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.HORIZONTAL
 import com.qi.billiards.R
+import com.qi.billiards.config.ZhuiFenScoreConfig
 import com.qi.billiards.ui.base.BaseFragment
-import com.qi.billiards.ui.util.safeToInt
+import com.qi.billiards.util.safeToInt
 
 private const val TAG = "ZhuiFenStartFragment"
 
 class ZhuiFenStartFragment : BaseFragment() {
 
     var currentSelectPlayer = 0
+
+    private val scoreConfig = getScoreConfig()
     private val playerAndScoreList by lazy { getPlayerAndScoreLists() }
     private val operators =
-        MutableList(1) { OperatorAdapter.Companion.Operator(-1, playerAndScoreList) }
+        MutableList(1) {
+            OperatorAdapter.Companion.Operator(
+                -1,
+                playerAndScoreList,
+                scoreConfig
+            )
+        }
 
 
     private val wakeLock by lazy {
@@ -61,7 +70,11 @@ class ZhuiFenStartFragment : BaseFragment() {
         rvOperator.adapter = operatorAdapter
 
         view.findViewById<TextView>(R.id.tv_foul).setOnClickListener {
-            val op = OperatorAdapter.Companion.Operator(OP_FOUL, playerAndScoreList.deepCopy())
+            val op = OperatorAdapter.Companion.Operator(
+                OP_FOUL,
+                playerAndScoreList.deepCopy(),
+                scoreConfig
+            )
             operators.add(op)
             Log.d(TAG, "$op ")
             operateScore(playerAndScoreList, op)
@@ -70,7 +83,11 @@ class ZhuiFenStartFragment : BaseFragment() {
             rvOperator.smoothScrollToPosition(operators.lastIndex)
         }
         view.findViewById<TextView>(R.id.tv_foul_r).setOnClickListener {
-            val op = OperatorAdapter.Companion.Operator(OP_FOUL_R, playerAndScoreList.deepCopy())
+            val op = OperatorAdapter.Companion.Operator(
+                OP_FOUL_R,
+                playerAndScoreList.deepCopy(),
+                scoreConfig
+            )
             operators.add(op)
             operateScore(playerAndScoreList, op)
             operatorAdapter.notifyDataSetChanged()
@@ -78,7 +95,11 @@ class ZhuiFenStartFragment : BaseFragment() {
             rvOperator.smoothScrollToPosition(operators.lastIndex)
         }
         view.findViewById<TextView>(R.id.tv_win).setOnClickListener {
-            val op = OperatorAdapter.Companion.Operator(OP_WIN, playerAndScoreList.deepCopy())
+            val op = OperatorAdapter.Companion.Operator(
+                OP_WIN,
+                playerAndScoreList.deepCopy(),
+                scoreConfig
+            )
             operators.add(op)
             operateScore(playerAndScoreList, op)
             operatorAdapter.notifyDataSetChanged()
@@ -86,7 +107,11 @@ class ZhuiFenStartFragment : BaseFragment() {
             rvOperator.smoothScrollToPosition(operators.lastIndex)
         }
         view.findViewById<TextView>(R.id.tv_win_r).setOnClickListener {
-            val op = OperatorAdapter.Companion.Operator(OP_WIN_R, playerAndScoreList.deepCopy())
+            val op = OperatorAdapter.Companion.Operator(
+                OP_WIN_R,
+                playerAndScoreList.deepCopy(),
+                scoreConfig
+            )
             operators.add(op)
             operateScore(playerAndScoreList, op)
             operatorAdapter.notifyDataSetChanged()
@@ -94,7 +119,11 @@ class ZhuiFenStartFragment : BaseFragment() {
             rvOperator.smoothScrollToPosition(operators.lastIndex)
         }
         view.findViewById<TextView>(R.id.tv_xiaojin).setOnClickListener {
-            val op = OperatorAdapter.Companion.Operator(OP_XIAOJIN, playerAndScoreList.deepCopy())
+            val op = OperatorAdapter.Companion.Operator(
+                OP_XIAOJIN,
+                playerAndScoreList.deepCopy(),
+                scoreConfig
+            )
             operators.add(op)
             operateScore(playerAndScoreList, op)
             operatorAdapter.notifyDataSetChanged()
@@ -102,7 +131,11 @@ class ZhuiFenStartFragment : BaseFragment() {
             rvOperator.smoothScrollToPosition(operators.lastIndex)
         }
         view.findViewById<TextView>(R.id.tv_xiaojin_r).setOnClickListener {
-            val op = OperatorAdapter.Companion.Operator(OP_XIAOJIN_R, playerAndScoreList.deepCopy())
+            val op = OperatorAdapter.Companion.Operator(
+                OP_XIAOJIN_R,
+                playerAndScoreList.deepCopy(),
+                scoreConfig
+            )
             operators.add(op)
             operateScore(playerAndScoreList, op)
             operatorAdapter.notifyDataSetChanged()
@@ -110,7 +143,11 @@ class ZhuiFenStartFragment : BaseFragment() {
             rvOperator.smoothScrollToPosition(operators.lastIndex)
         }
         view.findViewById<TextView>(R.id.tv_dajin).setOnClickListener {
-            val op = OperatorAdapter.Companion.Operator(OP_DAJIN, playerAndScoreList.deepCopy())
+            val op = OperatorAdapter.Companion.Operator(
+                OP_DAJIN,
+                playerAndScoreList.deepCopy(),
+                scoreConfig
+            )
             operators.add(op)
             operateScore(playerAndScoreList, op)
             operatorAdapter.notifyDataSetChanged()
@@ -181,43 +218,48 @@ class ZhuiFenStartFragment : BaseFragment() {
             val last = playerAndScoreList[(selectedIndex - 1 + size) % size]
             val next = playerAndScoreList[(selectedIndex + 1) % size]
 
+            val scoreConfig = op.scoreConfig
             when (op.op) {
                 OP_FOUL -> {
-                    cur.addScore(-1)
-                    last.addScore(1)
+                    cur.addScore(-scoreConfig.foul)
+                    last.addScore(scoreConfig.foul)
                 }
                 OP_FOUL_R -> {
-                    cur.addScore(-1)
-                    next.addScore(1)
+                    cur.addScore(-scoreConfig.foul)
+                    next.addScore(scoreConfig.foul)
                 }
                 OP_WIN -> {
-                    cur.addScore(4)
-                    last.addScore(-4)
+                    cur.addScore(scoreConfig.win)
+                    last.addScore(-scoreConfig.win)
                 }
                 OP_WIN_R -> {
-                    cur.addScore(4)
-                    next.addScore(-4)
+                    cur.addScore(scoreConfig.win)
+                    next.addScore(-scoreConfig.win)
                 }
                 OP_XIAOJIN -> {
-                    cur.addScore(7)
-                    last.addScore(-7)
+                    cur.addScore(scoreConfig.xiaojin)
+                    last.addScore(-scoreConfig.xiaojin)
                 }
                 OP_XIAOJIN_R -> {
-                    cur.addScore(7)
-                    next.addScore(-7)
+                    cur.addScore(scoreConfig.xiaojin)
+                    next.addScore(-scoreConfig.xiaojin)
                 }
                 OP_DAJIN -> {
                     playerAndScoreList.forEach {
                         if (it.selected) {
-                            it.addScore(7 * size)
+                            it.addScore(scoreConfig.dajin * (size - 1))
                         } else {
-                            it.addScore(-7)
+                            it.addScore(-scoreConfig.dajin)
                         }
                     }
 
                 }
             }
 
+        }
+
+        private fun getScoreConfig(): ZhuiFenScoreConfig {
+            return ZhuiFenScoreConfig()
         }
 
     }

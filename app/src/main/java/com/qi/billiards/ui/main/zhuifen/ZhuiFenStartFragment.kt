@@ -3,15 +3,19 @@ package com.qi.billiards.ui.main.zhuifen
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.PowerManager
+import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.core.content.ContextCompat.getSystemService
+import androidx.navigation.fragment.navArgs
 import com.qi.billiards.R
 import com.qi.billiards.ui.base.BaseFragment
 
 private const val TAG = "ZhuiFenStartFragment"
 
 class ZhuiFenStartFragment : BaseFragment() {
+    private val args: ZhuiFenStartFragmentArgs by navArgs()
+    val game by lazy { args.zhuiFenGame }
 
     private val wakeLock by lazy {
         val powerManager =
@@ -29,9 +33,9 @@ class ZhuiFenStartFragment : BaseFragment() {
         wakeLock.acquire(10 * 60 * 1000L)
 
         initView(view)
+        Log.d(TAG, "onViewCreated: $game")
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     private fun initView(view: View) {
 
         view.findViewById<TextView>(R.id.tv_foul).setOnClickListener {

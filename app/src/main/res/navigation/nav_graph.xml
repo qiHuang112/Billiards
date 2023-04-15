@@ -51,15 +51,10 @@
         android:id="@+id/zhuiFenStartFragment"
         android:name="com.qi.billiards.ui.main.zhuifen.ZhuiFenStartFragment"
         android:label="ZhuiFen Start Fragment"
-        tools:layout="@layout/fragment_zhuifen_start" >
+        tools:layout="@layout/fragment_zhuifen_start">
         <argument
-            android:name="itemId"
-            app:argType="string"
-            android:defaultValue="default value" />
-        <argument
-            android:name="itemTitle"
-            app:argType="string"
-            android:defaultValue="" />
+            android:name="zhuiFenGame"
+            app:argType="com.qi.billiards.game.ZhuiFenGame" />
     </fragment>
     <fragment
         android:id="@+id/newPlayerFragment"

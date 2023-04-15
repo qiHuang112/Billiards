@@ -5,6 +5,6 @@ package com.qi.billiards.game
  */
 data class OneGame(
     val sequenceList: List<String>, // 玩家参与表
-    val operatorList: MutableList<Int>, // 单局操作表
+    val operatorList: MutableList<Operator>, // 单局操作表
     val during: During, // 单局时间
 )

@@ -1,5 +1,7 @@
 package com.qi.billiards.game
 
+import java.io.Serializable
+
 /**
  * 一场游戏
  */
@@ -8,9 +10,8 @@ data class ZhuiFenGame(
     val playerList: List<Player>, // 玩家
     val rule: Rule, // 规则
     val base: Int, // 基数
-    val profit: Int, // 盈亏
     val during: During, // 总时长
-) {
+) : Serializable {
 
     /**
      * 追分规则

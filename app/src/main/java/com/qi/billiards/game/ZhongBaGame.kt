@@ -8,7 +8,6 @@ data class ZhongBaGame(
     val playerList: List<Player>, // 玩家
     val rule: Rule, // 规则
     val base: Int, // 基数
-    val profit: Int, // 盈亏
     val during: During, // 总时长
 ) {
 

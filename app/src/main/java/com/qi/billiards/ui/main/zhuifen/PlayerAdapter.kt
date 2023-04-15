@@ -11,7 +11,7 @@ import com.qi.billiards.R
 import java.util.*
 
 class PlayerAdapter(
-    private val players: MutableList<ZhuiFenFragment.Companion.Player>
+    val editPlayers: MutableList<ZhuiFenFragment.Companion.EditPlayer>
 ) : RecyclerView.Adapter<PlayerAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -22,24 +22,24 @@ class PlayerAdapter(
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val player = players[position]
+        val player = editPlayers[position]
         holder.tvName.text = player.name
 
         holder.ivUp.setOnClickListener {
             if (position > 0) {
-                Collections.swap(players, position, position - 1)
+                Collections.swap(editPlayers, position, position - 1)
                 notifyDataSetChanged()
             }
         }
 
         holder.ivDelete.setOnClickListener {
-            players.removeAt(position)
+            editPlayers.removeAt(position)
             notifyDataSetChanged()
         }
 
     }
 
-    override fun getItemCount() = players.size
+    override fun getItemCount() = editPlayers.size
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         var tvName: TextView

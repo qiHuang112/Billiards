@@ -1,5 +1,6 @@
 package com.qi.billiards.ui.main.zhuifen
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +13,7 @@ import com.qi.billiards.config.DefaultConfig
 import com.qi.billiards.util.safeToInt
 
 class RuleAdapter(
-    private val rules: List<ZhuiFenFragment.Companion.Rule>
+    val rule: List<ZhuiFenFragment.Companion.EditRule>
 ) : RecyclerView.Adapter<RuleAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -20,20 +21,20 @@ class RuleAdapter(
         return ViewHolder(view)
     }
 
-    override fun getItemCount() = rules.size
+    override fun getItemCount() = rule.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val rule = rules[position]
+        val rule = rule[position]
         holder.tvName.text = rule.name
 
         holder.etNumber.setText("${rule.score}")
         holder.etNumber.setSelection("${rule.score}".length)
         holder.ivAdd.setOnClickListener {
-            rule.score = holder.etNumber.toString().safeToInt() + 1
+            rule.score = holder.etNumber.text.toString().safeToInt() + 1
             notifyItemChanged(position)
         }
         holder.ivMinus.setOnClickListener {
-            rule.score = holder.etNumber.toString().safeToInt() - 1
+            rule.score = holder.etNumber.text.toString().safeToInt() - 1
             notifyItemChanged(position)
         }
         holder.tvReset.setOnClickListener {

@@ -1,20 +1,22 @@
 package com.qi.billiards.ui.main.zhuifen.start
 
 import android.os.Bundle
-import android.os.PowerManager
 import android.util.Log
 import android.view.View
-import android.widget.Toast
-import androidx.core.content.ContextCompat
+import android.widget.TextView
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.qi.billiards.R
-import com.qi.billiards.config.DefaultConfig
+import com.qi.billiards.config.Config
 import com.qi.billiards.game.During
 import com.qi.billiards.game.OneGame
 import com.qi.billiards.game.Operator
+import com.qi.billiards.game.Player
 import com.qi.billiards.ui.base.BaseFragment
+import com.qi.billiards.util.toast
+import java.util.ArrayList
 import java.util.Date
 
 private const val TAG = "ZhuiFenStartFragment"
@@ -34,23 +36,9 @@ class ZhuiFenStartFragment : BaseFragment() {
     val rvOperatorGrid by lazy { rootView.findViewById<RecyclerView>(R.id.rv_operator_grid) }
     val rvGameBoard by lazy { rootView.findViewById<RecyclerView>(R.id.rv_game_board) }
 
-    private val wakeLock by lazy {
-        val powerManager =
-            ContextCompat.getSystemService(
-                requireContext(),
-                PowerManager::class.java
-            ) as PowerManager
-        powerManager.newWakeLock(
-            PowerManager.SCREEN_BRIGHT_WAKE_LOCK or PowerManager.ACQUIRE_CAUSES_WAKEUP,
-            "ZhuiFenStartFragment::MyWakeLockTag"
-        )
-    }
-
     override fun getLayoutId() = R.layout.fragment_zhuifen_start
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        wakeLock.setReferenceCounted(false)
-        wakeLock.acquire(60 * 60 * 1000L)
 
         rootView = view
         initView()
@@ -67,14 +55,37 @@ class ZhuiFenStartFragment : BaseFragment() {
 
         initGameBoard() // 对局记录板 查看所有操作记录
 
+        initButton()
+    }
+
+    private fun initButton() {
+        rootView.findViewById<TextView>(R.id.tv_next).setOnClickListener {
+            if (game.games.last().operators.oneGameOver()) {
+                game.games.last().during.endTime = Date()
+                game.games.add(
+                    OneGame(
+                        getSequences(game.games.last()),
+                        mutableListOf(),
+                        game.players.map { player -> Player(player.name, 0) },
+                        During(Date())
+                    )
+                )
+                rvGameBoard.adapter?.notifyItemInserted(game.games.lastIndex)
+            } else {
+                toast("这局还没结束呢")
+            }
+
+        }
+
     }
 
     private fun initGame() {
-        val sequenceList = game.players.map { it.name }
+        val sequences = game.players.map { it.name }
         game.games.add(
             OneGame(
-                sequenceList,
+                sequences,
                 mutableListOf(),
+                game.players.map { player -> Player(player.name, 0) },
                 During(Date())
             )
         )
@@ -90,32 +101,66 @@ class ZhuiFenStartFragment : BaseFragment() {
 
     private fun initOperatorGrid() {
         rvOperatorGrid.adapter =
-            OperatorGridAdapter(DefaultConfig.ZhuiFen.userOperators) { operatorId ->
-                if (currentPlayerIndex == -1) {
-                    Toast.makeText(context, "请选择玩家", Toast.LENGTH_SHORT).show()
+            OperatorGridAdapter(Config.ZhuiFen.userOperators) { id ->
+                if (id == Config.ZhuiFen.OP_7) {
+                    if (currentGame.operators.isNotEmpty()) {
+                        currentGame.operators.removeAt(currentGame.operators.lastIndex)
+                        rvGameBoard.adapter?.notifyItemChanged(game.games.lastIndex)
+                        notifyScoreBoardChanged()
+                    }
+                } else if (currentPlayerIndex == -1) {
+                    toast("请选择玩家")
                 } else {
+                    if (currentGame.operators.oneGameOver()) {
+                        toast("游戏结束了，点击下一局开始下一局")
+                        return@OperatorGridAdapter
+                    }
                     currentGame.operators.add(
                         Operator(
-                            operatorId,
+                            id,
                             game.players[currentPlayerIndex]
                         )
                     )
+                    if (id != Config.ZhuiFen.OP_0 && id != Config.ZhuiFen.OP_1) {
+                        currentGame.during.endTime = Date()
+                    }
+                    rvGameBoard.adapter?.notifyItemChanged(game.games.lastIndex)
+
+                    notifyScoreBoardChanged()
                 }
             }
-        rvScoreBoard.layoutManager = LinearLayoutManager(context)
+        rvOperatorGrid.layoutManager = GridLayoutManager(context, 4)
+    }
+
+    private fun notifyScoreBoardChanged() {
+        // qitodo 解决计分板问题
     }
 
     private fun initGameBoard() {
-        rvGameBoard.adapter = GameBoardAdapter(game) { oneGame->
-
-        }
+        rvGameBoard.adapter = GameBoardAdapter(game)
 
         rvGameBoard.layoutManager = LinearLayoutManager(context)
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        wakeLock.release()
+    private fun getSequences(lastGame: OneGame): List<String> {
+        val winner = lastGame.winner?.name ?: lastGame.sequences.first()
+        val id = lastGame.operators.last().id
+        val temp = if (id == Config.ZhuiFen.OP_3 || id == Config.ZhuiFen.OP_5) {
+            ArrayList(lastGame.sequences)
+        } else {
+            lastGame.sequences.reversed()
+        }
+        return (temp + temp).slice(temp.indexOf(winner) until temp.indexOf(winner) + temp.size)
+    }
+
+    private fun List<Operator>.oneGameOver(): Boolean {
+        if (this.isEmpty()) {
+            return false
+        }
+        if (this.last().id <= Config.ZhuiFen.OP_1) {
+            return false
+        }
+        return true
     }
 
 }

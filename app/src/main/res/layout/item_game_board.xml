@@ -14,7 +14,7 @@
         android:textColor="@color/black"
         android:textSize="14dp"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="第1局 顺序：黄麒、李逸波、辛宇 耗时：03:02" />
+        tools:text="第1局 黄麒、李逸波、辛宇 耗时：03:02" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_one_game_detail"

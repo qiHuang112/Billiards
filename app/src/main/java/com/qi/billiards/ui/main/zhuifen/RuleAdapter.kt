@@ -8,7 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.qi.billiards.R
-import com.qi.billiards.config.DefaultConfig
+import com.qi.billiards.config.Config
 import com.qi.billiards.util.safeToInt
 
 class RuleAdapter(
@@ -37,7 +37,7 @@ class RuleAdapter(
             notifyItemChanged(position)
         }
         holder.tvReset.setOnClickListener {
-            rule.score = DefaultConfig.ZhuiFen.get(rule.name)
+            rule.score = Config.ZhuiFen.get(rule.name)
             notifyItemChanged(position)
         }
     }

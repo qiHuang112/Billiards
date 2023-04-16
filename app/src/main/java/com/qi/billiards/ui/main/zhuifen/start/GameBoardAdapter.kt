@@ -34,16 +34,16 @@ class GameBoardAdapter(
         holder.rvOneGameDetail.layoutManager = LinearLayoutManager(holder.itemView.context)
         holder.itemView.setOnClickListener {
             onOneGameClicked?.invoke(oneGame)
-            openDetail[position] = !openDetail[position]
+//            openDetail[position] = !openDetail[position]
             notifyItemChanged(position)
         }
 
-        holder.rvOneGameDetail.visibility = if (openDetail[position]) View.VISIBLE else View.GONE
+//        holder.rvOneGameDetail.visibility = if (openDetail[position]) View.VISIBLE else View.GONE
 
     }
 
     private fun getSummary(oneGame: OneGame, position: Int): String {
-        return "第${position + 1}局 顺序：${oneGame.sequences.joinToString()} 耗时：${oneGame.during}"
+        return "第${position + 1}局 ${oneGame.sequences.joinToString()} 耗时：${oneGame.during.getDuringTime()}"
     }
 
     override fun getItemCount() = game.games.size

@@ -6,5 +6,7 @@ package com.qi.billiards.game
 data class OneGame(
     val sequences: List<String>, // 玩家参与表
     val operators: MutableList<Operator>, // 单局操作表
+    val profits: List<Player>, // 单局收益表
     val during: During, // 单局时间
+    var winner: Player? = null,
 )

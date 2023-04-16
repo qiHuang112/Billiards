@@ -49,7 +49,7 @@
 
     <fragment
         android:id="@+id/zhuiFenStartFragment"
-        android:name="com.qi.billiards.ui.main.zhuifen.ZhuiFenStartFragment"
+        android:name="com.qi.billiards.ui.main.zhuifen.start.ZhuiFenStartFragment"
         android:label="ZhuiFen Start Fragment"
         tools:layout="@layout/fragment_zhuifen_start">
         <argument

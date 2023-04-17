@@ -40,7 +40,7 @@ class GameBoardAdapter(
     }
 
     private fun getSummary(game: Game, position: Int): String {
-        return "第${position + 1}局 ${game.sequences.joinToString()} 耗时：${game.during.getDuringTime()}"
+        return "第${globalGame.group.size - position}局 ${game.sequences.joinToString()} 耗时：${game.during.getDuringTime()}"
     }
 
     override fun getItemCount() = globalGame.group.size

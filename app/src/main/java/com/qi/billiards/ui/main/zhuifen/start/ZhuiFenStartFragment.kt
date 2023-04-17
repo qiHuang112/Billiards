@@ -27,7 +27,7 @@ class ZhuiFenStartFragment : BaseFragment() {
     var currentPlayerIndex = -1
     private val currentGame: Game // 当前游戏
         get() {
-            return globalGame.group.last()
+            return globalGame.group.first()
         }
 
     private val rvScoreBoard by lazy { rootView.findViewById<RecyclerView>(R.id.rv_score_board) }
@@ -61,6 +61,7 @@ class ZhuiFenStartFragment : BaseFragment() {
             if (globalGame.group.last().gameOver()) {
                 globalGame.group.last().during.endTime = Date()
                 globalGame.group.add(
+                    0,
                     Game(
                         getSequences(globalGame.group.last()),
                         mutableListOf(),
@@ -71,8 +72,8 @@ class ZhuiFenStartFragment : BaseFragment() {
                         During(Date())
                     )
                 )
-                rvGameBoard.adapter?.notifyItemInserted(globalGame.group.lastIndex)
-                rvGameBoard.scrollToPosition(globalGame.group.lastIndex)
+                rvGameBoard.adapter?.notifyItemInserted(0)
+                rvGameBoard.scrollToPosition(0)
             } else {
                 toast("这局还没结束呢")
             }
@@ -111,9 +112,10 @@ class ZhuiFenStartFragment : BaseFragment() {
                 if (id == Config.ZhuiFen.OP_7) {
                     if (currentGame.operators.isNotEmpty()) {
                         currentGame.operators.removeAt(currentGame.operators.lastIndex)
-                        rvGameBoard.adapter?.notifyItemChanged(globalGame.group.lastIndex)
+                        rvGameBoard.adapter?.notifyItemChanged(0)
 
-                        val operatorProfit = currentGame.profits.opProfits.removeAt(currentGame.profits.opProfits.lastIndex)
+                        val operatorProfit =
+                            currentGame.profits.opProfits.removeAt(currentGame.profits.opProfits.lastIndex)
                         currentGame.profits.totalProfits.removeOpProfit(operatorProfit)
                         globalGame.players.removeOpProfit(operatorProfit)
                         rvScoreBoard.adapter?.notifyDataSetChanged()
@@ -130,14 +132,14 @@ class ZhuiFenStartFragment : BaseFragment() {
                     if (id > Config.ZhuiFen.OP_1) {
                         currentGame.during.endTime = Date()
                     }
-                    rvGameBoard.adapter?.notifyItemChanged(globalGame.group.lastIndex)
+                    rvGameBoard.adapter?.notifyItemChanged(0)
 
                     val operatorProfit = getOperatorProfit(operator)
                     currentGame.profits.opProfits.add(operatorProfit)
                     currentGame.profits.totalProfits.addOpProfit(operatorProfit)
                     globalGame.players.addOpProfit(operatorProfit)
                     rvScoreBoard.adapter?.notifyDataSetChanged()
-                    rvGameBoard.scrollToPosition(globalGame.group.lastIndex)
+                    rvGameBoard.scrollToPosition(0)
                 }
 
             }
@@ -148,7 +150,8 @@ class ZhuiFenStartFragment : BaseFragment() {
      * 拿到当前操作，产生的分数变化
      */
     private fun getOperatorProfit(operator: Operator): List<Player> {
-        val profits = globalGame.players.map { player -> player.copy(name = player.name, score = 0) }
+        val profits =
+            globalGame.players.map { player -> player.copy(name = player.name, score = 0) }
         val sequence = currentGame.sequences // 顺序表
         val opPlayer = operator.player.name // 操作玩家
         val rule = globalGame.rule

@@ -7,18 +7,18 @@ import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.qi.billiards.R
-import com.qi.billiards.game.OneGame
+import com.qi.billiards.game.Game
 import com.qi.billiards.game.ZhuiFenGame
 
 class GameBoardAdapter(
     val game: ZhuiFenGame,
-    val onOneGameClicked: ((OneGame) -> Unit)? = null
+    val onOneGameClicked: ((Game) -> Unit)? = null
 ) : RecyclerView.Adapter<GameBoardAdapter.ViewHolder>() {
 
     var openDetail: MutableList<Boolean>
 
     init {
-        openDetail = MutableList(game.games.size) { true }
+        openDetail = MutableList(game.group.size) { true }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -28,7 +28,7 @@ class GameBoardAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val oneGame = game.games[position]
+        val oneGame = game.group[position]
         holder.tvOneGameSummary.text = getSummary(oneGame, position)
         holder.rvOneGameDetail.adapter = OneGameDetailAdapter(game, position)
         holder.rvOneGameDetail.layoutManager = LinearLayoutManager(holder.itemView.context)
@@ -42,11 +42,11 @@ class GameBoardAdapter(
 
     }
 
-    private fun getSummary(oneGame: OneGame, position: Int): String {
-        return "第${position + 1}局 ${oneGame.sequences.joinToString()} 耗时：${oneGame.during.getDuringTime()}"
+    private fun getSummary(game: Game, position: Int): String {
+        return "第${position + 1}局 ${game.sequences.joinToString()} 耗时：${game.during.getDuringTime()}"
     }
 
-    override fun getItemCount() = game.games.size
+    override fun getItemCount() = game.group.size
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         var tvOneGameSummary: TextView

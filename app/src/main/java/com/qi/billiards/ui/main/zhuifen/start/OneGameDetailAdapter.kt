@@ -31,7 +31,7 @@ class OneGameDetailAdapter(
      * example:%s%s，扣分%d分，%s得分%d分
      */
     private fun getDetail(position: Int): String {
-        val oneGame = game.games[gamePosition] // 这一局游戏
+        val oneGame = game.group[gamePosition] // 这一局游戏
         val operator = oneGame.operators[position] // 操作
         val sequence = oneGame.sequences // 顺序表
         val opPlayer = operator.player.name // 操作玩家
@@ -81,7 +81,7 @@ class OneGameDetailAdapter(
         }
     }
 
-    override fun getItemCount() = game.games[gamePosition].operators.size
+    override fun getItemCount() = game.group[gamePosition].operators.size
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         var tvDetail: TextView

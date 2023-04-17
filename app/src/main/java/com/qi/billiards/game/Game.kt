@@ -3,7 +3,7 @@ package com.qi.billiards.game
 /**
  * 一局游戏
  */
-data class OneGame(
+data class Game(
     val sequences: List<String>, // 玩家参与表
     val operators: MutableList<Operator>, // 单局操作表
     val profits: List<Player>, // 单局收益表

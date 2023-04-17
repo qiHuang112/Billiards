@@ -11,9 +11,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.qi.billiards.R
 import com.qi.billiards.config.Config
 import com.qi.billiards.game.During
-import com.qi.billiards.game.OneGame
+import com.qi.billiards.game.Game
 import com.qi.billiards.game.Operator
-import com.qi.billiards.game.Player
 import com.qi.billiards.ui.base.BaseFragment
 import com.qi.billiards.util.toast
 import java.util.ArrayList
@@ -24,17 +23,17 @@ private const val TAG = "ZhuiFenStartFragment"
 
 class ZhuiFenStartFragment : BaseFragment() {
     private val args: ZhuiFenStartFragmentArgs by navArgs()
-    val game by lazy { args.zhuiFenGame } // 一场游戏，包含多局游戏
+    private val globalGame by lazy { args.zhuiFenGame } // 一场游戏，包含多局游戏
     lateinit var rootView: View
     var currentPlayerIndex = -1
-    val currentGame: OneGame
+    private val currentGame: Game // 当前游戏
         get() {
-            return game.games.last()
+            return globalGame.group.last()
         }
 
-    val rvScoreBoard by lazy { rootView.findViewById<RecyclerView>(R.id.rv_score_board) }
-    val rvOperatorGrid by lazy { rootView.findViewById<RecyclerView>(R.id.rv_operator_grid) }
-    val rvGameBoard by lazy { rootView.findViewById<RecyclerView>(R.id.rv_game_board) }
+    private val rvScoreBoard by lazy { rootView.findViewById<RecyclerView>(R.id.rv_score_board) }
+    private val rvOperatorGrid by lazy { rootView.findViewById<RecyclerView>(R.id.rv_operator_grid) }
+    private val rvGameBoard by lazy { rootView.findViewById<RecyclerView>(R.id.rv_game_board) }
 
     override fun getLayoutId() = R.layout.fragment_zhuifen_start
 
@@ -42,7 +41,7 @@ class ZhuiFenStartFragment : BaseFragment() {
 
         rootView = view
         initView()
-        Log.d(TAG, "onViewCreated: $game")
+        Log.d(TAG, "onViewCreated: $globalGame")
     }
 
     private fun initView() {
@@ -60,17 +59,17 @@ class ZhuiFenStartFragment : BaseFragment() {
 
     private fun initButton() {
         rootView.findViewById<TextView>(R.id.tv_next).setOnClickListener {
-            if (game.games.last().operators.oneGameOver()) {
-                game.games.last().during.endTime = Date()
-                game.games.add(
-                    OneGame(
-                        getSequences(game.games.last()),
+            if (globalGame.group.last().gameOver()) {
+                globalGame.group.last().during.endTime = Date()
+                globalGame.group.add(
+                    Game(
+                        getSequences(globalGame.group.last()),
                         mutableListOf(),
-                        game.players.map { player -> Player(player.name, 0) },
+                        globalGame.players.map { player -> player.copy(name = player.name) },
                         During(Date())
                     )
                 )
-                rvGameBoard.adapter?.notifyItemInserted(game.games.lastIndex)
+                rvGameBoard.adapter?.notifyItemInserted(globalGame.group.lastIndex)
             } else {
                 toast("这局还没结束呢")
             }
@@ -80,19 +79,19 @@ class ZhuiFenStartFragment : BaseFragment() {
     }
 
     private fun initGame() {
-        val sequences = game.players.map { it.name }
-        game.games.add(
-            OneGame(
+        val sequences = globalGame.players.map { it.name }
+        globalGame.group.add(
+            Game(
                 sequences,
                 mutableListOf(),
-                game.players.map { player -> Player(player.name, 0) },
+                globalGame.players.map { player -> player.copy(name = player.name) },
                 During(Date())
             )
         )
     }
 
     private fun initScoreBoard() {
-        rvScoreBoard.adapter = ScoreBoardAdapter(game.players) {
+        rvScoreBoard.adapter = ScoreBoardAdapter(globalGame.players) {
             currentPlayerIndex = it
             rvOperatorGrid.visibility = if (it == -1) View.GONE else View.VISIBLE
         }
@@ -105,26 +104,26 @@ class ZhuiFenStartFragment : BaseFragment() {
                 if (id == Config.ZhuiFen.OP_7) {
                     if (currentGame.operators.isNotEmpty()) {
                         currentGame.operators.removeAt(currentGame.operators.lastIndex)
-                        rvGameBoard.adapter?.notifyItemChanged(game.games.lastIndex)
+                        rvGameBoard.adapter?.notifyItemChanged(globalGame.group.lastIndex)
                         notifyScoreBoardChanged()
                     }
                 } else if (currentPlayerIndex == -1) {
                     toast("请选择玩家")
                 } else {
-                    if (currentGame.operators.oneGameOver()) {
+                    if (currentGame.gameOver()) {
                         toast("游戏结束了，点击下一局开始下一局")
                         return@OperatorGridAdapter
                     }
                     currentGame.operators.add(
                         Operator(
                             id,
-                            game.players[currentPlayerIndex]
+                            globalGame.players[currentPlayerIndex]
                         )
                     )
                     if (id != Config.ZhuiFen.OP_0 && id != Config.ZhuiFen.OP_1) {
                         currentGame.during.endTime = Date()
                     }
-                    rvGameBoard.adapter?.notifyItemChanged(game.games.lastIndex)
+                    rvGameBoard.adapter?.notifyItemChanged(globalGame.group.lastIndex)
 
                     notifyScoreBoardChanged()
                 }
@@ -137,15 +136,15 @@ class ZhuiFenStartFragment : BaseFragment() {
     }
 
     private fun initGameBoard() {
-        rvGameBoard.adapter = GameBoardAdapter(game)
+        rvGameBoard.adapter = GameBoardAdapter(globalGame)
 
         rvGameBoard.layoutManager = LinearLayoutManager(context)
     }
 
-    private fun getSequences(lastGame: OneGame): List<String> {
+    private fun getSequences(lastGame: Game): List<String> {
         val winner = lastGame.winner?.name ?: lastGame.sequences.first()
         val id = lastGame.operators.last().id
-        val temp = if (id == Config.ZhuiFen.OP_3 || id == Config.ZhuiFen.OP_5) {
+        val temp = if (id == Config.ZhuiFen.OP_3 || id == Config.ZhuiFen.OP_5) { // 解球赢球，准分顺序不变
             ArrayList(lastGame.sequences)
         } else {
             lastGame.sequences.reversed()
@@ -153,14 +152,12 @@ class ZhuiFenStartFragment : BaseFragment() {
         return (temp + temp).slice(temp.indexOf(winner) until temp.indexOf(winner) + temp.size)
     }
 
-    private fun List<Operator>.oneGameOver(): Boolean {
-        if (this.isEmpty()) {
-            return false
-        }
-        if (this.last().id <= Config.ZhuiFen.OP_1) {
-            return false
-        }
-        return true
+    /**
+     * 当局游戏是否结束
+     * 操作表不为空，且操作表中最后一次操作不是犯规
+     */
+    private fun Game.gameOver(): Boolean {
+        return operators.isNotEmpty() && operators.last().id > Config.ZhuiFen.OP_1
     }
 
 }

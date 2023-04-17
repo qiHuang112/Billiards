@@ -6,7 +6,7 @@ import java.io.Serializable
  * 一场游戏
  */
 data class ZhuiFenGame(
-    val games: MutableList<OneGame>, // 对局列表
+    val group: MutableList<Game>, // 对局列表
     val players: List<Player>, // 玩家
     val rule: Rule, // 规则
     val base: Int, // 基数

@@ -21,7 +21,7 @@ class ScoreBoardAdapter(
         val context = parent.context
         val view = LayoutInflater.from(context).inflate(R.layout.item_score_board, parent, false)
         view.layoutParams.apply {
-            width = (context.getScreenWidth() - context.dp2Px(5f) * 6) / players.size
+            width = (getScreenWidth() - dp2Px(5f) * 6) / players.size
         }
         return ViewHolder(view)
     }

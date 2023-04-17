@@ -16,6 +16,8 @@ object Config {
             "基数" to 5,
         )
 
+        const val KEY_LAST_GAME = "com.qi.billiards.config.Config.ZhuiFen.KEY_LAST_GAME"
+
         const val OP_0 = 0 // 自然犯规
         const val OP_1 = 1 // 解球犯规
         const val OP_2 = 2 // 自然普胜

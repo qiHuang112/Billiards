@@ -13,6 +13,7 @@ import com.qi.billiards.R
 import com.qi.billiards.config.Config
 import com.qi.billiards.game.*
 import com.qi.billiards.ui.base.BaseFragment
+import com.qi.billiards.util.save
 import com.qi.billiards.util.toast
 import java.util.ArrayList
 import java.util.Date
@@ -77,7 +78,6 @@ class ZhuiFenStartFragment : BaseFragment() {
             } else {
                 toast("这局还没结束呢")
             }
-
         }
 
     }
@@ -141,7 +141,7 @@ class ZhuiFenStartFragment : BaseFragment() {
                     rvScoreBoard.adapter?.notifyDataSetChanged()
                     rvGameBoard.scrollToPosition(0)
                 }
-
+                save(Config.ZhuiFen.KEY_LAST_GAME, globalGame)
             }
         rvOperatorGrid.layoutManager = GridLayoutManager(context, 4)
     }

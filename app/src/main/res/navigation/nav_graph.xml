@@ -11,6 +11,10 @@
         android:label="Main Fragment"
         tools:layout="@layout/fragment_main">
         <action
+            android:id="@+id/action_MainFragment_to_zhuiFenStartFragment"
+            app:destination="@id/zhuiFenStartFragment" />
+
+        <action
             android:id="@+id/action_MainFragment_to_zhuiFenFragment"
             app:destination="@id/zhuiFenFragment" />
 

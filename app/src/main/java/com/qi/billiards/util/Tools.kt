@@ -6,6 +6,8 @@ import android.util.TypedValue
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import com.google.gson.Gson
+import com.qi.billiards.AppContext
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -17,22 +19,22 @@ fun String.safeToInt(): Int {
     }
 }
 
-fun Context.getScreenWidth(): Int {
+fun getScreenWidth(): Int {
     val displayMetrics = DisplayMetrics()
-    val windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
+    val windowManager = AppContext.getSystemService(Context.WINDOW_SERVICE) as WindowManager
     windowManager.defaultDisplay.getMetrics(displayMetrics)
     return displayMetrics.widthPixels
 }
 
-fun Context.getScreenHeight(): Int {
+fun getScreenHeight(): Int {
     val displayMetrics = DisplayMetrics()
-    val windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
+    val windowManager = AppContext.getSystemService(Context.WINDOW_SERVICE) as WindowManager
     windowManager.defaultDisplay.getMetrics(displayMetrics)
     return displayMetrics.heightPixels
 }
 
-fun Context.dp2Px(dp: Float): Int {
-    return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, resources.displayMetrics)
+fun dp2Px(dp: Float): Int {
+    return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, AppContext.resources.displayMetrics)
         .toInt()
 }
 
@@ -48,4 +50,24 @@ fun Fragment.toast(text: String) {
         return
     }
     Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
+}
+
+const val SP_NAME = "my_preferences"
+
+fun save(key: String, value: Any) {
+    val sharedPreferences = AppContext.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE)
+    val editor = sharedPreferences.edit()
+    val json = Gson().toJson(value)
+    editor.putString(key, json)
+    editor.apply()
+}
+
+inline fun <reified T> get(key: String): T? {
+    val sharedPreferences = AppContext.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE)
+    val json = sharedPreferences.getString(key, null)
+    return if (json != null) {
+        Gson().fromJson(json, T::class.java)
+    } else {
+        null
+    }
 }

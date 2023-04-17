@@ -11,14 +11,14 @@ import com.qi.billiards.game.Game
 import com.qi.billiards.game.ZhuiFenGame
 
 class GameBoardAdapter(
-    val game: ZhuiFenGame,
+    val globalGame: ZhuiFenGame,
     val onOneGameClicked: ((Game) -> Unit)? = null
 ) : RecyclerView.Adapter<GameBoardAdapter.ViewHolder>() {
 
     var openDetail: MutableList<Boolean>
 
     init {
-        openDetail = MutableList(game.group.size) { true }
+        openDetail = MutableList(globalGame.group.size) { true }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -28,17 +28,14 @@ class GameBoardAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val oneGame = game.group[position]
+        val oneGame = globalGame.group[position]
         holder.tvOneGameSummary.text = getSummary(oneGame, position)
-        holder.rvOneGameDetail.adapter = OneGameDetailAdapter(game, position)
+        holder.rvOneGameDetail.adapter = OneGameDetailAdapter(globalGame, position)
         holder.rvOneGameDetail.layoutManager = LinearLayoutManager(holder.itemView.context)
         holder.itemView.setOnClickListener {
             onOneGameClicked?.invoke(oneGame)
-//            openDetail[position] = !openDetail[position]
             notifyItemChanged(position)
         }
-
-//        holder.rvOneGameDetail.visibility = if (openDetail[position]) View.VISIBLE else View.GONE
 
     }
 
@@ -46,7 +43,7 @@ class GameBoardAdapter(
         return "第${position + 1}局 ${game.sequences.joinToString()} 耗时：${game.during.getDuringTime()}"
     }
 
-    override fun getItemCount() = game.group.size
+    override fun getItemCount() = globalGame.group.size
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         var tvOneGameSummary: TextView

@@ -1,5 +1,6 @@
 package com.qi.billiards.ui.main.zhuifen.start
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -10,9 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.qi.billiards.R
 import com.qi.billiards.config.Config
-import com.qi.billiards.game.During
-import com.qi.billiards.game.Game
-import com.qi.billiards.game.Operator
+import com.qi.billiards.game.*
 import com.qi.billiards.ui.base.BaseFragment
 import com.qi.billiards.util.toast
 import java.util.ArrayList
@@ -65,11 +64,15 @@ class ZhuiFenStartFragment : BaseFragment() {
                     Game(
                         getSequences(globalGame.group.last()),
                         mutableListOf(),
-                        globalGame.players.map { player -> player.copy(name = player.name) },
+                        Game.Profits(
+                            globalGame.players.map { player -> player.copy(name = player.name) },
+                            mutableListOf()
+                        ),
                         During(Date())
                     )
                 )
                 rvGameBoard.adapter?.notifyItemInserted(globalGame.group.lastIndex)
+                rvGameBoard.scrollToPosition(globalGame.group.lastIndex)
             } else {
                 toast("这局还没结束呢")
             }
@@ -84,7 +87,10 @@ class ZhuiFenStartFragment : BaseFragment() {
             Game(
                 sequences,
                 mutableListOf(),
-                globalGame.players.map { player -> player.copy(name = player.name) },
+                Game.Profits(
+                    globalGame.players.map { player -> player.copy(name = player.name, score = 0) },
+                    mutableListOf()
+                ),
                 During(Date())
             )
         )
@@ -98,6 +104,7 @@ class ZhuiFenStartFragment : BaseFragment() {
         rvScoreBoard.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun initOperatorGrid() {
         rvOperatorGrid.adapter =
             OperatorGridAdapter(Config.ZhuiFen.userOperators) { id ->
@@ -105,7 +112,11 @@ class ZhuiFenStartFragment : BaseFragment() {
                     if (currentGame.operators.isNotEmpty()) {
                         currentGame.operators.removeAt(currentGame.operators.lastIndex)
                         rvGameBoard.adapter?.notifyItemChanged(globalGame.group.lastIndex)
-                        notifyScoreBoardChanged()
+
+                        val operatorProfit = currentGame.profits.opProfits.removeAt(currentGame.profits.opProfits.lastIndex)
+                        currentGame.profits.totalProfits.removeOpProfit(operatorProfit)
+                        globalGame.players.removeOpProfit(operatorProfit)
+                        rvScoreBoard.adapter?.notifyDataSetChanged()
                     }
                 } else if (currentPlayerIndex == -1) {
                     toast("请选择玩家")
@@ -114,25 +125,76 @@ class ZhuiFenStartFragment : BaseFragment() {
                         toast("游戏结束了，点击下一局开始下一局")
                         return@OperatorGridAdapter
                     }
-                    currentGame.operators.add(
-                        Operator(
-                            id,
-                            globalGame.players[currentPlayerIndex]
-                        )
-                    )
-                    if (id != Config.ZhuiFen.OP_0 && id != Config.ZhuiFen.OP_1) {
+                    val operator = Operator(id, globalGame.players[currentPlayerIndex])
+                    currentGame.operators.add(operator)
+                    if (id > Config.ZhuiFen.OP_1) {
                         currentGame.during.endTime = Date()
                     }
                     rvGameBoard.adapter?.notifyItemChanged(globalGame.group.lastIndex)
 
-                    notifyScoreBoardChanged()
+                    val operatorProfit = getOperatorProfit(operator)
+                    currentGame.profits.opProfits.add(operatorProfit)
+                    currentGame.profits.totalProfits.addOpProfit(operatorProfit)
+                    globalGame.players.addOpProfit(operatorProfit)
+                    rvScoreBoard.adapter?.notifyDataSetChanged()
+                    rvGameBoard.scrollToPosition(globalGame.group.lastIndex)
                 }
+
             }
         rvOperatorGrid.layoutManager = GridLayoutManager(context, 4)
     }
 
-    private fun notifyScoreBoardChanged() {
-        // qitodo 解决计分板问题
+    /**
+     * 拿到当前操作，产生的分数变化
+     */
+    private fun getOperatorProfit(operator: Operator): List<Player> {
+        val profits = globalGame.players.map { player -> player.copy(name = player.name, score = 0) }
+        val sequence = currentGame.sequences // 顺序表
+        val opPlayer = operator.player.name // 操作玩家
+        val rule = globalGame.rule
+        val curIndex = sequence.indexOf(opPlayer)
+        if (curIndex == -1) return profits
+        val last = if (curIndex == 0) sequence.last() else sequence[curIndex - 1] // 上家
+        val next =
+            if (curIndex == sequence.lastIndex) sequence.first() else sequence[curIndex + 1] // 下家
+        val addScore: (String, Int) -> Unit = { name, score ->
+            val player = profits.find { it.name == name }
+            if (player != null) {
+                player.score += score
+            }
+        }
+        when (operator.id) {
+            Config.ZhuiFen.OP_0 -> {
+                addScore(opPlayer, -rule.foul)
+                addScore(last, rule.foul)
+            }
+            Config.ZhuiFen.OP_1 -> {
+                addScore(opPlayer, -rule.foul)
+                addScore(next, rule.foul)
+            }
+            Config.ZhuiFen.OP_2 -> {
+                addScore(opPlayer, rule.win)
+                addScore(last, -rule.win)
+            }
+            Config.ZhuiFen.OP_3 -> {
+                addScore(opPlayer, rule.win)
+                addScore(next, -rule.win)
+            }
+            Config.ZhuiFen.OP_4 -> {
+                addScore(opPlayer, rule.xiaojin)
+                addScore(last, -rule.xiaojin)
+            }
+            Config.ZhuiFen.OP_5 -> {
+                addScore(opPlayer, rule.xiaojin)
+                addScore(next, -rule.xiaojin)
+            }
+            Config.ZhuiFen.OP_6 -> {
+                addScore(opPlayer, rule.dajin * profits.size)
+                profits.forEach { player -> addScore(player.name, -rule.dajin) }
+            }
+            else -> Unit
+        }
+        return profits
     }
 
     private fun initGameBoard() {
@@ -158,6 +220,11 @@ class ZhuiFenStartFragment : BaseFragment() {
      */
     private fun Game.gameOver(): Boolean {
         return operators.isNotEmpty() && operators.last().id > Config.ZhuiFen.OP_1
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d(TAG, "onDestroy: $globalGame")
     }
 
 }

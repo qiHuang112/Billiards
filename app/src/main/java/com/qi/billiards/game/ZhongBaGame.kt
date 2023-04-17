@@ -1,5 +1,7 @@
 package com.qi.billiards.game
 
+import java.io.Serializable
+
 /**
  * 一场游戏
  */
@@ -9,7 +11,7 @@ data class ZhongBaGame(
     val rule: Rule, // 规则
     val base: Int, // 基数
     val during: During, // 总时长
-) {
+) : Serializable {
 
     /**
      * 追分规则

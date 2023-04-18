@@ -14,6 +14,7 @@ import com.qi.billiards.config.Config
 import com.qi.billiards.databinding.FragmentZhuifenStartBinding
 import com.qi.billiards.game.*
 import com.qi.billiards.ui.base.BaseBindingFragment
+import com.qi.billiards.ui.widget.SummaryDialog
 import com.qi.billiards.util.save
 import com.qi.billiards.util.toast
 import java.util.*
@@ -52,6 +53,31 @@ class ZhuiFenStartFragment : BaseBindingFragment<FragmentZhuifenStartBinding>() 
         initOperatorGrid() // 操作面板 提供交互
 
         initGameBoard() // 对局记录板 查看所有操作记录
+
+        binding.tvSummary.setOnClickListener {
+            showSummaryDialog()
+        }
+
+    }
+
+    private fun showSummaryDialog() {
+        val summaryDialog = SummaryDialog(requireContext())
+        val tableData = globalGame.summaries.map { playerSummary ->
+            val winCount =
+                playerSummary.winCount + playerSummary.xiaojinCount + playerSummary.dajinCount
+            val totalCount = globalGame.group.size
+            listOf(
+                playerSummary.name,
+                playerSummary.foulCount.toString(),
+                playerSummary.winCount.toString(),
+                playerSummary.xiaojinCount.toString(),
+                playerSummary.dajinCount.toString(),
+                String.format("%.2f%%", 100.0 * winCount / totalCount)
+            )
+        }
+
+        summaryDialog.updateData(tableData)
+        summaryDialog.show()
 
     }
 
@@ -168,36 +194,46 @@ class ZhuiFenStartFragment : BaseBindingFragment<FragmentZhuifenStartBinding>() 
                 player.score += score
             }
         }
+        val getSummaryPlayer: (String) -> ZhuiFenGame.Summary = { name ->
+            globalGame.summaries.find { it.name == name }!!
+        }
         when (operator.id) {
             Config.ZhuiFen.OP_0 -> {
+                getSummaryPlayer(opPlayer).foulCount++
                 addScore(opPlayer, -rule.foul)
                 addScore(last, rule.foul)
             }
             Config.ZhuiFen.OP_1 -> {
+                getSummaryPlayer(opPlayer).foulCount++
                 addScore(opPlayer, -rule.foul)
                 addScore(next, rule.foul)
             }
             Config.ZhuiFen.OP_2 -> {
+                getSummaryPlayer(opPlayer).winCount++
                 currentGame.winner = opPlayer
                 addScore(opPlayer, rule.win)
                 addScore(last, -rule.win)
             }
             Config.ZhuiFen.OP_3 -> {
+                getSummaryPlayer(opPlayer).winCount++
                 currentGame.winner = opPlayer
                 addScore(opPlayer, rule.win)
                 addScore(next, -rule.win)
             }
             Config.ZhuiFen.OP_4 -> {
+                getSummaryPlayer(opPlayer).xiaojinCount++
                 currentGame.winner = opPlayer
                 addScore(opPlayer, rule.xiaojin)
                 addScore(last, -rule.xiaojin)
             }
             Config.ZhuiFen.OP_5 -> {
+                getSummaryPlayer(opPlayer).xiaojinCount++
                 currentGame.winner = opPlayer
                 addScore(opPlayer, rule.xiaojin)
                 addScore(next, -rule.xiaojin)
             }
             Config.ZhuiFen.OP_6 -> {
+                getSummaryPlayer(opPlayer).dajinCount++
                 currentGame.winner = opPlayer
                 addScore(opPlayer, rule.dajin * profits.size)
                 profits.forEach { player -> addScore(player.name, -rule.dajin) }

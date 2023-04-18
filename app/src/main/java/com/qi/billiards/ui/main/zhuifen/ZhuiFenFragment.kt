@@ -56,7 +56,8 @@ class ZhuiFenFragment : BaseBindingFragment<FragmentZhuifenBinding>() {
             },
             rule,
             editRules.find { it.name == "基数" }?.score ?: 5,
-            During()
+            During(),
+            playerAdapter.editPlayers.map { ZhuiFenGame.Summary(it.name) }
         )
     }
 

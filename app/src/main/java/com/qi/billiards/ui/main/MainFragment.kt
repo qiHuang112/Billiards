@@ -2,8 +2,9 @@ package com.qi.billiards.ui.main
 
 import android.os.Bundle
 import android.view.View
-import android.widget.TextView
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.qi.billiards.R
 import com.qi.billiards.config.Config
 import com.qi.billiards.game.ZhuiFenGame
@@ -15,40 +16,50 @@ class MainFragment : BaseFragment() {
     override fun getLayoutId() = R.layout.fragment_main
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        view.findViewById<TextView>(R.id.tv_zhui_fen_last).setOnClickListener {
-            val game = get<ZhuiFenGame>(Config.ZhuiFen.KEY_LAST_GAME)
-            if (game == null) {
+
+        val rvMain = view.findViewById<RecyclerView>(R.id.rv_main)
+        rvMain.adapter = MainAdapter(getMainItems())
+        rvMain.layoutManager = LinearLayoutManager(context)
+    }
+
+    private fun getMainItems(): List<MainAdapter.MainItem> {
+        return listOf(
+            MainAdapter.MainItem("上次追分") {
+                val game = get<ZhuiFenGame>(Config.ZhuiFen.KEY_LAST_GAME)
+                if (game == null) {
+                    val action = MainFragmentDirections.actionMainFragmentToZhuiFenFragment()
+                    findNavController().navigate(action)
+                } else {
+                    val action =
+                        MainFragmentDirections.actionMainFragmentToZhuiFenStartFragment(game, true)
+                    findNavController().navigate(action)
+                }
+            },
+            MainAdapter.MainItem("追分") {
                 val action = MainFragmentDirections.actionMainFragmentToZhuiFenFragment()
                 findNavController().navigate(action)
-            } else {
-                val action = MainFragmentDirections.actionMainFragmentToZhuiFenStartFragment(game, true)
+            },
+            MainAdapter.MainItem("中八") {
+                val action = MainFragmentDirections.actionMainFragmentToZhongBaFragment()
                 findNavController().navigate(action)
-            }
-        }
-        view.findViewById<TextView>(R.id.tv_zhui_fen).setOnClickListener {
-            val action = MainFragmentDirections.actionMainFragmentToZhuiFenFragment()
-            findNavController().navigate(action)
-        }
-        view.findViewById<TextView>(R.id.tv_zhong_ba).setOnClickListener {
-            val action = MainFragmentDirections.actionMainFragmentToZhongBaFragment()
-            findNavController().navigate(action)
-        }
-        view.findViewById<TextView>(R.id.tv_history).setOnClickListener {
-            val action = MainFragmentDirections.actionMainFragmentToHistoryFragment()
-            findNavController().navigate(action)
-        }
-        view.findViewById<TextView>(R.id.tv_new_player).setOnClickListener {
-            val action = MainFragmentDirections.actionMainFragmentToNewPlayerFragment()
-            findNavController().navigate(action)
-        }
-        view.findViewById<TextView>(R.id.tv_score).setOnClickListener {
-            val action = MainFragmentDirections.actionMainFragmentToScoreFragment()
-            findNavController().navigate(action)
-        }
-        view.findViewById<TextView>(R.id.tv_appendix).setOnClickListener {
-            val action = MainFragmentDirections.actionMainFragmentToAppendixFragment()
-            findNavController().navigate(action)
-        }
+            },
+            MainAdapter.MainItem("历史记录") {
+                val action = MainFragmentDirections.actionMainFragmentToHistoryFragment()
+                findNavController().navigate(action)
+            },
+            MainAdapter.MainItem("新增玩家") {
+                val action = MainFragmentDirections.actionMainFragmentToNewPlayerFragment()
+                findNavController().navigate(action)
+            },
+            MainAdapter.MainItem("分数统计") {
+                val action = MainFragmentDirections.actionMainFragmentToScoreFragment()
+                findNavController().navigate(action)
+            },
+            MainAdapter.MainItem("附录") {
+                val action = MainFragmentDirections.actionMainFragmentToAppendixFragment()
+                findNavController().navigate(action)
+            },
+        )
     }
 
 }

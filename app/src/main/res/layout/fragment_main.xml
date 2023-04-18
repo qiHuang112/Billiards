@@ -7,83 +7,20 @@
     android:layout_height="match_parent"
     tools:context=".ui.main.MainFragment">
 
-    <TextView
-        android:id="@+id/tv_zhui_fen_last"
-        style="@style/HomeButtonStyle"
-        android:layout_width="120dp"
-        android:layout_height="wrap_content"
-        android:text="上次追分"
-        app:layout_constraintBottom_toTopOf="@+id/tv_zhui_fen"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="packed" />
-
-    <TextView
-        android:id="@+id/tv_zhui_fen"
-        style="@style/HomeButtonStyle"
-        android:layout_width="120dp"
-        android:layout_height="wrap_content"
-        android:text="追分"
-        app:layout_constraintBottom_toTopOf="@+id/tv_zhong_ba"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_zhui_fen_last"
-        app:layout_constraintVertical_chainStyle="packed" />
-
-    <TextView
-        android:id="@+id/tv_zhong_ba"
-        style="@style/HomeButtonStyle"
-        android:layout_width="120dp"
-        android:layout_height="wrap_content"
-        android:text="中八"
-        app:layout_constraintBottom_toTopOf="@id/tv_history"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_zhui_fen" />
-
-    <TextView
-        android:id="@+id/tv_history"
-        style="@style/HomeButtonStyle"
-        android:layout_width="120dp"
-        android:layout_height="wrap_content"
-        android:text="历史记录"
-        app:layout_constraintBottom_toTopOf="@id/tv_new_player"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_zhong_ba" />
-
-    <TextView
-        android:id="@+id/tv_new_player"
-        style="@style/HomeButtonStyle"
-        android:layout_width="120dp"
-        android:layout_height="wrap_content"
-        android:text="新增玩家"
-        app:layout_constraintBottom_toTopOf="@id/tv_score"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_history" />
-
-    <TextView
-        android:id="@+id/tv_score"
-        style="@style/HomeButtonStyle"
-        android:layout_width="120dp"
-        android:layout_height="wrap_content"
-        android:text="分数统计"
-        app:layout_constraintBottom_toTopOf="@id/tv_appendix"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_new_player" />
-
-    <TextView
-        android:id="@+id/tv_appendix"
-        style="@style/HomeButtonStyle"
-        android:layout_width="120dp"
-        android:layout_height="wrap_content"
-        android:text="附录"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_main"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="150dp"
+        android:layout_marginBottom="100dp"
+        android:overScrollMode="never"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_score" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        tools:itemCount="7"
+        tools:listitem="@layout/item_main_button" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

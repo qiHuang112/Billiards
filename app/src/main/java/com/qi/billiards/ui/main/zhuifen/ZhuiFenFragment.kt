@@ -23,7 +23,7 @@ class ZhuiFenFragment : BaseFragment() {
 
         view.findViewById<TextView>(R.id.tv_start).setOnClickListener {
             val action =
-                ZhuiFenFragmentDirections.actionZhuiFenFragmentToZhuiFenStartFragment(getZhuiFenGame())
+                ZhuiFenFragmentDirections.actionZhuiFenFragmentToZhuiFenStartFragment(getZhuiFenGame(), false)
             findNavController().navigate(action)
         }
 

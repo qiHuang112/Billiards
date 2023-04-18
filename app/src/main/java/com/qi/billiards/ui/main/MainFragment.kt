@@ -21,7 +21,7 @@ class MainFragment : BaseFragment() {
                 val action = MainFragmentDirections.actionMainFragmentToZhuiFenFragment()
                 findNavController().navigate(action)
             } else {
-                val action = MainFragmentDirections.actionMainFragmentToZhuiFenStartFragment(game)
+                val action = MainFragmentDirections.actionMainFragmentToZhuiFenStartFragment(game, true)
                 findNavController().navigate(action)
             }
         }

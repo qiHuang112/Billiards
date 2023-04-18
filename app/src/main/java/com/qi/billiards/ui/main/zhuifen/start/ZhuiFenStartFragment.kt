@@ -59,12 +59,12 @@ class ZhuiFenStartFragment : BaseFragment() {
 
     private fun initButton() {
         rootView.findViewById<TextView>(R.id.tv_next).setOnClickListener {
-            if (globalGame.group.last().gameOver()) {
-                globalGame.group.last().during.endTime = Date()
+            if (globalGame.group.first().gameOver()) {
+                globalGame.group.first().during.endTime = Date()
                 globalGame.group.add(
                     0,
                     Game(
-                        getSequences(globalGame.group.last()),
+                        getSequences(globalGame.group.first()),
                         mutableListOf(),
                         Game.Profits(
                             globalGame.players.map { player -> player.copy(name = player.name) },
@@ -83,18 +83,20 @@ class ZhuiFenStartFragment : BaseFragment() {
     }
 
     private fun initGame() {
-        val sequences = globalGame.players.map { it.name }
-        globalGame.group.add(
-            Game(
-                sequences,
-                mutableListOf(),
-                Game.Profits(
-                    globalGame.players.map { player -> player.copy(name = player.name, score = 0) },
-                    mutableListOf()
-                ),
-                During(Date())
+        if (!args.reload) {
+            val sequences = globalGame.players.map { it.name }
+            globalGame.group.add(
+                Game(
+                    sequences,
+                    mutableListOf(),
+                    Game.Profits(
+                        globalGame.players.map { player -> player.copy(name = player.name, score = 0) },
+                        mutableListOf()
+                    ),
+                    During(Date())
+                )
             )
-        )
+        }
     }
 
     private fun initScoreBoard() {

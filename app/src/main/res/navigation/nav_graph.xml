@@ -59,6 +59,9 @@
         <argument
             android:name="zhuiFenGame"
             app:argType="com.qi.billiards.game.ZhuiFenGame" />
+        <argument
+            android:name="reload"
+            app:argType="boolean" />
     </fragment>
     <fragment
         android:id="@+id/newPlayerFragment"

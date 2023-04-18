@@ -71,7 +71,7 @@ class ZhuiFenFragment : BaseBindingFragment<FragmentZhuifenBinding>() {
     companion object {
         private fun getDefaultRules(): List<EditRule> {
             return listOf(
-                EditRule("初始分数", 25),
+                EditRule("初始分数", 0),
                 EditRule("犯规罚分", 1),
                 EditRule("普胜得分", 4),
                 EditRule("小金得分", 7),

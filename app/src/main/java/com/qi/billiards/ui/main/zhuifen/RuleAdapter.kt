@@ -1,60 +1,43 @@
 package com.qi.billiards.ui.main.zhuifen
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.recyclerview.widget.RecyclerView
-import com.qi.billiards.R
 import com.qi.billiards.config.Config
+import com.qi.billiards.databinding.ItemCurrentRuleBinding
+import com.qi.billiards.ui.base.BaseBindingAdapter
 import com.qi.billiards.util.safeToInt
 
 class RuleAdapter(
     val rule: List<ZhuiFenFragment.Companion.EditRule>
-) : RecyclerView.Adapter<RuleAdapter.ViewHolder>() {
+) : BaseBindingAdapter<ItemCurrentRuleBinding>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_current_rule, parent, false)
-        return ViewHolder(view)
+    override fun getBinding(parent: ViewGroup): ItemCurrentRuleBinding {
+        return ItemCurrentRuleBinding.inflate(LayoutInflater.from(parent.context), parent, false)
     }
 
     override fun getItemCount() = rule.size
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(
+        holder: BaseBindingViewHolder<ItemCurrentRuleBinding>,
+        position: Int
+    ) {
         val rule = rule[position]
-        holder.tvName.text = rule.name
+        holder.binding.tvRuleName.text = rule.name
 
-        holder.etNumber.setText("${rule.score}")
-        holder.etNumber.setSelection("${rule.score}".length)
-        holder.ivAdd.setOnClickListener {
-            rule.score = holder.etNumber.text.toString().safeToInt() + 1
+        holder.binding.etNumber.setText("${rule.score}")
+        holder.binding.etNumber.setSelection("${rule.score}".length)
+        holder.binding.ivAdd.setOnClickListener {
+            rule.score = holder.binding.etNumber.text.toString().safeToInt() + 1
             notifyItemChanged(position)
         }
-        holder.ivMinus.setOnClickListener {
-            rule.score = holder.etNumber.text.toString().safeToInt() - 1
+        holder.binding.ivMinus.setOnClickListener {
+            rule.score = holder.binding.etNumber.text.toString().safeToInt() - 1
             notifyItemChanged(position)
         }
-        holder.tvReset.setOnClickListener {
+        holder.binding.tvRuleReset.setOnClickListener {
             rule.score = Config.ZhuiFen.get(rule.name)
             notifyItemChanged(position)
         }
     }
 
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        var tvName: TextView
-        var ivAdd: ImageView
-        var ivMinus: ImageView
-        var etNumber: EditText
-        var tvReset: TextView
-
-        init {
-            tvName = view.findViewById(R.id.tv_rule_name)
-            ivAdd = view.findViewById(R.id.iv_add)
-            ivMinus = view.findViewById(R.id.iv_minus)
-            etNumber = view.findViewById(R.id.et_number)
-            tvReset = view.findViewById(R.id.tv_rule_reset)
-        }
-    }
 }

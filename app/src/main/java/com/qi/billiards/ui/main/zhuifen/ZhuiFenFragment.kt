@@ -1,39 +1,44 @@
 package com.qi.billiards.ui.main.zhuifen
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
-import android.widget.TextView
+import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.qi.billiards.R
+import com.qi.billiards.databinding.FragmentZhuifenBinding
 import com.qi.billiards.game.During
 import com.qi.billiards.game.Player
 import com.qi.billiards.game.ZhuiFenGame
-import com.qi.billiards.ui.base.BaseFragment
+import com.qi.billiards.ui.base.BaseBindingFragment
 
-class ZhuiFenFragment : BaseFragment() {
+class ZhuiFenFragment : BaseBindingFragment<FragmentZhuifenBinding>() {
 
     private val ruleAdapter = RuleAdapter(getDefaultRules())
     private val playerAdapter = PlayerAdapter(getLatestPlayers())
-
-    override fun getLayoutId() = R.layout.fragment_zhuifen
+    override fun getBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ): FragmentZhuifenBinding {
+        return FragmentZhuifenBinding.inflate(inflater, container, false)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        view.findViewById<TextView>(R.id.tv_start).setOnClickListener {
+        binding.tvStart.setOnClickListener {
             val action =
-                ZhuiFenFragmentDirections.actionZhuiFenFragmentToZhuiFenStartFragment(getZhuiFenGame(), false)
+                ZhuiFenFragmentDirections.actionZhuiFenFragmentToZhuiFenStartFragment(
+                    getZhuiFenGame(),
+                    false
+                )
             findNavController().navigate(action)
         }
 
-        val rvCurrentRule = view.findViewById<RecyclerView>(R.id.rv_current_rule)
-        rvCurrentRule.adapter = ruleAdapter
-        rvCurrentRule.layoutManager = LinearLayoutManager(context)
+        binding.rvCurrentRule.adapter = ruleAdapter
+        binding.rvCurrentRule.layoutManager = LinearLayoutManager(context)
 
-        val rvCurrentPlayer = view.findViewById<RecyclerView>(R.id.rv_current_player)
-        rvCurrentPlayer.adapter = playerAdapter
-        rvCurrentPlayer.layoutManager = LinearLayoutManager(context)
+        binding.rvCurrentPlayer.adapter = playerAdapter
+        binding.rvCurrentPlayer.layoutManager = LinearLayoutManager(context)
     }
 
     private fun getZhuiFenGame(): ZhuiFenGame {

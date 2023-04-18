@@ -3,43 +3,42 @@ package com.qi.billiards.ui.main.zhuifen.start
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
-import android.widget.TextView
+import android.view.ViewGroup
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.qi.billiards.R
 import com.qi.billiards.config.Config
+import com.qi.billiards.databinding.FragmentZhuifenStartBinding
 import com.qi.billiards.game.*
-import com.qi.billiards.ui.base.BaseFragment
+import com.qi.billiards.ui.base.BaseBindingFragment
 import com.qi.billiards.util.save
 import com.qi.billiards.util.toast
-import java.util.ArrayList
-import java.util.Date
+import java.util.*
 
 private const val TAG = "ZhuiFenStartFragment"
 
 
-class ZhuiFenStartFragment : BaseFragment() {
+class ZhuiFenStartFragment : BaseBindingFragment<FragmentZhuifenStartBinding>() {
     private val args: ZhuiFenStartFragmentArgs by navArgs()
     private val globalGame by lazy { args.zhuiFenGame } // 一场游戏，包含多局游戏
-    lateinit var rootView: View
     var currentPlayerIndex = -1
     private val currentGame: Game // 当前游戏
         get() {
             return globalGame.group.first()
         }
 
-    private val rvScoreBoard by lazy { rootView.findViewById<RecyclerView>(R.id.rv_score_board) }
-    private val rvOperatorGrid by lazy { rootView.findViewById<RecyclerView>(R.id.rv_operator_grid) }
-    private val rvGameBoard by lazy { rootView.findViewById<RecyclerView>(R.id.rv_game_board) }
-
-    override fun getLayoutId() = R.layout.fragment_zhuifen_start
+    override fun getBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ): FragmentZhuifenStartBinding {
+        return FragmentZhuifenStartBinding.inflate(inflater, container, false)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        rootView = view
         initView()
         Log.d(TAG, "onViewCreated: $globalGame")
     }
@@ -58,7 +57,7 @@ class ZhuiFenStartFragment : BaseFragment() {
     }
 
     private fun initButton() {
-        rootView.findViewById<TextView>(R.id.tv_next).setOnClickListener {
+        binding.tvNext.setOnClickListener {
             if (globalGame.group.first().gameOver()) {
                 globalGame.group.first().during.endTime = Date()
                 globalGame.group.add(
@@ -73,8 +72,8 @@ class ZhuiFenStartFragment : BaseFragment() {
                         During(Date())
                     )
                 )
-                rvGameBoard.adapter?.notifyItemInserted(0)
-                rvGameBoard.scrollToPosition(0)
+                binding.rvGameBoard.adapter?.notifyItemInserted(0)
+                binding.rvGameBoard.scrollToPosition(0)
             } else {
                 toast("这局还没结束呢")
             }
@@ -90,7 +89,12 @@ class ZhuiFenStartFragment : BaseFragment() {
                     sequences,
                     mutableListOf(),
                     Game.Profits(
-                        globalGame.players.map { player -> player.copy(name = player.name, score = 0) },
+                        globalGame.players.map { player ->
+                            player.copy(
+                                name = player.name,
+                                score = 0
+                            )
+                        },
                         mutableListOf()
                     ),
                     During(Date())
@@ -100,27 +104,27 @@ class ZhuiFenStartFragment : BaseFragment() {
     }
 
     private fun initScoreBoard() {
-        rvScoreBoard.adapter = ScoreBoardAdapter(globalGame.players) {
+        binding.rvScoreBoard.adapter = ScoreBoardAdapter(globalGame.players) {
             currentPlayerIndex = it
-            rvOperatorGrid.visibility = if (it == -1) View.GONE else View.VISIBLE
+            binding.rvOperatorGrid.visibility = if (it == -1) View.GONE else View.VISIBLE
         }
-        rvScoreBoard.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
+        binding.rvScoreBoard.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
     }
 
     @SuppressLint("NotifyDataSetChanged")
     private fun initOperatorGrid() {
-        rvOperatorGrid.adapter =
+        binding.rvOperatorGrid.adapter =
             OperatorGridAdapter(Config.ZhuiFen.userOperators) { id ->
                 if (id == Config.ZhuiFen.OP_7) {
                     if (currentGame.operators.isNotEmpty()) {
                         currentGame.operators.removeAt(currentGame.operators.lastIndex)
-                        rvGameBoard.adapter?.notifyItemChanged(0)
+                        binding.rvGameBoard.adapter?.notifyItemChanged(0)
 
                         val operatorProfit =
                             currentGame.profits.opProfits.removeAt(currentGame.profits.opProfits.lastIndex)
                         currentGame.profits.totalProfits.removeOpProfit(operatorProfit)
                         globalGame.players.removeOpProfit(operatorProfit)
-                        rvScoreBoard.adapter?.notifyDataSetChanged()
+                        binding.rvScoreBoard.adapter?.notifyDataSetChanged()
                     }
                 } else if (currentPlayerIndex == -1) {
                     toast("请选择玩家")
@@ -134,18 +138,18 @@ class ZhuiFenStartFragment : BaseFragment() {
                     if (id > Config.ZhuiFen.OP_1) {
                         currentGame.during.endTime = Date()
                     }
-                    rvGameBoard.adapter?.notifyItemChanged(0)
+                    binding.rvGameBoard.adapter?.notifyItemChanged(0)
 
                     val operatorProfit = getOperatorProfit(operator)
                     currentGame.profits.opProfits.add(operatorProfit)
                     currentGame.profits.totalProfits.addOpProfit(operatorProfit)
                     globalGame.players.addOpProfit(operatorProfit)
-                    rvScoreBoard.adapter?.notifyDataSetChanged()
-                    rvGameBoard.scrollToPosition(0)
+                    binding.rvScoreBoard.adapter?.notifyDataSetChanged()
+                    binding.rvGameBoard.scrollToPosition(0)
                 }
                 save(Config.ZhuiFen.KEY_LAST_GAME, globalGame)
             }
-        rvOperatorGrid.layoutManager = GridLayoutManager(context, 4)
+        binding.rvOperatorGrid.layoutManager = GridLayoutManager(context, 4)
     }
 
     /**
@@ -203,9 +207,9 @@ class ZhuiFenStartFragment : BaseFragment() {
     }
 
     private fun initGameBoard() {
-        rvGameBoard.adapter = GameBoardAdapter(globalGame)
+        binding.rvGameBoard.adapter = GameBoardAdapter(globalGame)
 
-        rvGameBoard.layoutManager = LinearLayoutManager(context)
+        binding.rvGameBoard.layoutManager = LinearLayoutManager(context)
     }
 
     private fun getSequences(lastGame: Game): List<String> {

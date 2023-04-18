@@ -1,25 +1,27 @@
 package com.qi.billiards.ui.main
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.qi.billiards.R
 import com.qi.billiards.config.Config
+import com.qi.billiards.databinding.FragmentMainBinding
 import com.qi.billiards.game.ZhuiFenGame
-import com.qi.billiards.ui.base.BaseFragment
+import com.qi.billiards.ui.base.BaseBindingFragment
 import com.qi.billiards.util.get
 
-class MainFragment : BaseFragment() {
+class MainFragment : BaseBindingFragment<FragmentMainBinding>() {
 
-    override fun getLayoutId() = R.layout.fragment_main
+    override fun getBinding(inflater: LayoutInflater, container: ViewGroup?): FragmentMainBinding {
+        return FragmentMainBinding.inflate(inflater, container, false)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        val rvMain = view.findViewById<RecyclerView>(R.id.rv_main)
-        rvMain.adapter = MainAdapter(getMainItems())
-        rvMain.layoutManager = LinearLayoutManager(context)
+        binding.rvMain.adapter = MainAdapter(getMainItems())
+        binding.rvMain.layoutManager = LinearLayoutManager(context)
     }
 
     private fun getMainItems(): List<MainAdapter.MainItem> {

@@ -2,37 +2,35 @@ package com.qi.billiards.ui.main.zhuifen
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.recyclerview.widget.RecyclerView
-import com.qi.billiards.R
+import com.qi.billiards.databinding.ItemCurrentPlayerBinding
+import com.qi.billiards.ui.base.BaseBindingAdapter
 import java.util.*
 
 class PlayerAdapter(
     val editPlayers: MutableList<ZhuiFenFragment.Companion.EditPlayer>
-) : RecyclerView.Adapter<PlayerAdapter.ViewHolder>() {
+) : BaseBindingAdapter<ItemCurrentPlayerBinding>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view =
-            LayoutInflater.from(parent.context).inflate(R.layout.item_current_player, parent, false)
-        return ViewHolder(view)
+    override fun getBinding(parent: ViewGroup): ItemCurrentPlayerBinding {
+        return ItemCurrentPlayerBinding.inflate(LayoutInflater.from(parent.context), parent, false)
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(
+        holder: BaseBindingViewHolder<ItemCurrentPlayerBinding>,
+        position: Int
+    ) {
         val player = editPlayers[position]
-        holder.tvName.text = player.name
+        holder.binding.tvPlayerName.text = player.name
 
-        holder.ivUp.setOnClickListener {
+        holder.binding.ivUp.setOnClickListener {
             if (position > 0) {
                 Collections.swap(editPlayers, position, position - 1)
                 notifyDataSetChanged()
             }
         }
 
-        holder.ivDelete.setOnClickListener {
+        holder.binding.ivDelete.setOnClickListener {
             editPlayers.removeAt(position)
             notifyDataSetChanged()
         }
@@ -40,18 +38,4 @@ class PlayerAdapter(
     }
 
     override fun getItemCount() = editPlayers.size
-
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        var tvName: TextView
-        var ivUp: ImageView
-        var ivDelete: ImageView
-
-        init {
-            tvName = view.findViewById(R.id.tv_player_name)
-            ivUp = view.findViewById(R.id.iv_up)
-            ivDelete = view.findViewById(R.id.iv_delete)
-
-        }
-    }
-
 }

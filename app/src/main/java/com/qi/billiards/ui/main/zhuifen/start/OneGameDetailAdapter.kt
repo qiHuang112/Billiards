@@ -1,28 +1,23 @@
 package com.qi.billiards.ui.main.zhuifen.start
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import androidx.recyclerview.widget.RecyclerView
-import com.qi.billiards.R
 import com.qi.billiards.config.Config
+import com.qi.billiards.databinding.ItemOneGameDetailBinding
 import com.qi.billiards.game.ZhuiFenGame
+import com.qi.billiards.ui.base.BaseBindingAdapter
 
 class OneGameDetailAdapter(
     val game: ZhuiFenGame,
-    val gamePosition: Int
-) : RecyclerView.Adapter<OneGameDetailAdapter.ViewHolder>() {
+    private val gamePosition: Int
+) : BaseBindingAdapter<ItemOneGameDetailBinding>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val context = parent.context
-        val view =
-            LayoutInflater.from(context).inflate(R.layout.item_one_game_detail, parent, false)
-        return ViewHolder(view)
+    override fun getBinding(parent: ViewGroup): ItemOneGameDetailBinding {
+        return ItemOneGameDetailBinding.inflate(LayoutInflater.from(parent.context), parent, false)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.tvDetail.text = getDetail(position)
+    override fun onBindViewHolder(holder: BaseBindingViewHolder<ItemOneGameDetailBinding>, position: Int) {
+        holder.binding.tvDetail.text = getDetail(position)
     }
 
     /**
@@ -82,13 +77,5 @@ class OneGameDetailAdapter(
     }
 
     override fun getItemCount() = game.group[gamePosition].operators.size
-
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        var tvDetail: TextView
-
-        init {
-            tvDetail = view.findViewById(R.id.tv_detail)
-        }
-    }
 
 }

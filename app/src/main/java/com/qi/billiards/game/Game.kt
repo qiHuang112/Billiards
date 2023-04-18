@@ -8,7 +8,7 @@ data class Game(
     val operators: MutableList<Operator>, // 单局操作表
     val profits: Profits, // 单局收益表
     val during: During, // 单局时间
-    var winner: Player? = null,
+    var winner: String? = null, // 单局赢家名称
 ) {
     data class Profits(
         val totalProfits: List<Player>, // 单局总收益表

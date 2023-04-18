@@ -182,22 +182,27 @@ class ZhuiFenStartFragment : BaseBindingFragment<FragmentZhuifenStartBinding>() 
                 addScore(next, rule.foul)
             }
             Config.ZhuiFen.OP_2 -> {
+                currentGame.winner = opPlayer
                 addScore(opPlayer, rule.win)
                 addScore(last, -rule.win)
             }
             Config.ZhuiFen.OP_3 -> {
+                currentGame.winner = opPlayer
                 addScore(opPlayer, rule.win)
                 addScore(next, -rule.win)
             }
             Config.ZhuiFen.OP_4 -> {
+                currentGame.winner = opPlayer
                 addScore(opPlayer, rule.xiaojin)
                 addScore(last, -rule.xiaojin)
             }
             Config.ZhuiFen.OP_5 -> {
+                currentGame.winner = opPlayer
                 addScore(opPlayer, rule.xiaojin)
                 addScore(next, -rule.xiaojin)
             }
             Config.ZhuiFen.OP_6 -> {
+                currentGame.winner = opPlayer
                 addScore(opPlayer, rule.dajin * profits.size)
                 profits.forEach { player -> addScore(player.name, -rule.dajin) }
             }
@@ -213,7 +218,7 @@ class ZhuiFenStartFragment : BaseBindingFragment<FragmentZhuifenStartBinding>() 
     }
 
     private fun getSequences(lastGame: Game): List<String> {
-        val winner = lastGame.winner?.name ?: lastGame.sequences.first()
+        val winner = lastGame.winner ?: lastGame.sequences.first()
         val id = lastGame.operators.last().id
         val temp = if (id == Config.ZhuiFen.OP_3 || id == Config.ZhuiFen.OP_5) { // 解球赢球，准分顺序不变
             ArrayList(lastGame.sequences)

@@ -53,31 +53,24 @@ class ZhuiFenStartFragment : BaseBindingFragment<FragmentZhuifenStartBinding>() 
 
         initGameBoard() // 对局记录板 查看所有操作记录
 
-        initButton()
     }
 
-    private fun initButton() {
-        binding.tvNext.setOnClickListener {
-            if (globalGame.group.first().gameOver()) {
-                globalGame.group.first().during.endTime = Date()
-                globalGame.group.add(
-                    0,
-                    Game(
-                        getSequences(globalGame.group.first()),
-                        mutableListOf(),
-                        Game.Profits(
-                            globalGame.players.map { player -> player.copy(name = player.name) },
-                            mutableListOf()
-                        ),
-                        During(Date())
-                    )
-                )
-                binding.rvGameBoard.adapter?.notifyItemInserted(0)
-                binding.rvGameBoard.scrollToPosition(0)
-            } else {
-                toast("这局还没结束呢")
-            }
-        }
+    private fun startNextGame() {
+        globalGame.group.first().during.endTime = Date()
+        globalGame.group.add(
+            0,
+            Game(
+                getSequences(globalGame.group.first()),
+                mutableListOf(),
+                Game.Profits(
+                    globalGame.players.map { player -> player.copy(name = player.name) },
+                    mutableListOf()
+                ),
+                During(Date())
+            )
+        )
+        binding.rvGameBoard.adapter?.notifyItemInserted(0)
+        binding.rvGameBoard.scrollToPosition(0)
 
     }
 
@@ -108,7 +101,8 @@ class ZhuiFenStartFragment : BaseBindingFragment<FragmentZhuifenStartBinding>() 
             currentPlayerIndex = it
             binding.rvOperatorGrid.visibility = if (it == -1) View.GONE else View.VISIBLE
         }
-        binding.rvScoreBoard.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
+        binding.rvScoreBoard.layoutManager =
+            LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -125,13 +119,15 @@ class ZhuiFenStartFragment : BaseBindingFragment<FragmentZhuifenStartBinding>() 
                         currentGame.profits.totalProfits.removeOpProfit(operatorProfit)
                         globalGame.players.removeOpProfit(operatorProfit)
                         binding.rvScoreBoard.adapter?.notifyDataSetChanged()
+                    } else if (globalGame.group.size > 1) {
+                        globalGame.group.removeAt(0)
+                        binding.rvGameBoard.adapter?.notifyItemRemoved(0)
                     }
                 } else if (currentPlayerIndex == -1) {
                     toast("请选择玩家")
                 } else {
                     if (currentGame.gameOver()) {
-                        toast("游戏结束了，点击下一局开始下一局")
-                        return@OperatorGridAdapter
+                        startNextGame()
                     }
                     val operator = Operator(id, globalGame.players[currentPlayerIndex])
                     currentGame.operators.add(operator)

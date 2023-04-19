@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="rectangle">
-    <solid android:color="#f7f8fa"/>
-    <corners android:radius="5dp" />
-</shape>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/bg_operater_grid_selected" android:state_pressed="true"/>
+    <item android:drawable="@drawable/bg_operater_grid_unselected" android:state_focused="true"/>
+    <item android:drawable="@drawable/bg_operater_grid_selected" android:state_enabled="false"/>
+    <item android:drawable="@drawable/bg_operater_grid_unselected"/>
+</selector>

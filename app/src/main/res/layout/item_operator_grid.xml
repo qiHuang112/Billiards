@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="5dp"
-    android:background="@drawable/bg_operater_grid">
+    android:layout_margin="5dp">
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_description"
@@ -16,6 +15,7 @@
         android:gravity="center"
         android:maxLines="1"
         android:textSize="18dp"
+        android:background="@drawable/bg_operater_grid"
         android:minWidth="80dp"
         android:padding="3dp"
         android:textColor="@drawable/tv_operator_grid_selector"

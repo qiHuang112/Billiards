@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Billiards</string>
+    <string name="win"><Data><![CDATA[ <font color="#ec4747 red">%1$s</font>]]> </Data></string>
+    <string name="fangui"><Data><![CDATA[ %1$s扣分<font color="#119011">%2$s</font>分, %2$s得分<font color="#ec4747">%1$s</font>分]]> </Data></string>
+    <string name="dajin"><Data><![CDATA[ <font color="#119011">%1$s</font>]]> </Data></string>
+
 </resources>

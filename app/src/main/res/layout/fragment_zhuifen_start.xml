@@ -26,6 +26,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/tv_summary"
         app:layout_constraintTop_toBottomOf="@id/rv_operator_grid">
 
         <androidx.recyclerview.widget.RecyclerView

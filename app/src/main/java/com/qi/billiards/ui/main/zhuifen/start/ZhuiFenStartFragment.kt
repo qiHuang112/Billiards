@@ -152,9 +152,6 @@ class ZhuiFenStartFragment : BaseBindingFragment<FragmentZhuifenStartBinding>() 
                 } else if (currentPlayerIndex == -1) {
                     toast("请选择玩家")
                 } else {
-                    if (currentGame.gameOver()) {
-                        startNextGame()
-                    }
                     val operator = Operator(id, globalGame.players[currentPlayerIndex])
                     currentGame.operators.add(operator)
                     if (id > Config.ZhuiFen.OP_1) {
@@ -168,6 +165,11 @@ class ZhuiFenStartFragment : BaseBindingFragment<FragmentZhuifenStartBinding>() 
                     globalGame.players.addOpProfit(operatorProfit)
                     binding.rvScoreBoard.adapter?.notifyDataSetChanged()
                     binding.rvGameBoard.scrollToPosition(0)
+                    binding.root.post {
+                        if (currentGame.gameOver()) {
+                            startNextGame()
+                        }
+                    }
                 }
                 save(Config.ZhuiFen.KEY_LAST_GAME, globalGame)
             }

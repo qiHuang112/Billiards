@@ -38,8 +38,19 @@ object Config {
             OP_7 to "撤回",
         )
 
+        val opColorMap = linkedMapOf(
+            OP_0 to "#FF5722",
+            OP_1 to "#FF5722",
+            OP_2 to "#4CAF50",
+            OP_3 to "#4CAF50",
+            OP_4 to "#FFC107",
+            OP_5 to "#FFC107",
+            OP_6 to "#FFD700",
+            OP_7 to "#2196F3",
+        )
+
         val userOperators = MutableList(opMap.size) {
-            OperatorGridAdapter.UserOperator(opMap.getOrDefault(it, "[未定义操作]"), it)
+            OperatorGridAdapter.UserOperator(opMap.getOrDefault(it, "[未定义操作]"), it, opColorMap[it])
         }
     }
 

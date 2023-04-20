@@ -1,5 +1,6 @@
 package com.qi.billiards.ui.main.zhuifen.start
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.qi.billiards.databinding.ItemOperatorGridBinding
@@ -13,9 +14,15 @@ class OperatorGridAdapter(
         return ItemOperatorGridBinding.inflate(LayoutInflater.from(parent.context), parent, false)
     }
 
-    override fun onBindViewHolder(holder: BaseBindingViewHolder<ItemOperatorGridBinding>, position: Int) {
+    override fun onBindViewHolder(
+        holder: BaseBindingViewHolder<ItemOperatorGridBinding>,
+        position: Int
+    ) {
         val userOperator = userOperators[position]
         holder.binding.tvDescription.text = userOperator.description
+        userOperator.color?.let {
+            holder.binding.tvDescription.setTextColor(Color.parseColor(userOperator.color))
+        }
         holder.binding.root.setOnClickListener {
             onUserOperate?.invoke(position)
         }
@@ -26,5 +33,6 @@ class OperatorGridAdapter(
     data class UserOperator(
         val description: String,
         val operatorId: Int,
+        val color: String?,
     )
 }

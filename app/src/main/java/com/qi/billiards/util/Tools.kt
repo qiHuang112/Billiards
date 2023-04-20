@@ -1,8 +1,8 @@
 package com.qi.billiards.util
 
 import android.content.Context
+import android.content.res.Resources
 import android.util.DisplayMetrics
-import android.util.TypedValue
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -33,10 +33,8 @@ fun getScreenHeight(): Int {
     return displayMetrics.heightPixels
 }
 
-fun dp2Px(dp: Float): Int {
-    return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, AppContext.resources.displayMetrics)
-        .toInt()
-}
+val Int.dp: Float
+    get() = (this * Resources.getSystem().displayMetrics.density)
 
 fun Date?.format(pattern: String = "HH:mm:ss"): String {
     if (this == null) {

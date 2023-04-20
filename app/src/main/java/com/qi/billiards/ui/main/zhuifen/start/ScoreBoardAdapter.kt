@@ -6,7 +6,7 @@ import com.qi.billiards.R
 import com.qi.billiards.databinding.ItemScoreBoardBinding
 import com.qi.billiards.game.Player
 import com.qi.billiards.ui.base.BaseBindingAdapter
-import com.qi.billiards.util.dp2Px
+import com.qi.billiards.util.dp
 import com.qi.billiards.util.getScreenWidth
 
 class ScoreBoardAdapter(
@@ -19,7 +19,7 @@ class ScoreBoardAdapter(
         val binding =
             ItemScoreBoardBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         binding.root.layoutParams.apply {
-            width = (getScreenWidth() - dp2Px(5f) * 6) / players.size
+            width = (getScreenWidth() - 5.dp.toInt() * 6) / players.size
         }
         return binding
     }

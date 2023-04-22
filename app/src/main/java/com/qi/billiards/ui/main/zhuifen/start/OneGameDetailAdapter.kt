@@ -1,5 +1,6 @@
 package com.qi.billiards.ui.main.zhuifen.start
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.qi.billiards.config.Config
@@ -16,8 +17,17 @@ class OneGameDetailAdapter(
         return ItemOneGameDetailBinding.inflate(LayoutInflater.from(parent.context), parent, false)
     }
 
-    override fun onBindViewHolder(holder: BaseBindingViewHolder<ItemOneGameDetailBinding>, position: Int) {
+    override fun onBindViewHolder(
+        holder: BaseBindingViewHolder<ItemOneGameDetailBinding>,
+        position: Int
+    ) {
         holder.binding.tvDetail.text = getDetail(position)
+        holder.binding.tvDetail.setTextColor(getColor(position))
+    }
+
+    private fun getColor(position: Int): Int {
+        val opId = game.group[gamePosition].operators[position].id
+        return Color.parseColor(Config.ZhuiFen.opColorMap.getOrDefault(opId, "#000000"))
     }
 
     /**

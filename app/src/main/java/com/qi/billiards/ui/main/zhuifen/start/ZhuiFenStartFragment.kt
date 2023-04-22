@@ -97,6 +97,7 @@ class ZhuiFenStartFragment : BaseBindingFragment<FragmentZhuifenStartBinding>() 
         )
         binding.rvGameBoard.adapter?.notifyItemInserted(0)
         binding.rvGameBoard.scrollToPosition(0)
+        save(Config.ZhuiFen.KEY_LAST_GAME, globalGame)
 
     }
 

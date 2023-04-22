@@ -66,6 +66,7 @@ class ZhuiFenFragment : BaseBindingFragment<FragmentZhuifenBinding>() {
             EditPlayer("黄麒"),
             EditPlayer("李逸波"),
             EditPlayer("辛宇"),
+            EditPlayer("汤鸡"),
         )
     }
 

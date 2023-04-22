@@ -57,7 +57,11 @@ class ZhuiFenFragment : BaseBindingFragment<FragmentZhuifenBinding>() {
             rule,
             editRules.find { it.name == "基数" }?.score ?: 5,
             During(),
-            playerAdapter.editPlayers.map { ZhuiFenGame.Summary(it.name) }
+            LinkedHashMap<String, MutableMap<String, Int>>().apply {
+                playerAdapter.editPlayers.forEach {
+                    put(it.name, mutableMapOf())
+                }
+            }
         )
     }
 

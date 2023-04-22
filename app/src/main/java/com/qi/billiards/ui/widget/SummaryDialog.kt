@@ -7,7 +7,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.qi.billiards.databinding.DialogZhuifenSummaryBinding
 
-class SummaryDialog(context: Context) : Dialog(context) {
+class SummaryDialog(context: Context, headerData: List<String>) : Dialog(context) {
 
     private var _binding: DialogZhuifenSummaryBinding? = null
     private val binding get() = _binding!!
@@ -18,7 +18,7 @@ class SummaryDialog(context: Context) : Dialog(context) {
         // 设置对话框大小
         window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         binding.tvSummary.apply {
-            setTableHeaderData(mutableListOf("", "犯规", "普胜", "小金", "大金", "胜率"))
+            setTableHeaderData(headerData)
             setHeaderTextSize(16f)
             setHeaderBackgroundColor(Color.BLUE)
             setHeaderTextColor(Color.WHITE)

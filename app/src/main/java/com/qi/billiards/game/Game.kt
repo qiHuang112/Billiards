@@ -16,20 +16,12 @@ data class Game(
     )
 }
 
-fun List<Player>.addOpProfit(operatorProfit: List<Player>) {
+fun List<Player>.addOpProfit(operatorProfit: List<Player>, undo: Boolean = false) {
+    val sign = if (undo) -1 else 1
     operatorProfit.forEach { player ->
         val target = find { it.name == player.name }
         if (target != null) {
-            target.score += player.score
-        }
-    }
-}
-
-fun List<Player>.removeOpProfit(operatorProfit: List<Player>) {
-    operatorProfit.forEach { player ->
-        val target = find { it.name == player.name }
-        if (target != null) {
-            target.score -= player.score
+            target.score = target.score + player.score * sign
         }
     }
 }

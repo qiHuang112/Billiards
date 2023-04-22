@@ -11,7 +11,7 @@ data class ZhuiFenGame(
     val rule: Rule, // 规则
     val base: Int, // 基数
     val during: During, // 总时长
-    val summaries: List<Summary>, // 所有玩家总结
+    val summaries: LinkedHashMap<String, MutableMap<String, Int>>, // 所有玩家总结
 ) : Serializable {
 
     /**
@@ -22,14 +22,6 @@ data class ZhuiFenGame(
         val win: Int, // 普胜得分
         val xiaojin: Int, // 小金得分
         val dajin: Int, // 大金得分
-    )
-
-    data class Summary(
-        val name: String,
-        var foulCount: Int = 0,
-        var winCount: Int = 0,
-        var xiaojinCount: Int = 0,
-        var dajinCount: Int = 0,
     )
 }
 

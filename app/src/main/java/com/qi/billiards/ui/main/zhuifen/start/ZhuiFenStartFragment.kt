@@ -61,20 +61,23 @@ class ZhuiFenStartFragment : BaseBindingFragment<FragmentZhuifenStartBinding>() 
     }
 
     private fun showSummaryDialog() {
-        val summaryDialog = SummaryDialog(requireContext())
-        val tableData = globalGame.summaries.map { playerSummary ->
-            val winCount =
-                playerSummary.winCount + playerSummary.xiaojinCount + playerSummary.dajinCount
-            val totalCount = globalGame.group.size
-            listOf(
-                playerSummary.name,
-                playerSummary.foulCount.toString(),
-                playerSummary.winCount.toString(),
-                playerSummary.xiaojinCount.toString(),
-                playerSummary.dajinCount.toString(),
-                String.format("%.2f%%", 100.0 * winCount / totalCount)
-            )
-        }
+        val summaryDialog =
+            SummaryDialog(requireContext(), listOf("玩家") + globalGame.summaries.keys)
+        val tableData = listOf("犯规", "普胜", "小金", "大金", "胜局", "败局").map {
+            listOf(it + "次数") + globalGame.summaries.keys.map { name ->
+                globalGame.summaries[name]?.getOrDefault(it, 0).toString()
+            }
+        } + listOf(listOf("总比分") + globalGame.summaries.keys.map { name ->
+            globalGame.players.find { it.name == name }?.score.toString()
+        }) + listOf(listOf("胜率") + globalGame.summaries.keys.map { name ->
+            val totalWin = globalGame.summaries[name]?.getOrDefault("胜局", 0) ?: 0
+            val totalCount = globalGame.group.size - if (currentGame.gameOver()) 0 else 1
+            String.format("%.2f%%", 100.0 * totalWin / totalCount)
+        }) + listOf(listOf("败率") + globalGame.summaries.keys.map { name ->
+            val totalLose = globalGame.summaries[name]?.getOrDefault("败局", 0) ?: 0
+            val totalCount = globalGame.group.size - if (currentGame.gameOver()) 0 else 1
+            String.format("%.2f%%", 100.0 * totalLose / totalCount)
+        })
 
         summaryDialog.updateData(tableData)
         summaryDialog.show()
@@ -138,13 +141,14 @@ class ZhuiFenStartFragment : BaseBindingFragment<FragmentZhuifenStartBinding>() 
             OperatorGridAdapter(Config.ZhuiFen.userOperators) { id ->
                 if (id == Config.ZhuiFen.OP_7) {
                     if (currentGame.operators.isNotEmpty()) {
-                        currentGame.operators.removeAt(currentGame.operators.lastIndex)
+                        val operator =
+                            currentGame.operators.removeAt(currentGame.operators.lastIndex)
                         binding.rvGameBoard.adapter?.notifyItemChanged(0)
 
-                        val operatorProfit =
-                            currentGame.profits.opProfits.removeAt(currentGame.profits.opProfits.lastIndex)
-                        currentGame.profits.totalProfits.removeOpProfit(operatorProfit)
-                        globalGame.players.removeOpProfit(operatorProfit)
+                        val operatorProfit = getOperatorProfit(operator, true)
+                        currentGame.profits.opProfits.removeAt(currentGame.profits.opProfits.lastIndex)
+                        currentGame.profits.totalProfits.addOpProfit(operatorProfit, true)
+                        globalGame.players.addOpProfit(operatorProfit, true)
                         binding.rvScoreBoard.adapter?.notifyDataSetChanged()
                     } else if (globalGame.group.size > 1) {
                         globalGame.group.removeAt(0)
@@ -180,7 +184,8 @@ class ZhuiFenStartFragment : BaseBindingFragment<FragmentZhuifenStartBinding>() 
     /**
      * 拿到当前操作，产生的分数变化
      */
-    private fun getOperatorProfit(operator: Operator): List<Player> {
+    private fun getOperatorProfit(operator: Operator, undo: Boolean = false): List<Player> {
+        val sign = if (undo) -1 else 1
         val profits =
             globalGame.players.map { player -> player.copy(name = player.name, score = 0) }
         val sequence = currentGame.sequences // 顺序表
@@ -194,52 +199,70 @@ class ZhuiFenStartFragment : BaseBindingFragment<FragmentZhuifenStartBinding>() 
         val addScore: (String, Int) -> Unit = { name, score ->
             val player = profits.find { it.name == name }
             if (player != null) {
-                player.score += score
+                player.score += score * sign
             }
         }
-        val getSummaryPlayer: (String) -> ZhuiFenGame.Summary = { name ->
-            globalGame.summaries.find { it.name == name }!!
+        val addSummary: (String, String) -> Unit = { name, op ->
+            val playerSummary = globalGame.summaries[name]
+            if (playerSummary != null) {
+                val count = playerSummary.getOrDefault(op, 0)
+                playerSummary[op] = count + sign
+            }
         }
         when (operator.id) {
             Config.ZhuiFen.OP_0 -> {
-                getSummaryPlayer(opPlayer).foulCount++
+                addSummary(opPlayer, "犯规")
                 addScore(opPlayer, -rule.foul)
                 addScore(last, rule.foul)
             }
             Config.ZhuiFen.OP_1 -> {
-                getSummaryPlayer(opPlayer).foulCount++
+                addSummary(opPlayer, "犯规")
                 addScore(opPlayer, -rule.foul)
                 addScore(next, rule.foul)
             }
             Config.ZhuiFen.OP_2 -> {
-                getSummaryPlayer(opPlayer).winCount++
+                addSummary(opPlayer, "普胜")
+                addSummary(opPlayer, "胜局")
+                addSummary(last, "败局")
                 currentGame.winner = opPlayer
                 addScore(opPlayer, rule.win)
                 addScore(last, -rule.win)
             }
             Config.ZhuiFen.OP_3 -> {
-                getSummaryPlayer(opPlayer).winCount++
+                addSummary(opPlayer, "普胜")
+                addSummary(opPlayer, "胜局")
+                addSummary(next, "败局")
                 currentGame.winner = opPlayer
                 addScore(opPlayer, rule.win)
                 addScore(next, -rule.win)
             }
             Config.ZhuiFen.OP_4 -> {
-                getSummaryPlayer(opPlayer).xiaojinCount++
+                addSummary(opPlayer, "小金")
+                addSummary(opPlayer, "胜局")
+                addSummary(last, "败局")
                 currentGame.winner = opPlayer
                 addScore(opPlayer, rule.xiaojin)
                 addScore(last, -rule.xiaojin)
             }
             Config.ZhuiFen.OP_5 -> {
-                getSummaryPlayer(opPlayer).xiaojinCount++
+                addSummary(opPlayer, "小金")
+                addSummary(opPlayer, "胜局")
+                addSummary(next, "败局")
                 currentGame.winner = opPlayer
                 addScore(opPlayer, rule.xiaojin)
                 addScore(next, -rule.xiaojin)
             }
             Config.ZhuiFen.OP_6 -> {
-                getSummaryPlayer(opPlayer).dajinCount++
+                addSummary(opPlayer, "大金")
+                addSummary(opPlayer, "胜局")
                 currentGame.winner = opPlayer
                 addScore(opPlayer, rule.dajin * profits.size)
-                profits.forEach { player -> addScore(player.name, -rule.dajin) }
+                profits.forEach { player ->
+                    addScore(player.name, -rule.dajin)
+                    if (player.name != opPlayer) {
+                        addSummary(player.name, "败局")
+                    }
+                }
             }
             else -> Unit
         }

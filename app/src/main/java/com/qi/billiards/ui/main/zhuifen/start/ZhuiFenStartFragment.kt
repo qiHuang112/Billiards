@@ -135,25 +135,30 @@ class ZhuiFenStartFragment : BaseBindingFragment<FragmentZhuifenStartBinding>() 
             LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
     }
 
+    private fun onClickUndo() {
+        if (currentGame.operators.isNotEmpty()) {
+            val operator =
+                currentGame.operators.removeAt(currentGame.operators.lastIndex)
+            binding.rvGameBoard.adapter?.notifyItemChanged(0)
+
+            val operatorProfit = getOperatorProfit(operator, true)
+            currentGame.profits.opProfits.removeAt(currentGame.profits.opProfits.lastIndex)
+            currentGame.profits.totalProfits.addOpProfit(operatorProfit)
+            globalGame.players.addOpProfit(operatorProfit)
+            binding.rvScoreBoard.adapter?.notifyDataSetChanged()
+        } else if (globalGame.group.size > 1) {
+            globalGame.group.removeAt(0)
+            binding.rvGameBoard.adapter?.notifyItemRemoved(0)
+            onClickUndo()
+        }
+    }
+
     @SuppressLint("NotifyDataSetChanged")
     private fun initOperatorGrid() {
         binding.rvOperatorGrid.adapter =
             OperatorGridAdapter(Config.ZhuiFen.userOperators) { id ->
                 if (id == Config.ZhuiFen.OP_7) {
-                    if (currentGame.operators.isNotEmpty()) {
-                        val operator =
-                            currentGame.operators.removeAt(currentGame.operators.lastIndex)
-                        binding.rvGameBoard.adapter?.notifyItemChanged(0)
-
-                        val operatorProfit = getOperatorProfit(operator, true)
-                        currentGame.profits.opProfits.removeAt(currentGame.profits.opProfits.lastIndex)
-                        currentGame.profits.totalProfits.addOpProfit(operatorProfit, true)
-                        globalGame.players.addOpProfit(operatorProfit, true)
-                        binding.rvScoreBoard.adapter?.notifyDataSetChanged()
-                    } else if (globalGame.group.size > 1) {
-                        globalGame.group.removeAt(0)
-                        binding.rvGameBoard.adapter?.notifyItemRemoved(0)
-                    }
+                    onClickUndo()
                 } else if (currentPlayerIndex == -1) {
                     toast("请选择玩家")
                 } else {

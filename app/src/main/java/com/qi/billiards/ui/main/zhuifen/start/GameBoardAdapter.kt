@@ -7,6 +7,7 @@ import com.qi.billiards.databinding.ItemGameBoardBinding
 import com.qi.billiards.game.Game
 import com.qi.billiards.game.ZhuiFenGame
 import com.qi.billiards.ui.base.BaseBindingAdapter
+import com.qi.billiards.util.format
 
 class GameBoardAdapter(
     private val globalGame: ZhuiFenGame,
@@ -30,7 +31,7 @@ class GameBoardAdapter(
     }
 
     private fun getSummary(game: Game, position: Int): String {
-        return "第${globalGame.group.size - position}局 ${game.sequences.joinToString()} 耗时：${game.during.getDuringTime()}"
+        return "${game.during.startTime.format()} 第${globalGame.group.size - position}局 ${game.sequences.joinToString()} ${game.during.getCostTime()}"
     }
 
     override fun getItemCount() = globalGame.group.size

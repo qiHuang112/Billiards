@@ -43,6 +43,30 @@ fun Date?.format(pattern: String = "HH:mm:ss"): String {
     return SimpleDateFormat(pattern, Locale.CHINA).format(this)
 }
 
+const val DAY = 24 * 60 * 60 * 1000L // 1天有多少ms
+const val HOUR = 60 * 60 * 1000L // 1小时有多少ms
+const val MINUTE = 60 * 1000L // 1分钟有多少ms
+const val SECOND = 1000L // 1秒有多少ms
+
+fun Long.toStandardTime(ignoreMS: Boolean = true): String {
+    if (this > DAY) {
+        return "${this / DAY}天${(this % DAY).toStandardTime(ignoreMS)}"
+    }
+    if (this > HOUR) {
+        return "${this / HOUR}时${(this % HOUR).toStandardTime(ignoreMS)}"
+    }
+    if (this > MINUTE) {
+        return "${this / MINUTE}分${(this % MINUTE).toStandardTime(ignoreMS)}"
+    }
+    if (this > SECOND) {
+        return "${this / SECOND}秒${(this % SECOND).toStandardTime(ignoreMS)}"
+    }
+    if (ignoreMS) {
+        return ""
+    }
+    return "${this}毫秒"
+}
+
 fun Fragment.toast(text: String) {
     if (!isAdded || isDetached) {
         return

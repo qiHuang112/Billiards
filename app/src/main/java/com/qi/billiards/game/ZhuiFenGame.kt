@@ -22,6 +22,6 @@ data class ZhuiFenGame(
         val win: Int, // 普胜得分
         val xiaojin: Int, // 小金得分
         val dajin: Int, // 大金得分
-    )
+    ) : Serializable
 }
 

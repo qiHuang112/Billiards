@@ -4,14 +4,14 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.qi.billiards.databinding.ItemGameBoardBinding
-import com.qi.billiards.game.Game
+import com.qi.billiards.game.Round
 import com.qi.billiards.game.ZhuiFenGame
 import com.qi.billiards.ui.base.BaseBindingAdapter
 import com.qi.billiards.util.format
 
 class GameBoardAdapter(
-    private val globalGame: ZhuiFenGame,
-    private val onOneGameClicked: ((Game) -> Unit)? = null
+    private val game: ZhuiFenGame,
+    private val onRoundClicked: ((Round) -> Unit)? = null
 ) : BaseBindingAdapter<ItemGameBoardBinding>() {
 
     override fun getBinding(parent: ViewGroup): ItemGameBoardBinding {
@@ -19,21 +19,21 @@ class GameBoardAdapter(
     }
 
     override fun onBindViewHolder(holder: BaseBindingViewHolder<ItemGameBoardBinding>, position: Int) {
-        val oneGame = globalGame.group[position]
-        holder.binding.tvOneGameSummary.text = getSummary(oneGame, position)
-        holder.binding.rvOneGameDetail.adapter = OneGameDetailAdapter(globalGame, position)
-        holder.binding.rvOneGameDetail.layoutManager = LinearLayoutManager(holder.itemView.context)
+        val round = game.group[position]
+        holder.binding.tvRoundSummary.text = getSummary(round, position)
+        holder.binding.rvRoundDetail.adapter = RoundDetailAdapter(game, position)
+        holder.binding.rvRoundDetail.layoutManager = LinearLayoutManager(holder.itemView.context)
         holder.itemView.setOnClickListener {
-            onOneGameClicked?.invoke(oneGame)
+            onRoundClicked?.invoke(round)
             notifyItemChanged(position)
         }
 
     }
 
-    private fun getSummary(game: Game, position: Int): String {
-        return "${game.during.startTime.format()} 第${globalGame.group.size - position}局 ${game.sequences.joinToString()} ${game.during.getCostTime()}"
+    private fun getSummary(round: Round, position: Int): String {
+        return "${round.during.startTime.format()} 第${game.group.size - position}局 ${round.sequences.joinToString()} ${round.during.getCostTime()}"
     }
 
-    override fun getItemCount() = globalGame.group.size
+    override fun getItemCount() = game.group.size
 
 }

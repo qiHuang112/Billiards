@@ -5,7 +5,7 @@ import java.io.Serializable
 /**
  * 一局游戏
  */
-data class Game(
+data class Round(
     val sequences: List<String>, // 玩家参与表
     val operators: MutableList<Operator>, // 单局操作表
     val profits: Profits, // 单局收益表

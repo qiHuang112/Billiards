@@ -4,21 +4,21 @@ import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.qi.billiards.config.Config
-import com.qi.billiards.databinding.ItemOneGameDetailBinding
+import com.qi.billiards.databinding.ItemRoundDetailBinding
 import com.qi.billiards.game.ZhuiFenGame
 import com.qi.billiards.ui.base.BaseBindingAdapter
 
-class OneGameDetailAdapter(
+class RoundDetailAdapter(
     val game: ZhuiFenGame,
     private val gamePosition: Int
-) : BaseBindingAdapter<ItemOneGameDetailBinding>() {
+) : BaseBindingAdapter<ItemRoundDetailBinding>() {
 
-    override fun getBinding(parent: ViewGroup): ItemOneGameDetailBinding {
-        return ItemOneGameDetailBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+    override fun getBinding(parent: ViewGroup): ItemRoundDetailBinding {
+        return ItemRoundDetailBinding.inflate(LayoutInflater.from(parent.context), parent, false)
     }
 
     override fun onBindViewHolder(
-        holder: BaseBindingViewHolder<ItemOneGameDetailBinding>,
+        holder: BaseBindingViewHolder<ItemRoundDetailBinding>,
         position: Int
     ) {
         holder.binding.tvDetail.text = getDetail(position)
@@ -36,9 +36,9 @@ class OneGameDetailAdapter(
      * example:%s%s，扣分%d分，%s得分%d分
      */
     private fun getDetail(position: Int): String {
-        val oneGame = game.group[gamePosition] // 这一局游戏
-        val operator = oneGame.operators[position] // 操作
-        val sequence = oneGame.sequences // 顺序表
+        val round = game.group[gamePosition] // 这一局游戏
+        val operator = round.operators[position] // 操作
+        val sequence = round.sequences // 顺序表
         val opPlayer = operator.player.name // 操作玩家
         val rule = game.rule
         val curIndex = sequence.indexOf(opPlayer)

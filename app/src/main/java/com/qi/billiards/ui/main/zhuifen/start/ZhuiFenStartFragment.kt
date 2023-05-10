@@ -24,11 +24,11 @@ private const val TAG = "ZhuiFenStartFragment"
 
 class ZhuiFenStartFragment : BaseBindingFragment<FragmentZhuifenStartBinding>() {
     private val args: ZhuiFenStartFragmentArgs by navArgs()
-    private val globalGame by lazy { args.zhuiFenGame } // 一场游戏，包含多局游戏
+    private val game by lazy { args.zhuiFenGame } // 一场游戏，包含多局游戏
     var currentPlayerIndex = -1
-    private val currentGame: Game // 当前游戏
+    private val currentRound: Round // 当前游戏
         get() {
-            return globalGame.group.first()
+            return game.group.first()
         }
 
     override fun getBinding(
@@ -41,7 +41,7 @@ class ZhuiFenStartFragment : BaseBindingFragment<FragmentZhuifenStartBinding>() 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         initView()
-        Log.d(TAG, "onViewCreated: $globalGame")
+        Log.d(TAG, "onViewCreated: $game")
     }
 
     private fun initView() {
@@ -62,20 +62,20 @@ class ZhuiFenStartFragment : BaseBindingFragment<FragmentZhuifenStartBinding>() 
 
     private fun showSummaryDialog() {
         val summaryDialog =
-            SummaryDialog(requireContext(), listOf("玩家") + globalGame.summaries.keys)
+            SummaryDialog(requireContext(), listOf("玩家") + game.summaries.keys)
         val tableData = listOf("犯规", "普胜", "小金", "大金", "胜局", "败局").map {
-            listOf(it + "次数") + globalGame.summaries.keys.map { name ->
-                globalGame.summaries[name]?.getOrDefault(it, 0).toString()
+            listOf(it + "次数") + game.summaries.keys.map { name ->
+                game.summaries[name]?.getOrDefault(it, 0).toString()
             }
-        } + listOf(listOf("总比分") + globalGame.summaries.keys.map { name ->
-            globalGame.players.find { it.name == name }?.score.toString()
-        }) + listOf(listOf("胜率") + globalGame.summaries.keys.map { name ->
-            val totalWin = globalGame.summaries[name]?.getOrDefault("胜局", 0) ?: 0
-            val totalCount = globalGame.group.size - if (currentGame.gameOver()) 0 else 1
+        } + listOf(listOf("总比分") + game.summaries.keys.map { name ->
+            game.players.find { it.name == name }?.score.toString()
+        }) + listOf(listOf("胜率") + game.summaries.keys.map { name ->
+            val totalWin = game.summaries[name]?.getOrDefault("胜局", 0) ?: 0
+            val totalCount = game.group.size - if (currentRound.gameOver()) 0 else 1
             String.format("%.2f%%", 100.0 * totalWin / totalCount)
-        }) + listOf(listOf("败率") + globalGame.summaries.keys.map { name ->
-            val totalLose = globalGame.summaries[name]?.getOrDefault("败局", 0) ?: 0
-            val totalCount = globalGame.group.size - if (currentGame.gameOver()) 0 else 1
+        }) + listOf(listOf("败率") + game.summaries.keys.map { name ->
+            val totalLose = game.summaries[name]?.getOrDefault("败局", 0) ?: 0
+            val totalCount = game.group.size - if (currentRound.gameOver()) 0 else 1
             String.format("%.2f%%", 100.0 * totalLose / totalCount)
         })
 
@@ -85,14 +85,14 @@ class ZhuiFenStartFragment : BaseBindingFragment<FragmentZhuifenStartBinding>() 
     }
 
     private fun startNextGame() {
-        globalGame.group.first().during.endTime = Date()
-        globalGame.group.add(
+        game.group.first().during.endTime = Date()
+        game.group.add(
             0,
-            Game(
-                getSequences(globalGame.group.first()),
+            Round(
+                getSequences(game.group.first()),
                 mutableListOf(),
-                Game.Profits(
-                    globalGame.players.map { player -> player.copy(name = player.name) },
+                Round.Profits(
+                    game.players.map { player -> player.copy(name = player.name) },
                     mutableListOf()
                 ),
                 During(Date())
@@ -100,19 +100,19 @@ class ZhuiFenStartFragment : BaseBindingFragment<FragmentZhuifenStartBinding>() 
         )
         binding.rvGameBoard.adapter?.notifyItemInserted(0)
         binding.rvGameBoard.scrollToPosition(0)
-        save(Config.ZhuiFen.KEY_LAST_GAME, globalGame)
+        save(Config.ZhuiFen.KEY_LAST_GAME, game)
 
     }
 
     private fun initGame() {
         if (!args.reload) {
-            val sequences = globalGame.players.map { it.name }
-            globalGame.group.add(
-                Game(
+            val sequences = game.players.map { it.name }
+            game.group.add(
+                Round(
                     sequences,
                     mutableListOf(),
-                    Game.Profits(
-                        globalGame.players.map { player ->
+                    Round.Profits(
+                        game.players.map { player ->
                             player.copy(
                                 name = player.name,
                                 score = 0
@@ -127,7 +127,7 @@ class ZhuiFenStartFragment : BaseBindingFragment<FragmentZhuifenStartBinding>() 
     }
 
     private fun initScoreBoard() {
-        binding.rvScoreBoard.adapter = ScoreBoardAdapter(globalGame.players) {
+        binding.rvScoreBoard.adapter = ScoreBoardAdapter(game.players) {
             currentPlayerIndex = it
             binding.rvOperatorGrid.visibility = if (it == -1) View.GONE else View.VISIBLE
         }
@@ -136,18 +136,18 @@ class ZhuiFenStartFragment : BaseBindingFragment<FragmentZhuifenStartBinding>() 
     }
 
     private fun onClickUndo() {
-        if (currentGame.operators.isNotEmpty()) {
+        if (currentRound.operators.isNotEmpty()) {
             val operator =
-                currentGame.operators.removeAt(currentGame.operators.lastIndex)
+                currentRound.operators.removeAt(currentRound.operators.lastIndex)
             binding.rvGameBoard.adapter?.notifyItemChanged(0)
 
             val operatorProfit = getOperatorProfit(operator, true)
-            currentGame.profits.opProfits.removeAt(currentGame.profits.opProfits.lastIndex)
-            currentGame.profits.totalProfits.addOpProfit(operatorProfit)
-            globalGame.players.addOpProfit(operatorProfit)
+            currentRound.profits.opProfits.removeAt(currentRound.profits.opProfits.lastIndex)
+            currentRound.profits.totalProfits.addOpProfit(operatorProfit)
+            game.players.addOpProfit(operatorProfit)
             binding.rvScoreBoard.adapter?.notifyDataSetChanged()
-        } else if (globalGame.group.size > 1) {
-            globalGame.group.removeAt(0)
+        } else if (game.group.size > 1) {
+            game.group.removeAt(0)
             binding.rvGameBoard.adapter?.notifyItemRemoved(0)
             onClickUndo()
         }
@@ -162,26 +162,26 @@ class ZhuiFenStartFragment : BaseBindingFragment<FragmentZhuifenStartBinding>() 
                 } else if (currentPlayerIndex == -1) {
                     toast("请选择玩家")
                 } else {
-                    val operator = Operator(id, globalGame.players[currentPlayerIndex])
-                    currentGame.operators.add(operator)
+                    val operator = Operator(id, game.players[currentPlayerIndex])
+                    currentRound.operators.add(operator)
                     if (id > Config.ZhuiFen.OP_1) {
-                        currentGame.during.endTime = Date()
+                        currentRound.during.endTime = Date()
                     }
                     binding.rvGameBoard.adapter?.notifyItemChanged(0)
 
                     val operatorProfit = getOperatorProfit(operator)
-                    currentGame.profits.opProfits.add(operatorProfit)
-                    currentGame.profits.totalProfits.addOpProfit(operatorProfit)
-                    globalGame.players.addOpProfit(operatorProfit)
+                    currentRound.profits.opProfits.add(operatorProfit)
+                    currentRound.profits.totalProfits.addOpProfit(operatorProfit)
+                    game.players.addOpProfit(operatorProfit)
                     binding.rvScoreBoard.adapter?.notifyDataSetChanged()
                     binding.rvGameBoard.scrollToPosition(0)
                     binding.root.post {
-                        if (currentGame.gameOver()) {
+                        if (currentRound.gameOver()) {
                             startNextGame()
                         }
                     }
                 }
-                save(Config.ZhuiFen.KEY_LAST_GAME, globalGame)
+                save(Config.ZhuiFen.KEY_LAST_GAME, game)
             }
         binding.rvOperatorGrid.layoutManager = GridLayoutManager(context, 4)
     }
@@ -192,10 +192,10 @@ class ZhuiFenStartFragment : BaseBindingFragment<FragmentZhuifenStartBinding>() 
     private fun getOperatorProfit(operator: Operator, undo: Boolean = false): List<Player> {
         val sign = if (undo) -1 else 1
         val profits =
-            globalGame.players.map { player -> player.copy(name = player.name, score = 0) }
-        val sequence = currentGame.sequences // 顺序表
+            game.players.map { player -> player.copy(name = player.name, score = 0) }
+        val sequence = currentRound.sequences // 顺序表
         val opPlayer = operator.player.name // 操作玩家
-        val rule = globalGame.rule
+        val rule = game.rule
         val curIndex = sequence.indexOf(opPlayer)
         if (curIndex == -1) return profits
         val last = if (curIndex == 0) sequence.last() else sequence[curIndex - 1] // 上家
@@ -208,7 +208,7 @@ class ZhuiFenStartFragment : BaseBindingFragment<FragmentZhuifenStartBinding>() 
             }
         }
         val addSummary: (String, String) -> Unit = { name, op ->
-            val playerSummary = globalGame.summaries[name]
+            val playerSummary = game.summaries[name]
             if (playerSummary != null) {
                 val count = playerSummary.getOrDefault(op, 0)
                 playerSummary[op] = count + sign
@@ -229,7 +229,7 @@ class ZhuiFenStartFragment : BaseBindingFragment<FragmentZhuifenStartBinding>() 
                 addSummary(opPlayer, "普胜")
                 addSummary(opPlayer, "胜局")
                 addSummary(last, "败局")
-                currentGame.winner = opPlayer
+                currentRound.winner = opPlayer
                 addScore(opPlayer, rule.win)
                 addScore(last, -rule.win)
             }
@@ -237,7 +237,7 @@ class ZhuiFenStartFragment : BaseBindingFragment<FragmentZhuifenStartBinding>() 
                 addSummary(opPlayer, "普胜")
                 addSummary(opPlayer, "胜局")
                 addSummary(next, "败局")
-                currentGame.winner = opPlayer
+                currentRound.winner = opPlayer
                 addScore(opPlayer, rule.win)
                 addScore(next, -rule.win)
             }
@@ -245,7 +245,7 @@ class ZhuiFenStartFragment : BaseBindingFragment<FragmentZhuifenStartBinding>() 
                 addSummary(opPlayer, "小金")
                 addSummary(opPlayer, "胜局")
                 addSummary(last, "败局")
-                currentGame.winner = opPlayer
+                currentRound.winner = opPlayer
                 addScore(opPlayer, rule.xiaojin)
                 addScore(last, -rule.xiaojin)
             }
@@ -253,14 +253,14 @@ class ZhuiFenStartFragment : BaseBindingFragment<FragmentZhuifenStartBinding>() 
                 addSummary(opPlayer, "小金")
                 addSummary(opPlayer, "胜局")
                 addSummary(next, "败局")
-                currentGame.winner = opPlayer
+                currentRound.winner = opPlayer
                 addScore(opPlayer, rule.xiaojin)
                 addScore(next, -rule.xiaojin)
             }
             Config.ZhuiFen.OP_6 -> {
                 addSummary(opPlayer, "大金")
                 addSummary(opPlayer, "胜局")
-                currentGame.winner = opPlayer
+                currentRound.winner = opPlayer
                 addScore(opPlayer, rule.dajin * profits.size)
                 profits.forEach { player ->
                     addScore(player.name, -rule.dajin)
@@ -275,18 +275,18 @@ class ZhuiFenStartFragment : BaseBindingFragment<FragmentZhuifenStartBinding>() 
     }
 
     private fun initGameBoard() {
-        binding.rvGameBoard.adapter = GameBoardAdapter(globalGame)
+        binding.rvGameBoard.adapter = GameBoardAdapter(game)
 
         binding.rvGameBoard.layoutManager = LinearLayoutManager(context)
     }
 
-    private fun getSequences(lastGame: Game): List<String> {
-        val winner = lastGame.winner ?: lastGame.sequences.first()
-        val id = lastGame.operators.last().id
+    private fun getSequences(lastRound: Round): List<String> {
+        val winner = lastRound.winner ?: lastRound.sequences.first()
+        val id = lastRound.operators.last().id
         val temp = if (id == Config.ZhuiFen.OP_3 || id == Config.ZhuiFen.OP_5) { // 解球赢球，准分顺序不变
-            ArrayList(lastGame.sequences)
+            ArrayList(lastRound.sequences)
         } else {
-            lastGame.sequences.reversed()
+            lastRound.sequences.reversed()
         }
         return (temp + temp).slice(temp.indexOf(winner) until temp.indexOf(winner) + temp.size)
     }
@@ -295,13 +295,13 @@ class ZhuiFenStartFragment : BaseBindingFragment<FragmentZhuifenStartBinding>() 
      * 当局游戏是否结束
      * 操作表不为空，且操作表中最后一次操作不是犯规
      */
-    private fun Game.gameOver(): Boolean {
+    private fun Round.gameOver(): Boolean {
         return operators.isNotEmpty() && operators.last().id > Config.ZhuiFen.OP_1
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        Log.d(TAG, "onDestroy: $globalGame")
+        Log.d(TAG, "onDestroy: $game")
     }
 
 }

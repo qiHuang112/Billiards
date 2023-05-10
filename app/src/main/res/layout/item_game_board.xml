@@ -9,7 +9,7 @@
     android:layout_margin="10dp">
 
     <TextView
-        android:id="@+id/tv_one_game_summary"
+        android:id="@+id/tv_round_summary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
@@ -19,9 +19,9 @@
         tools:text="第1局 黄麒、李逸波、辛宇 耗时：03:02" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_one_game_detail"
+        android:id="@+id/rv_round_detail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/tv_one_game_summary" />
+        app:layout_constraintTop_toBottomOf="@id/tv_round_summary" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

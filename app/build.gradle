@@ -2,6 +2,7 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'androidx.navigation.safeargs'
+    id 'kotlin-kapt'
 }
 
 android {
@@ -66,4 +67,13 @@ dependencies {
     implementation "androidx.navigation:navigation-compose:$nav_version"
 
     implementation 'com.google.code.gson:gson:2.9.0'
+
+    // room
+    def room_version = "2.5.1"
+    implementation "androidx.room:room-ktx:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
+
+    // 协程
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.0'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.0'
 }

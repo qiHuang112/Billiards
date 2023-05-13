@@ -10,13 +10,10 @@
         android:name="com.qi.billiards.ui.main.MainFragment"
         android:label="Main Fragment"
         tools:layout="@layout/fragment_main">
-        <action
-            android:id="@+id/action_MainFragment_to_zhuiFenStartFragment"
-            app:destination="@id/zhuiFenStartFragment" />
 
         <action
-            android:id="@+id/action_MainFragment_to_zhuiFenFragment"
-            app:destination="@id/zhuiFenFragment" />
+            android:id="@+id/action_MainFragment_to_zhuiFenConfigFragment"
+            app:destination="@id/zhuiFenConfigFragment" />
 
         <action
             android:id="@+id/action_MainFragment_to_zhongBaFragment"
@@ -37,25 +34,22 @@
     </fragment>
 
     <fragment
-        android:id="@+id/zhuiFenFragment"
-        android:name="com.qi.billiards.ui.main.zhuifen.ZhuiFenFragment"
-        android:label="ZhuiFen Fragment"
-        tools:layout="@layout/fragment_zhuifen">
+        android:id="@+id/zhuiFenConfigFragment"
+        android:name="com.qi.billiards.ui.main.zhuifen.ZhuiFenConfigFragment"
+        android:label="ZhuiFenConfig Fragment"
+        tools:layout="@layout/fragment_zhuifen_config">
 
         <action
-            android:id="@+id/action_zhuiFenFragment_to_zhuiFenStartFragment"
-            app:destination="@id/zhuiFenStartFragment" />
+            android:id="@+id/action_zhuiFenConfigFragment_to_zhuiFenFragment"
+            app:destination="@id/zhuiFenFragment" />
 
-        <action
-            android:id="@+id/action_zhuiFenFragment_to_newPlayerFragment"
-            app:destination="@id/newPlayerFragment" />
     </fragment>
 
     <fragment
-        android:id="@+id/zhuiFenStartFragment"
-        android:name="com.qi.billiards.ui.main.zhuifen.start.ZhuiFenStartFragment"
-        android:label="ZhuiFen Start Fragment"
-        tools:layout="@layout/fragment_zhuifen_start">
+        android:id="@+id/zhuiFenFragment"
+        android:name="com.qi.billiards.ui.main.zhuifen.start.ZhuiFenFragment"
+        android:label="ZhuiFen Fragment"
+        tools:layout="@layout/fragment_zhuifen">
         <argument
             android:name="zhuiFenGame"
             app:argType="com.qi.billiards.game.ZhuiFenGame" />
@@ -78,7 +72,12 @@
         android:id="@+id/historyFragment"
         android:name="com.qi.billiards.ui.main.HistoryFragment"
         android:label="HistoryFragment"
-        tools:layout="@layout/fragment_history" />
+        tools:layout="@layout/fragment_history">
+
+        <action
+            android:id="@+id/action_historyFragment_to_zhuiFenFragment"
+            app:destination="@id/zhuiFenFragment" />
+    </fragment>
     <fragment
         android:id="@+id/scoreFragment"
         android:name="com.qi.billiards.ui.main.ScoreFragment"

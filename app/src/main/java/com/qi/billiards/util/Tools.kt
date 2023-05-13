@@ -10,6 +10,8 @@ import com.google.gson.Gson
 import com.qi.billiards.AppContext
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.coroutines.Continuation
+import kotlin.coroutines.resume
 
 fun String.safeToInt(): Int {
     return try {
@@ -74,22 +76,9 @@ fun Fragment.toast(text: String) {
     Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
 }
 
-const val SP_NAME = "my_preferences"
+fun <T> Continuation<T>.safeResume(value: T): Unit =
+    try {
+        resume(value)
+    } catch (_: Throwable) {
 
-fun save(key: String, value: Any) {
-    val sharedPreferences = AppContext.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE)
-    val editor = sharedPreferences.edit()
-    val json = Gson().toJson(value)
-    editor.putString(key, json)
-    editor.apply()
-}
-
-inline fun <reified T> get(key: String): T? {
-    val sharedPreferences = AppContext.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE)
-    val json = sharedPreferences.getString(key, null)
-    return if (json != null) {
-        Gson().fromJson(json, T::class.java)
-    } else {
-        null
     }
-}

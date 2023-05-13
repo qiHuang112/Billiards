@@ -1,9 +1,51 @@
 package com.qi.billiards.ui.main
 
-import androidx.fragment.app.Fragment
-import com.qi.billiards.R
-import com.qi.billiards.ui.base.BaseFragment
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.gson.Gson
+import com.qi.billiards.databinding.FragmentHistoryBinding
+import com.qi.billiards.db.DbUtil
+import com.qi.billiards.game.ZhuiFenGame
+import com.qi.billiards.ui.base.BaseBindingFragment
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-class HistoryFragment : BaseFragment() {
-    override fun getLayoutId() = R.layout.fragment_history
+class HistoryFragment : BaseBindingFragment<FragmentHistoryBinding>() {
+
+    private val games = mutableListOf<GameEntityAdapter.HistoryGame>()
+    private val gameAdapter = GameEntityAdapter(games, ::jumpToDetail)
+    override fun getBinding(inflater: LayoutInflater, container: ViewGroup?): FragmentHistoryBinding {
+        return FragmentHistoryBinding.inflate(LayoutInflater.from(context), container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        initView()
+    }
+
+    private fun initView() {
+        binding.rvGameEntity.apply {
+            adapter = gameAdapter
+            layoutManager = LinearLayoutManager(context)
+        }
+
+        launch {
+            withContext(Dispatchers.IO) {
+                DbUtil.getAllGames()
+            }.map { GameEntityAdapter.HistoryGame(it) }.let(games::addAll)
+            gameAdapter.notifyItemRangeChanged(0, games.size)
+        }
+    }
+
+    private fun jumpToDetail(game: GameEntityAdapter.HistoryGame) {
+
+        val action = HistoryFragmentDirections.actionHistoryFragmentToZhuiFenFragment(
+            Gson().fromJson(game.game.detail, ZhuiFenGame::class.java), true
+        )
+        findNavController().navigate(action)
+    }
 }

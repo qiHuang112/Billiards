@@ -4,6 +4,14 @@ import com.qi.billiards.ui.main.zhuifen.start.OperatorGridAdapter
 
 object Config {
 
+    const val TYPE_ZHUI_FEN = 1
+    const val TYPE_ZHONG_BA = 2
+
+    val gameType = mapOf(
+        TYPE_ZHUI_FEN to "追分",
+        TYPE_ZHONG_BA to "中八",
+    )
+
     object ZhuiFen {
         fun get(name: String) = ruleMap.getOrDefault(name, 0)
 
@@ -13,10 +21,8 @@ object Config {
             "普胜得分" to 4,
             "小金得分" to 7,
             "大金得分" to 7,
-            "基数" to 5,
+            "基数" to 1,
         )
-
-        const val KEY_LAST_GAME = "com.qi.billiards.config.Config.ZhuiFen.KEY_LAST_GAME"
 
         const val OP_0 = 0 // 自然犯规
         const val OP_1 = 1 // 解球犯规

@@ -9,7 +9,7 @@ import com.qi.billiards.ui.base.BaseBindingAdapter
 import com.qi.billiards.util.safeToInt
 
 class RuleAdapter(
-    val rule: List<ZhuiFenFragment.Companion.EditRule>
+    val rule: List<ZhuiFenConfigFragment.Companion.EditRule>
 ) : BaseBindingAdapter<ItemCurrentRuleBinding>() {
 
     override fun getBinding(parent: ViewGroup): ItemCurrentRuleBinding {

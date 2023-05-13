@@ -11,19 +11,22 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.qi.billiards.config.Config
-import com.qi.billiards.databinding.FragmentZhuifenStartBinding
+import com.qi.billiards.databinding.FragmentZhuifenBinding
+import com.qi.billiards.db.DbUtil
 import com.qi.billiards.game.*
 import com.qi.billiards.ui.base.BaseBindingFragment
 import com.qi.billiards.ui.widget.SummaryDialog
-import com.qi.billiards.util.save
 import com.qi.billiards.util.toast
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.*
 
 private const val TAG = "ZhuiFenStartFragment"
 
 
-class ZhuiFenStartFragment : BaseBindingFragment<FragmentZhuifenStartBinding>() {
-    private val args: ZhuiFenStartFragmentArgs by navArgs()
+class ZhuiFenFragment : BaseBindingFragment<FragmentZhuifenBinding>() {
+    private val args: ZhuiFenFragmentArgs by navArgs()
     private val game by lazy { args.zhuiFenGame } // 一场游戏，包含多局游戏
     var currentPlayerIndex = -1
     private val currentRound: Round // 当前游戏
@@ -34,8 +37,8 @@ class ZhuiFenStartFragment : BaseBindingFragment<FragmentZhuifenStartBinding>() 
     override fun getBinding(
         inflater: LayoutInflater,
         container: ViewGroup?
-    ): FragmentZhuifenStartBinding {
-        return FragmentZhuifenStartBinding.inflate(inflater, container, false)
+    ): FragmentZhuifenBinding {
+        return FragmentZhuifenBinding.inflate(inflater, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -100,8 +103,15 @@ class ZhuiFenStartFragment : BaseBindingFragment<FragmentZhuifenStartBinding>() 
         )
         binding.rvGameBoard.adapter?.notifyItemInserted(0)
         binding.rvGameBoard.scrollToPosition(0)
-        save(Config.ZhuiFen.KEY_LAST_GAME, game)
+        saveToDb()
+    }
 
+    private fun saveToDb() {
+        launch {
+            withContext(Dispatchers.IO) {
+                DbUtil.addOrUpdateGame(game.toEntity())
+            }
+        }
     }
 
     private fun initGame() {
@@ -123,6 +133,13 @@ class ZhuiFenStartFragment : BaseBindingFragment<FragmentZhuifenStartBinding>() 
                     During(Date())
                 )
             )
+            if (game.id == null) {
+                launch {
+                    game.id = withContext(Dispatchers.IO) {
+                        DbUtil.addOrUpdateGame(game.toEntity())
+                    }
+                }
+            }
         }
     }
 
@@ -181,7 +198,7 @@ class ZhuiFenStartFragment : BaseBindingFragment<FragmentZhuifenStartBinding>() 
                         }
                     }
                 }
-                save(Config.ZhuiFen.KEY_LAST_GAME, game)
+                saveToDb()
             }
         binding.rvOperatorGrid.layoutManager = GridLayoutManager(context, 4)
     }

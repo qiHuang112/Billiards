@@ -8,7 +8,7 @@ import com.qi.billiards.ui.base.BaseBindingAdapter
 import java.util.*
 
 class PlayerAdapter(
-    val editPlayers: MutableList<ZhuiFenFragment.Companion.EditPlayer>
+    val editPlayers: MutableList<ZhuiFenConfigFragment.Companion.EditPlayer>
 ) : BaseBindingAdapter<ItemCurrentPlayerBinding>() {
 
     override fun getBinding(parent: ViewGroup): ItemCurrentPlayerBinding {

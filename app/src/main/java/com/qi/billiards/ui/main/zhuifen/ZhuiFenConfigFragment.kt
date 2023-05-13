@@ -1,33 +1,43 @@
 package com.qi.billiards.ui.main.zhuifen
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.qi.billiards.databinding.FragmentZhuifenBinding
+import com.qi.billiards.databinding.FragmentZhuifenConfigBinding
+import com.qi.billiards.db.DbUtil
 import com.qi.billiards.game.During
 import com.qi.billiards.game.Player
 import com.qi.billiards.game.ZhuiFenGame
 import com.qi.billiards.ui.base.BaseBindingFragment
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.util.*
+import kotlin.collections.LinkedHashMap
 
-class ZhuiFenFragment : BaseBindingFragment<FragmentZhuifenBinding>() {
+class ZhuiFenConfigFragment : BaseBindingFragment<FragmentZhuifenConfigBinding>() {
+
+    private val players = mutableListOf<EditPlayer>()
 
     private val ruleAdapter = RuleAdapter(getDefaultRules())
-    private val playerAdapter = PlayerAdapter(getLatestPlayers())
+    private val playerAdapter = PlayerAdapter(players)
     override fun getBinding(
         inflater: LayoutInflater,
         container: ViewGroup?
-    ): FragmentZhuifenBinding {
-        return FragmentZhuifenBinding.inflate(inflater, container, false)
+    ): FragmentZhuifenConfigBinding {
+        return FragmentZhuifenConfigBinding.inflate(inflater, container, false)
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         binding.tvStart.setOnClickListener {
             val action =
-                ZhuiFenFragmentDirections.actionZhuiFenFragmentToZhuiFenStartFragment(
+                ZhuiFenConfigFragmentDirections.actionZhuiFenConfigFragmentToZhuiFenFragment(
                     getZhuiFenGame(),
                     false
                 )
@@ -39,6 +49,16 @@ class ZhuiFenFragment : BaseBindingFragment<FragmentZhuifenBinding>() {
 
         binding.rvCurrentPlayer.adapter = playerAdapter
         binding.rvCurrentPlayer.layoutManager = LinearLayoutManager(context)
+
+        launch {
+            val dbPlayers = withContext(Dispatchers.IO) {
+                DbUtil.getAllPlayers().map {
+                    EditPlayer(it.playerName)
+                }
+            }
+            players.addAll(dbPlayers)
+            playerAdapter.notifyDataSetChanged()
+        }
     }
 
     private fun getZhuiFenGame(): ZhuiFenGame {
@@ -56,21 +76,12 @@ class ZhuiFenFragment : BaseBindingFragment<FragmentZhuifenBinding>() {
             },
             rule,
             editRules.find { it.name == "基数" }?.score ?: 5,
-            During(),
+            During(Date()),
             LinkedHashMap<String, MutableMap<String, Int>>().apply {
                 playerAdapter.editPlayers.forEach {
                     put(it.name, mutableMapOf())
                 }
             }
-        )
-    }
-
-    private fun getLatestPlayers(): MutableList<EditPlayer> {
-        return mutableListOf(
-            EditPlayer("黄麒"),
-            EditPlayer("李逸波"),
-            EditPlayer("辛宇"),
-            EditPlayer("汤鸡"),
         )
     }
 
@@ -82,7 +93,7 @@ class ZhuiFenFragment : BaseBindingFragment<FragmentZhuifenBinding>() {
                 EditRule("普胜得分", 4),
                 EditRule("小金得分", 7),
                 EditRule("大金得分", 7),
-                EditRule("基数", 5),
+                EditRule("基数", 1),
             )
         }
 

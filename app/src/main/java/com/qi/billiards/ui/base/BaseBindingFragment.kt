@@ -6,8 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.cancel
 
-abstract class BaseBindingFragment<T : ViewBinding> : Fragment() {
+abstract class BaseBindingFragment<T : ViewBinding> : Fragment(), CoroutineScope by MainScope() {
     private var _binding: T? = null
     protected val binding get() = _binding!!
 
@@ -25,5 +28,6 @@ abstract class BaseBindingFragment<T : ViewBinding> : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        cancel()
     }
 }

@@ -1,5 +1,8 @@
 package com.qi.billiards.game
 
+import com.google.gson.Gson
+import com.qi.billiards.config.Config
+import com.qi.billiards.db.GameEntity
 import java.io.Serializable
 
 /**
@@ -12,7 +15,15 @@ data class ZhuiFenGame(
     val base: Int, // 基数
     val during: During, // 总时长
     val summaries: LinkedHashMap<String, MutableMap<String, Int>>, // 所有玩家总结
+    var id: Long? = null
 ) : Serializable {
+    fun toEntity() = GameEntity(
+        Config.TYPE_ZHUI_FEN,
+        during.startTime?.time,
+        during.endTime?.time,
+        Gson().toJson(this),
+        id
+    )
 
     /**
      * 追分规则

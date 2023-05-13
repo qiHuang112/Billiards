@@ -6,11 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.qi.billiards.config.Config
 import com.qi.billiards.databinding.FragmentMainBinding
-import com.qi.billiards.game.ZhuiFenGame
 import com.qi.billiards.ui.base.BaseBindingFragment
-import com.qi.billiards.util.get
 
 class MainFragment : BaseBindingFragment<FragmentMainBinding>() {
 
@@ -26,19 +23,8 @@ class MainFragment : BaseBindingFragment<FragmentMainBinding>() {
 
     private fun getMainItems(): List<MainAdapter.MainItem> {
         return listOf(
-            MainAdapter.MainItem("上次追分") {
-                val game = get<ZhuiFenGame>(Config.ZhuiFen.KEY_LAST_GAME)
-                if (game == null) {
-                    val action = MainFragmentDirections.actionMainFragmentToZhuiFenFragment()
-                    findNavController().navigate(action)
-                } else {
-                    val action =
-                        MainFragmentDirections.actionMainFragmentToZhuiFenStartFragment(game, true)
-                    findNavController().navigate(action)
-                }
-            },
             MainAdapter.MainItem("追分") {
-                val action = MainFragmentDirections.actionMainFragmentToZhuiFenFragment()
+                val action = MainFragmentDirections.actionMainFragmentToZhuiFenConfigFragment()
                 findNavController().navigate(action)
             },
             MainAdapter.MainItem("中八") {

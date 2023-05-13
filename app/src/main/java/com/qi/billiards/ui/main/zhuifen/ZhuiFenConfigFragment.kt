@@ -15,7 +15,6 @@ import com.qi.billiards.game.ZhuiFenGame
 import com.qi.billiards.ui.base.BaseBindingFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.util.*
 import kotlin.collections.LinkedHashMap
 
@@ -51,10 +50,8 @@ class ZhuiFenConfigFragment : BaseBindingFragment<FragmentZhuifenConfigBinding>(
         binding.rvCurrentPlayer.layoutManager = LinearLayoutManager(context)
 
         launch {
-            val dbPlayers = withContext(Dispatchers.IO) {
-                DbUtil.getAllPlayers().map {
-                    EditPlayer(it.playerName)
-                }
+            val dbPlayers = DbUtil.getAllPlayers().map {
+                EditPlayer(it.playerName)
             }
             players.addAll(dbPlayers)
             playerAdapter.notifyDataSetChanged()

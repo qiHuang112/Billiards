@@ -13,7 +13,6 @@ import com.qi.billiards.game.ZhuiFenGame
 import com.qi.billiards.ui.base.BaseBindingFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class HistoryFragment : BaseBindingFragment<FragmentHistoryBinding>() {
 
@@ -34,9 +33,7 @@ class HistoryFragment : BaseBindingFragment<FragmentHistoryBinding>() {
         }
 
         launch {
-            withContext(Dispatchers.IO) {
-                DbUtil.getAllGames()
-            }.map { GameEntityAdapter.HistoryGame(it) }.let(games::addAll)
+            DbUtil.getAllGames().map { GameEntityAdapter.HistoryGame(it) }.let(games::addAll)
             gameAdapter.notifyItemRangeChanged(0, games.size)
         }
     }

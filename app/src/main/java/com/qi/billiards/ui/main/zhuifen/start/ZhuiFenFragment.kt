@@ -19,7 +19,6 @@ import com.qi.billiards.ui.widget.SummaryDialog
 import com.qi.billiards.util.toast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.util.*
 
 private const val TAG = "ZhuiFenStartFragment"
@@ -108,9 +107,7 @@ class ZhuiFenFragment : BaseBindingFragment<FragmentZhuifenBinding>() {
 
     private fun saveToDb() {
         launch {
-            withContext(Dispatchers.IO) {
-                DbUtil.addOrUpdateGame(game.toEntity())
-            }
+            DbUtil.addOrUpdateGame(game.toEntity())
         }
     }
 
@@ -135,9 +132,7 @@ class ZhuiFenFragment : BaseBindingFragment<FragmentZhuifenBinding>() {
             )
             if (game.id == null) {
                 launch {
-                    game.id = withContext(Dispatchers.IO) {
-                        DbUtil.addOrUpdateGame(game.toEntity())
-                    }
+                    game.id = DbUtil.addOrUpdateGame(game.toEntity())
                 }
             }
         }

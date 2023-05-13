@@ -37,9 +37,7 @@ class NewPlayerFragment : BaseBindingFragment<FragmentNewPlayerBinding>() {
         }
 
         launch {
-            withContext(Dispatchers.IO) {
-                DbUtil.getAllPlayers()
-            }.map { PlayerEntityAdapter.AddPlayer(it, false) }.let(players::addAll)
+            DbUtil.getAllPlayers().map { PlayerEntityAdapter.AddPlayer(it, false) }.let(players::addAll)
             playerAdapter.notifyItemRangeChanged(0, players.size)
         }
 
@@ -47,10 +45,7 @@ class NewPlayerFragment : BaseBindingFragment<FragmentNewPlayerBinding>() {
             launch {
                 val player = addPlayerWithDialog()
                 if (player != null) {
-                    val id = withContext(Dispatchers.IO) {
-                        DbUtil.addPlayer(player)
-                    }
-                    player.id = id
+                    player.id = DbUtil.addPlayer(player)
                     players.add(PlayerEntityAdapter.AddPlayer(player))
                     playerAdapter.notifyItemInserted(players.lastIndex)
                     binding.rvPlayerEntity.smoothScrollToPosition(players.lastIndex)
@@ -103,9 +98,7 @@ class NewPlayerFragment : BaseBindingFragment<FragmentNewPlayerBinding>() {
             tvPlayer.text = addPlayer.player.toString()
             tvConfirm.setOnClickListener {
                 launch {
-                    withContext(Dispatchers.IO) {
-                        DbUtil.deletePlayer(addPlayer.player)
-                    }
+                    DbUtil.deletePlayer(addPlayer.player)
                     players.removeAt(position)
                     playerAdapter.notifyItemRemoved(position)
                 }

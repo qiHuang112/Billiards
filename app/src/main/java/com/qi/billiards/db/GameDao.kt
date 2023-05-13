@@ -6,14 +6,14 @@ import androidx.room.*
 interface GameDao {
 
     @Query("SELECT * FROM game")
-    fun getAllGames(): List<GameEntity>
+    suspend fun getAllGames(): List<GameEntity>
 
     @Query("SELECT * FROM game WHERE game_type=:type")
-    fun getGamesByType(type: Int): List<GameEntity>
+    suspend fun getGamesByType(type: Int): List<GameEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun addOrUpdateGame(game: GameEntity): Long
+    suspend fun addOrUpdateGame(game: GameEntity): Long
 
     @Delete
-    fun deleteGame(gameEntity: GameEntity)
+    suspend fun deleteGame(gameEntity: GameEntity)
 }

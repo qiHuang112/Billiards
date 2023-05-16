@@ -1,6 +1,5 @@
 package com.qi.billiards.ui.main.zhuifen.start
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -26,7 +25,7 @@ private const val TAG = "ZhuiFenStartFragment"
 class ZhuiFenFragment : BaseBindingFragment<FragmentZhuifenBinding>() {
     private val args: ZhuiFenFragmentArgs by navArgs()
     private val game by lazy { args.zhuiFenGame } // 一场游戏，包含多局游戏
-    var currentPlayerIndex = -1
+    private var currentPlayerIndex = -1
     private val currentRound: Round // 当前游戏
         get() {
             return game.group.first()
@@ -106,12 +105,17 @@ class ZhuiFenFragment : BaseBindingFragment<FragmentZhuifenBinding>() {
 
     private fun saveToDb() {
         launch {
-            DbUtil.addOrUpdateGame(game.toEntity())
+            val gameId = DbUtil.addOrUpdateGame(game.toEntity())
+            if (game.id == null) {
+                game.id = gameId
+                DbUtil.addOrUpdateGame(game.toEntity())
+            }
         }
     }
 
     private fun initGame() {
-        if (!args.reload) {
+        Log.d(TAG, "initGame: game id = ${game.id}")
+        if (!args.reload) { // 是否要加一个进行中的状态，自动开始第一把
             val sequences = game.players.map { it.name }
             game.group.add(
                 Round(
@@ -129,12 +133,8 @@ class ZhuiFenFragment : BaseBindingFragment<FragmentZhuifenBinding>() {
                     During(Date())
                 )
             )
-            if (game.id == null) {
-                launch {
-                    game.id = DbUtil.addOrUpdateGame(game.toEntity())
-                }
-            }
         }
+        saveToDb()
     }
 
     private fun initScoreBoard() {
@@ -156,7 +156,7 @@ class ZhuiFenFragment : BaseBindingFragment<FragmentZhuifenBinding>() {
             currentRound.profits.opProfits.removeAt(currentRound.profits.opProfits.lastIndex)
             currentRound.profits.totalProfits.addOpProfit(operatorProfit)
             game.players.addOpProfit(operatorProfit)
-            binding.rvScoreBoard.adapter?.notifyDataSetChanged()
+            binding.rvScoreBoard.adapter?.notifyItemRangeChanged(0, game.players.size)
         } else if (game.group.size > 1) {
             game.group.removeAt(0)
             binding.rvGameBoard.adapter?.notifyItemRemoved(0)
@@ -164,7 +164,6 @@ class ZhuiFenFragment : BaseBindingFragment<FragmentZhuifenBinding>() {
         }
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     private fun initOperatorGrid() {
         binding.rvOperatorGrid.adapter =
             OperatorGridAdapter(Config.ZhuiFen.userOperators) { id ->
@@ -184,7 +183,7 @@ class ZhuiFenFragment : BaseBindingFragment<FragmentZhuifenBinding>() {
                     currentRound.profits.opProfits.add(operatorProfit)
                     currentRound.profits.totalProfits.addOpProfit(operatorProfit)
                     game.players.addOpProfit(operatorProfit)
-                    binding.rvScoreBoard.adapter?.notifyDataSetChanged()
+                    binding.rvScoreBoard.adapter?.notifyItemRangeChanged(0, game.players.size)
                     binding.rvGameBoard.scrollToPosition(0)
                     binding.root.post {
                         if (currentRound.gameOver()) {

@@ -11,6 +11,9 @@ interface GameDao {
     @Query("SELECT * FROM game WHERE game_type=:type")
     suspend fun getGamesByType(type: Int): List<GameEntity>
 
+    @Query("SELECT * FROM game WHERE game_id=:id")
+    suspend fun getGameById(id: Long): GameEntity?
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addOrUpdateGame(game: GameEntity): Long
 

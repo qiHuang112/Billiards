@@ -11,7 +11,7 @@ import java.util.Date
 
 class GameEntityAdapter(
     private val games: MutableList<HistoryGame>,
-    private val onClickGame: (HistoryGame) -> Unit = {}
+    private val onClickGame: (Int) -> Unit = {}
 ) : BaseBindingAdapter<ItemGameBinding>() {
 
     override fun getBinding(parent: ViewGroup): ItemGameBinding {
@@ -26,7 +26,7 @@ class GameEntityAdapter(
             tvStartTime.text = game.game.startTime?.let { Date(it) }.format("yyyy年MM月dd日HH:mm:ss")
 
             root.setOnClickListener {
-                onClickGame(game)
+                onClickGame(position)
             }
         }
     }
@@ -34,6 +34,6 @@ class GameEntityAdapter(
     override fun getItemCount() = games.size
 
     data class HistoryGame(
-        val game: GameEntity,
+        var game: GameEntity,
     )
 }

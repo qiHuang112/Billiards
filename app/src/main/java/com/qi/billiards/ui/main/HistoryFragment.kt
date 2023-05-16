@@ -17,6 +17,8 @@ class HistoryFragment : BaseBindingFragment<FragmentHistoryBinding>() {
 
     private val games = mutableListOf<GameEntityAdapter.HistoryGame>()
     private val gameAdapter = GameEntityAdapter(games, ::jumpToDetail)
+    private var clickedPos = -1
+
     override fun getBinding(inflater: LayoutInflater, container: ViewGroup?): FragmentHistoryBinding {
         return FragmentHistoryBinding.inflate(LayoutInflater.from(context), container, false)
     }
@@ -37,8 +39,23 @@ class HistoryFragment : BaseBindingFragment<FragmentHistoryBinding>() {
         }
     }
 
-    private fun jumpToDetail(game: GameEntityAdapter.HistoryGame) {
+    override fun onCustomResume() {
+        if (clickedPos >= 0) {
+            launch {
+                val changedGame = DbUtil.getGameById(games[clickedPos].game.gameId!!)
+                if (changedGame != null) {
+                    games[clickedPos].game = changedGame
+                    gameAdapter.notifyItemChanged(clickedPos)
+                }
+                clickedPos = -1
+            }
+        }
+    }
 
+    private fun jumpToDetail(position: Int) {
+
+        clickedPos = position
+        val game = games[position]
         val action = HistoryFragmentDirections.actionHistoryFragmentToZhuiFenFragment(
             Gson().fromJson(game.game.detail, ZhuiFenGame::class.java), true
         )

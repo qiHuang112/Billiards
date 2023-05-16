@@ -14,7 +14,7 @@ import com.qi.billiards.db.PlayerEntity
 import com.qi.billiards.ui.base.BaseBindingFragment
 import com.qi.billiards.util.safeResume
 import com.qi.billiards.util.toast
-import kotlinx.coroutines.*
+import kotlinx.coroutines.launch
 import kotlin.coroutines.suspendCoroutine
 
 class NewPlayerFragment : BaseBindingFragment<FragmentNewPlayerBinding>() {

@@ -11,7 +11,6 @@ import com.qi.billiards.databinding.FragmentHistoryBinding
 import com.qi.billiards.db.DbUtil
 import com.qi.billiards.game.ZhuiFenGame
 import com.qi.billiards.ui.base.BaseBindingFragment
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class HistoryFragment : BaseBindingFragment<FragmentHistoryBinding>() {

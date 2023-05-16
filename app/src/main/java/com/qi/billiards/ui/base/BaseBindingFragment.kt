@@ -25,6 +25,33 @@ abstract class BaseBindingFragment<T : ViewBinding> : Fragment(), CoroutineScope
         return binding.root
     }
 
+    open fun onCustomResume() {
+
+    }
+
+    open fun onCustomPause() {
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        onCustomResume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        onCustomPause()
+    }
+
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+        if (hidden) {
+            onCustomPause()
+        } else {
+            onCustomResume()
+        }
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

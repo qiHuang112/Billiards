@@ -1,6 +1,5 @@
 package com.qi.billiards.ui.main.zhuifen
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,10 +12,8 @@ import com.qi.billiards.game.During
 import com.qi.billiards.game.Player
 import com.qi.billiards.game.ZhuiFenGame
 import com.qi.billiards.ui.base.BaseBindingFragment
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.*
-import kotlin.collections.LinkedHashMap
 
 class ZhuiFenConfigFragment : BaseBindingFragment<FragmentZhuifenConfigBinding>() {
 
@@ -31,7 +28,6 @@ class ZhuiFenConfigFragment : BaseBindingFragment<FragmentZhuifenConfigBinding>(
         return FragmentZhuifenConfigBinding.inflate(inflater, container, false)
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         binding.tvStart.setOnClickListener {
@@ -54,7 +50,7 @@ class ZhuiFenConfigFragment : BaseBindingFragment<FragmentZhuifenConfigBinding>(
                 EditPlayer(it.playerName)
             }
             players.addAll(dbPlayers)
-            playerAdapter.notifyDataSetChanged()
+            playerAdapter.notifyItemRangeInserted(0, players.size)
         }
     }
 

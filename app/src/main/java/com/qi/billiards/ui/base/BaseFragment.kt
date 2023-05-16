@@ -18,4 +18,30 @@ abstract class BaseFragment : Fragment() {
         return inflater.inflate(getLayoutId(), container, false)
     }
 
+    open fun onCustomResume() {
+
+    }
+
+    open fun onCustomPause() {
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        onCustomResume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        onCustomPause()
+    }
+
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+        if (hidden) {
+            onCustomPause()
+        } else {
+            onCustomResume()
+        }
+    }
 }

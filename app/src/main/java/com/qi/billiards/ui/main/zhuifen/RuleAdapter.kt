@@ -2,26 +2,25 @@ package com.qi.billiards.ui.main.zhuifen
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import com.qi.billiards.config.Config
 import com.qi.billiards.databinding.ItemCurrentRuleBinding
 import com.qi.billiards.ui.base.BaseBindingAdapter
 import com.qi.billiards.util.safeToInt
 
 class RuleAdapter(
-    val rule: List<ZhuiFenConfigFragment.Companion.EditRule>
+    val rules: List<ZhuiFenConfigFragment.Companion.EditRule>
 ) : BaseBindingAdapter<ItemCurrentRuleBinding>() {
 
     override fun getBinding(parent: ViewGroup): ItemCurrentRuleBinding {
         return ItemCurrentRuleBinding.inflate(LayoutInflater.from(parent.context), parent, false)
     }
 
-    override fun getItemCount() = rule.size
+    override fun getItemCount() = rules.size
 
     override fun onBindViewHolder(
         holder: BaseBindingViewHolder<ItemCurrentRuleBinding>,
         position: Int
     ) {
-        val rule = rule[position]
+        val rule = rules[position]
         holder.binding.tvRuleName.text = rule.name
 
         holder.binding.etNumber.setText("${rule.score}")
@@ -32,10 +31,6 @@ class RuleAdapter(
         }
         holder.binding.ivMinus.setOnClickListener {
             rule.score = holder.binding.etNumber.text.toString().safeToInt() - 1
-            notifyItemChanged(position)
-        }
-        holder.binding.tvRuleReset.setOnClickListener {
-            rule.score = Config.ZhuiFen.get(rule.name)
             notifyItemChanged(position)
         }
     }

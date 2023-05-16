@@ -13,15 +13,14 @@ object Config {
     )
 
     object ZhuiFen {
-        fun get(name: String) = ruleMap.getOrDefault(name, 0)
 
-        private val ruleMap = mapOf(
-            "初始分数" to 25,
-            "犯规罚分" to 1,
-            "普胜得分" to 4,
-            "小金得分" to 7,
-            "大金得分" to 7,
-            "基数" to 1,
+        val ruleString = listOf(
+            "初始分数",
+            "犯规罚分",
+            "普胜得分",
+            "小金得分",
+            "大金得分",
+            "基数",
         )
 
         const val OP_0 = 0 // 自然犯规

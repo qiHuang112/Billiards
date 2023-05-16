@@ -12,24 +12,24 @@
         tools:layout="@layout/fragment_main">
 
         <action
-            android:id="@+id/action_MainFragment_to_zhuiFenConfigFragment"
+            android:id="@+id/action_to_zhuiFenConfig"
             app:destination="@id/zhuiFenConfigFragment" />
 
         <action
-            android:id="@+id/action_MainFragment_to_zhongBaFragment"
+            android:id="@+id/action_to_zhongBa"
             app:destination="@id/zhongBaFragment" />
         <action
-            android:id="@+id/action_MainFragment_to_historyFragment"
+            android:id="@+id/action_to_history"
             app:destination="@id/historyFragment" />
         <action
-            android:id="@+id/action_MainFragment_to_scoreFragment"
+            android:id="@+id/action_to_score"
             app:destination="@id/scoreFragment" />
 
         <action
-            android:id="@+id/action_MainFragment_to_newPlayerFragment"
+            android:id="@+id/action_to_newPlayer"
             app:destination="@id/newPlayerFragment" />
         <action
-            android:id="@+id/action_MainFragment_to_appendixFragment"
+            android:id="@+id/action_to_appendix"
             app:destination="@id/appendixFragment" />
     </fragment>
 
@@ -40,8 +40,12 @@
         tools:layout="@layout/fragment_zhuifen_config">
 
         <action
-            android:id="@+id/action_zhuiFenConfigFragment_to_zhuiFenFragment"
+            android:id="@+id/action_to_zhuiFen"
             app:destination="@id/zhuiFenFragment" />
+
+        <action
+            android:id="@+id/action_to_newPlayer"
+            app:destination="@id/newPlayerFragment" />
 
     </fragment>
 
@@ -75,7 +79,7 @@
         tools:layout="@layout/fragment_history">
 
         <action
-            android:id="@+id/action_historyFragment_to_zhuiFenFragment"
+            android:id="@+id/action_to_zhuiFen"
             app:destination="@id/zhuiFenFragment" />
     </fragment>
     <fragment

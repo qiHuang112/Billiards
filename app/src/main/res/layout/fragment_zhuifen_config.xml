@@ -32,7 +32,17 @@
         android:layout_height="wrap_content"
         android:text="开始"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/tv_new_player"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_new_player"
+        style="@style/HomeButtonStyle"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:text="新增玩家"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/tv_start" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -56,7 +56,7 @@ class HistoryFragment : BaseBindingFragment<FragmentHistoryBinding>() {
 
         clickedPos = position
         val game = games[position]
-        val action = HistoryFragmentDirections.actionHistoryFragmentToZhuiFenFragment(
+        val action = HistoryFragmentDirections.actionToZhuiFen(
             Gson().fromJson(game.game.detail, ZhuiFenGame::class.java), true
         )
         findNavController().navigate(action)

@@ -26,6 +26,17 @@ data class ZhuiFenGame(
     )
 
     /**
+     * 拿到当轮游戏的玩家分数记录表
+     */
+    fun getRoundPlayers() = players.map { player ->
+        player.copy(
+            name = player.name,
+            score = 0,
+            id = player.id
+        )
+    }
+
+    /**
      * 追分规则
      */
     data class Rule(

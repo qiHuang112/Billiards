@@ -7,7 +7,7 @@ data class PlayerEntity(
     @ColumnInfo(name = "player_name")
     val playerName: String,
     @ColumnInfo(name = "total_score")
-    val totalScore: Long,
+    var totalScore: Long,
     @PrimaryKey(autoGenerate = true)
     var id: Long? = null,
 )

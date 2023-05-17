@@ -35,7 +35,7 @@ class MainFragment : BaseBindingFragment<FragmentMainBinding>() {
                 val action = MainFragmentDirections.actionToHistory()
                 findNavController().navigate(action)
             },
-            MainAdapter.MainItem("新增玩家") {
+            MainAdapter.MainItem("玩家列表") {
                 val action = MainFragmentDirections.actionToNewPlayer()
                 findNavController().navigate(action)
             },

@@ -59,7 +59,7 @@ class ZhuiFenConfigFragment : BaseBindingFragment<FragmentZhuifenConfigBinding>(
     override fun onCustomResume() {
         launch {
             val dbPlayers = DbUtil.getAllPlayers().map {
-                EditPlayer(it.playerName)
+                EditPlayer(it.playerName, it.id!!)
             }
             players.clear()
             players.addAll(dbPlayers)
@@ -78,7 +78,7 @@ class ZhuiFenConfigFragment : BaseBindingFragment<FragmentZhuifenConfigBinding>(
         return ZhuiFenGame(
             mutableListOf(),
             playerAdapter.editPlayers.map { ep ->
-                Player(ep.name, editRules.find { it.name == "初始分数" }?.score ?: 100)
+                Player(ep.name, editRules.find { it.name == "初始分数" }?.score ?: 100, ep.id)
             },
             rule,
             editRules.find { it.name == "基数" }?.score ?: 5,
@@ -116,7 +116,8 @@ class ZhuiFenConfigFragment : BaseBindingFragment<FragmentZhuifenConfigBinding>(
         )
 
         data class EditPlayer(
-            var name: String
+            var name: String,
+            var id: Long
         )
     }
 }

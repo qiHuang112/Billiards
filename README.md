@@ -1,4 +1,9 @@
-## 架构：jetpack Navigation + Room + ViewBinding + 协程
+## 架构
+
+- jetpack Navigation
+- Room
+- ViewBinding
+- 协程
 
 ## 计划
 
@@ -10,14 +15,6 @@
 
 ## 已完成
 
-- 追分页面逻辑
-- 追分页面最近一次历史记录
-- 首页button列表改成RecyclerView
-- 引入ViewBinding
-- 对局结束后自动下一局，撤回操作支持对局撤回
-- 增加对局总结功能
-- 增加修改玩家功能
-- 主页增加历史记录查看功能
-- 引入room，协程
-- 自动保存上一次的游戏配置
-- 支持总分
+- 多人追分
+- 查看历史记录
+- 新增玩家

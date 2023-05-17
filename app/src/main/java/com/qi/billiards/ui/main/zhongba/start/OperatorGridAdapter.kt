@@ -1,4 +1,4 @@
-package com.qi.billiards.ui.main.zhuifen.start
+package com.qi.billiards.ui.main.zhongba.start
 
 import android.graphics.Color
 import android.view.LayoutInflater
@@ -30,5 +30,6 @@ class OperatorGridAdapter(
     }
 
     override fun getItemCount() = userOperators.size
+
 
 }

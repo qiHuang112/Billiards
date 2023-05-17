@@ -1,6 +1,6 @@
 package com.qi.billiards.config
 
-import com.qi.billiards.ui.main.zhuifen.start.OperatorGridAdapter
+import com.qi.billiards.ui.main.UserOperator
 
 object Config {
 
@@ -55,7 +55,32 @@ object Config {
         )
 
         val userOperators = MutableList(opMap.size) {
-            OperatorGridAdapter.UserOperator(opMap.getOrDefault(it, "[未定义操作]"), it, opColorMap[it])
+            UserOperator(opMap.getOrDefault(it, "[未定义操作]"), it, opColorMap[it])
+        }
+    }
+
+    object ZhongBa {
+        const val OP_0 = 0 // 普胜
+        const val OP_1 = 1 // 炸请
+        const val OP_2 = 2 // 接清
+        const val OP_3 = 3 // 撤回
+
+        val opMap = linkedMapOf(
+            OP_0 to "普胜",
+            OP_1 to "炸请",
+            OP_2 to "接清",
+            OP_3 to "撤回",
+        )
+
+        val opColorMap = linkedMapOf(
+            OP_0 to "#4CAF50",
+            OP_1 to "#FFD700",
+            OP_2 to "#FFC107",
+            OP_3 to "#2196F3",
+        )
+
+        val userOperators = MutableList(opMap.size) {
+            UserOperator(opMap.getOrDefault(it, "[未定义操作]"), it, opColorMap[it])
         }
     }
 

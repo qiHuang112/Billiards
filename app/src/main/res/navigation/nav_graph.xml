@@ -17,7 +17,7 @@
 
         <action
             android:id="@+id/action_to_zhongBa"
-            app:destination="@id/zhongBaFragment" />
+            app:destination="@id/zhongBaConfigFragment" />
         <action
             android:id="@+id/action_to_history"
             app:destination="@id/historyFragment" />
@@ -66,11 +66,34 @@
         android:name="com.qi.billiards.ui.main.NewPlayerFragment"
         android:label="NewPlayerFragment"
         tools:layout="@layout/fragment_new_player" />
+
+    <fragment
+        android:id="@+id/zhongBaConfigFragment"
+        android:name="com.qi.billiards.ui.main.zhongba.ZhongBaConfigFragment"
+        android:label="ZhongBaConfig Fragment"
+        tools:layout="@layout/fragment_zhongba_config">
+
+        <action
+            android:id="@+id/action_to_zhongBa"
+            app:destination="@id/zhongBaFragment" />
+
+        <action
+            android:id="@+id/action_to_newPlayer"
+            app:destination="@id/newPlayerFragment" />
+
+    </fragment>
     <fragment
         android:id="@+id/zhongBaFragment"
-        android:name="com.qi.billiards.ui.main.ZhongBaFragment"
+        android:name="com.qi.billiards.ui.main.zhongba.start.ZhongBaFragment"
         android:label="ZhongBaFragment"
-        tools:layout="@layout/fragment_zhongba" />
+        tools:layout="@layout/fragment_zhongba">
+        <argument
+            android:name="zhongBaGame"
+            app:argType="com.qi.billiards.game.ZhongBaGame" />
+        <argument
+            android:name="reload"
+            app:argType="boolean" />
+    </fragment>
 
     <fragment
         android:id="@+id/historyFragment"
@@ -81,6 +104,9 @@
         <action
             android:id="@+id/action_to_zhuiFen"
             app:destination="@id/zhuiFenFragment" />
+        <action
+            android:id="@+id/action_to_zhongBa"
+            app:destination="@id/zhongBaFragment" />
     </fragment>
     <fragment
         android:id="@+id/scoreFragment"

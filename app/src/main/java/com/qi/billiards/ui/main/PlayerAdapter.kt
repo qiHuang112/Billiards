@@ -1,14 +1,15 @@
-package com.qi.billiards.ui.main.zhuifen
+package com.qi.billiards.ui.main
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.qi.billiards.databinding.ItemCurrentPlayerBinding
+import com.qi.billiards.game.EditPlayer
 import com.qi.billiards.ui.base.BaseBindingAdapter
 import java.util.*
 
 class PlayerAdapter(
-    val editPlayers: MutableList<ZhuiFenConfigFragment.Companion.EditPlayer>
+    val editPlayers: MutableList<EditPlayer>
 ) : BaseBindingAdapter<ItemCurrentPlayerBinding>() {
 
     override fun getBinding(parent: ViewGroup): ItemCurrentPlayerBinding {

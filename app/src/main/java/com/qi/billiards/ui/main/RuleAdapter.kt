@@ -1,13 +1,14 @@
-package com.qi.billiards.ui.main.zhuifen
+package com.qi.billiards.ui.main
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.qi.billiards.databinding.ItemCurrentRuleBinding
+import com.qi.billiards.game.EditRule
 import com.qi.billiards.ui.base.BaseBindingAdapter
 import com.qi.billiards.util.safeToInt
 
 class RuleAdapter(
-    val rules: List<ZhuiFenConfigFragment.Companion.EditRule>
+    val rules: List<EditRule>
 ) : BaseBindingAdapter<ItemCurrentRuleBinding>() {
 
     override fun getBinding(parent: ViewGroup): ItemCurrentRuleBinding {

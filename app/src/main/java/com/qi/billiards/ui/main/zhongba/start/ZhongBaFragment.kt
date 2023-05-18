@@ -171,7 +171,7 @@ class ZhongBaFragment : BaseBindingFragment<FragmentZhongbaBinding>() {
             val players = operatorProfit.map {
                 DbUtil.getPlayerById(it.id).also { entity ->
                     if (entity != null) {
-                        entity.totalScore += it.score
+                        entity.totalScore += it.score * game.base
                     }
                 }
             }

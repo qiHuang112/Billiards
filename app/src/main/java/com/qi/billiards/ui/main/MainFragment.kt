@@ -39,10 +39,6 @@ class MainFragment : BaseBindingFragment<FragmentMainBinding>() {
                 val action = MainFragmentDirections.actionToNewPlayer()
                 findNavController().navigate(action)
             },
-            MainAdapter.MainItem("分数统计") {
-                val action = MainFragmentDirections.actionToScore()
-                findNavController().navigate(action)
-            },
             MainAdapter.MainItem("附录") {
                 val action = MainFragmentDirections.actionToAppendix()
                 findNavController().navigate(action)

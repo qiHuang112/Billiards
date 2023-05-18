@@ -9,12 +9,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.qi.billiards.config.Config
 import com.qi.billiards.databinding.FragmentZhuifenConfigBinding
 import com.qi.billiards.db.DbUtil
-import com.qi.billiards.game.During
-import com.qi.billiards.game.EditPlayer
-import com.qi.billiards.game.Player
-import com.qi.billiards.game.ZhuiFenGame
+import com.qi.billiards.game.*
 import com.qi.billiards.ui.base.BaseBindingFragment
 import com.qi.billiards.ui.main.PlayerAdapter
+import com.qi.billiards.ui.main.RuleAdapter
 import com.qi.billiards.util.get
 import com.qi.billiards.util.safeToInt
 import com.qi.billiards.util.save
@@ -99,23 +97,18 @@ class ZhuiFenConfigFragment : BaseBindingFragment<FragmentZhuifenConfigBinding>(
 
     companion object {
 
-        private const val KEY_RULES = "KEY_RULES"
+        private const val KEY_RULES_ZHUI_FEN = "KEY_RULES_ZHUI_FEN"
         private const val DEFAULT_RULES = "0|1|4|7|7|1"
 
         private fun getDefaultRules(): List<EditRule> {
-            return get(KEY_RULES, DEFAULT_RULES).split("|").mapIndexed { index, score ->
+            return get(KEY_RULES_ZHUI_FEN, DEFAULT_RULES).split("|").mapIndexed { index, score ->
                 EditRule(Config.ZhuiFen.ruleString[index], score.safeToInt())
             }
         }
 
         private fun saveDefaultRules(rules: List<EditRule>) {
-            save(KEY_RULES, rules.joinToString("|") { it.score.toString() })
+            save(KEY_RULES_ZHUI_FEN, rules.joinToString("|") { it.score.toString() })
         }
-
-        data class EditRule(
-            var name: String,
-            var score: Int,
-        )
 
     }
 }

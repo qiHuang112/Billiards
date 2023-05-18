@@ -60,6 +60,15 @@ object Config {
     }
 
     object ZhongBa {
+
+        val ruleString = listOf(
+            "初始分数",
+            "普胜得分",
+            "炸清得分",
+            "接清得分",
+            "基数",
+        )
+
         const val OP_0 = 0 // 普胜
         const val OP_1 = 1 // 炸请
         const val OP_2 = 2 // 接清

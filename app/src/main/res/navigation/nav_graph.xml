@@ -21,9 +21,6 @@
         <action
             android:id="@+id/action_to_history"
             app:destination="@id/historyFragment" />
-        <action
-            android:id="@+id/action_to_score"
-            app:destination="@id/scoreFragment" />
 
         <action
             android:id="@+id/action_to_newPlayer"
@@ -108,11 +105,6 @@
             android:id="@+id/action_to_zhongBa"
             app:destination="@id/zhongBaFragment" />
     </fragment>
-    <fragment
-        android:id="@+id/scoreFragment"
-        android:name="com.qi.billiards.ui.main.ScoreFragment"
-        android:label="ScoreFragment"
-        tools:layout="@layout/fragment_score" />
     <fragment
         android:id="@+id/appendixFragment"
         android:name="com.qi.billiards.ui.main.AppendixFragment"

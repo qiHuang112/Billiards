@@ -14,7 +14,7 @@ data class ZhongBaGame(
     val players: List<Player>, // 玩家
     val summaries: LinkedHashMap<String, MutableMap<String, Int>>, // 所有玩家总结
     val rule: Rule = Rule(1, 1, 1), // 规则
-    val base: Int = 1, // 基数
+    val base: Int = 5, // 基数
     val during: During = During(Date()), // 总时长
     var id: Long? = null
 ) : Serializable {

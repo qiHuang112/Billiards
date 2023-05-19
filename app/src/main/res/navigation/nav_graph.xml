@@ -109,7 +109,25 @@
         android:id="@+id/appendixFragment"
         android:name="com.qi.billiards.ui.main.AppendixFragment"
         android:label="AppendixFragment"
-        tools:layout="@layout/fragment_appendix" />
+        tools:layout="@layout/fragment_appendix">
+
+        <action
+            android:id="@+id/action_to_ruleMaking"
+            app:destination="@id/ruleMakingFragment" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/ruleMakingFragment"
+        android:name="com.qi.billiards.ui.main.RuleMakingFragment"
+        android:label="RuleMakingFragment"
+        tools:layout="@layout/fragment_rule_making">
+
+        <argument
+            android:name="gameType"
+            app:argType="string" />
+
+    </fragment>
 
 
 </navigation>

@@ -57,6 +57,15 @@ object Config {
         val userOperators = MutableList(opMap.size) {
             UserOperator(opMap.getOrDefault(it, "[未定义操作]"), it, opColorMap[it])
         }
+
+        val rules = listOf(
+            "赢得比赛：打进九号球且无犯规，算赢得比赛",
+            "扣分顺序：在没有要求解球的情况下，当前玩家得分，上家扣分。否则当前玩家得分，下家扣分，犯规罚分逻辑一样",
+            "小金：场上有1有9，只要打进9号，且无犯规，就算小金",
+            "大金：开球后清台，且无犯规，算大金",
+            "输球：自由球进了9号，或者正常击打时9号进球且犯规了，不仅算输球，也算犯规，犯规罚分给上家，下家得一个普胜",
+            "争议球：肉眼无法分辨是否犯规，算好球",
+        )
     }
 
     object ZhongBa {
@@ -91,6 +100,10 @@ object Config {
         val userOperators = MutableList(opMap.size) {
             UserOperator(opMap.getOrDefault(it, "[未定义操作]"), it, opColorMap[it])
         }
+
+        val rules = listOf(
+            "争议球：肉眼无法分辨是否犯规，算好球",
+        )
     }
 
 }

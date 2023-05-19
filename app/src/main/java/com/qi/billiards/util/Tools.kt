@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.res.Resources
 import android.util.DisplayMetrics
 import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.google.gson.Gson
@@ -86,3 +88,8 @@ fun <T> Continuation<T>.safeResume(value: T): Unit =
 inline fun <reified T> T.toJson(): String = Gson().toJson(this)
 
 inline fun <reified T> String.fromJson(): T = Gson().fromJson(this, T::class.java)
+
+fun Fragment.hideSystemKeyboard(et: EditText) {
+    val imm = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    imm.hideSoftInputFromWindow(et.windowToken, 0)
+}

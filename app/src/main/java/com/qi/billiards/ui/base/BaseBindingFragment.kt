@@ -13,6 +13,7 @@ import kotlinx.coroutines.cancel
 abstract class BaseBindingFragment<T : ViewBinding> : Fragment(), CoroutineScope by MainScope() {
     private var _binding: T? = null
     protected val binding get() = _binding!!
+    protected var destroyed = false
 
     abstract fun getBinding(inflater: LayoutInflater, container: ViewGroup?): T
 
@@ -54,6 +55,7 @@ abstract class BaseBindingFragment<T : ViewBinding> : Fragment(), CoroutineScope
 
     override fun onDestroyView() {
         super.onDestroyView()
+        destroyed = true
         _binding = null
         cancel()
     }

@@ -2,6 +2,7 @@ package com.qi.billiards.ui.main
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.widget.doAfterTextChanged
 import com.qi.billiards.databinding.ItemCurrentRuleBinding
 import com.qi.billiards.game.EditRule
 import com.qi.billiards.ui.base.BaseBindingAdapter
@@ -26,6 +27,9 @@ class RuleAdapter(
 
         holder.binding.etNumber.setText("${rule.score}")
         holder.binding.etNumber.setSelection("${rule.score}".length)
+        holder.binding.etNumber.doAfterTextChanged {
+            rule.score = holder.binding.etNumber.text.toString().safeToInt()
+        }
         holder.binding.ivAdd.setOnClickListener {
             rule.score = holder.binding.etNumber.text.toString().safeToInt() + 1
             notifyItemChanged(position)

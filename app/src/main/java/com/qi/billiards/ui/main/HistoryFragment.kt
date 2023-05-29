@@ -36,7 +36,7 @@ class HistoryFragment : BaseBindingFragment<FragmentHistoryBinding>() {
         }
 
         launch {
-            DbUtil.getAllGames().map { GameEntityAdapter.HistoryGame(it) }.let(games::addAll)
+            DbUtil.getAllGamesDESC().map { GameEntityAdapter.HistoryGame(it) }.let(games::addAll)
             gameAdapter.notifyItemRangeChanged(0, games.size)
         }
     }

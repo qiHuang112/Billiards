@@ -30,7 +30,7 @@ class DePlayerAdapter(
     }
 
     private fun getDetail(player: DePlayer): CharSequence {
-        return "${player.name} 买入${player.buyCount}次，剩余筹码${player.score}，台费${"%.1f".format(player.cost)}，益损${player.profit}"
+        return "${player.name} 买入${player.buyCount}次，剩余筹码${"%.0f".format(player.score)}，台费${"%.1f".format(player.cost)}，益损${player.profit}"
     }
 
 

@@ -20,6 +20,10 @@ class PlayerEntityAdapter(
             tvPlayerName.text = player.playerName
             tvId.text = player.id.toString()
             tvTotalScore.text = player.totalScore.toString()
+            tvWinCount.text = player.winCount.toString()
+            tvTotalCount.text = player.totalCount.toString()
+            tvWinRate.text = "${String.format("%.2f", 100.0 * player.winCount / player.totalCount)}%"
+            tvCost.text = String.format("%.1f", player.totalCost)
             root.setOnLongClickListener {
                 onLongClick(position)
                 true

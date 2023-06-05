@@ -16,6 +16,7 @@ import com.qi.billiards.databinding.DialogEditDePlayerBinding
 import com.qi.billiards.databinding.FragmentDeBinding
 import com.qi.billiards.db.DbUtil
 import com.qi.billiards.db.GameEntity
+import com.qi.billiards.db.PlayerEntity
 import com.qi.billiards.game.DeGame
 import com.qi.billiards.game.DePlayer
 import com.qi.billiards.ui.base.BaseBindingFragment
@@ -32,6 +33,7 @@ class DeFragment : BaseBindingFragment<FragmentDeBinding>() {
     private lateinit var game: DeGame
     private lateinit var deConfigs: LinkedHashMap<String, Double>
     private lateinit var dePlayers: MutableList<DePlayer>
+    private lateinit var lastDePlayers: List<DePlayer> // 用于数据库统计收益
 
     override fun getBinding(inflater: LayoutInflater, container: ViewGroup?): FragmentDeBinding {
         return FragmentDeBinding.inflate(inflater, container, false)
@@ -71,6 +73,7 @@ class DeFragment : BaseBindingFragment<FragmentDeBinding>() {
         game = args.deGame
         deConfigs = game.configs
         dePlayers = game.players
+        lastDePlayers = dePlayers.map { it.copy() }
     }
 
     private fun showDeleteDialog(position: Int) {
@@ -91,13 +94,30 @@ class DeFragment : BaseBindingFragment<FragmentDeBinding>() {
         dialogBinding.apply {
             tvPlayer.text = dePlayer.name
             tvConfirm.setOnClickListener {
-                dePlayers.removeAt(position)
+                val removed = dePlayers.removeAt(position)
                 updateCost()
                 dialog.dismiss()
+                removePlayerEntity(removed)
             }
         }
 
         dialog.show()
+    }
+
+    private fun removePlayerEntity(removed: DePlayer) = launch {
+        val entity = getPlayerEntity(removed.name)
+        entity -= removed
+        DbUtil.addPlayer(entity)
+    }
+
+    private suspend fun getPlayerEntity(name: String): PlayerEntity {
+        var entity = DbUtil.getPlayerByName(name)
+        if (entity == null) {
+            entity = PlayerEntity(name)
+            val id = DbUtil.addPlayer(entity)
+            entity.id = id
+        }
+        return entity
     }
 
     private fun showEditDialog(position: Int) = launch {
@@ -127,6 +147,27 @@ class DeFragment : BaseBindingFragment<FragmentDeBinding>() {
         }
         binding.rvConfig.adapter?.notifyItemChanged(3)
         saveGame()
+        savePlayer()
+    }
+
+    private fun savePlayer() = launch {
+        lastDePlayers.map { dePlayer ->
+            val entity = getPlayerEntity(dePlayer.name)
+            entity -= dePlayer
+            entity
+        }.toTypedArray().let {
+            DbUtil.addPlayers(*it)
+        }
+
+        lastDePlayers = dePlayers.map { it.copy() }
+
+        dePlayers.map { dePlayer ->
+            val entity = getPlayerEntity(dePlayer.name)
+            entity += dePlayer
+            entity
+        }.toTypedArray().let {
+            DbUtil.addPlayers(*it)
+        }
     }
 
     private fun saveGame() = launch {
@@ -141,7 +182,7 @@ class DeFragment : BaseBindingFragment<FragmentDeBinding>() {
 
     private suspend fun getPlayerByDialog(position: Int) = suspendCoroutine { continuation ->
 
-        val dePlayer = if (position == -1) DePlayer("", game.configs["单次买入"]!!.toInt()) else dePlayers[position]
+        val dePlayer = if (position == -1) DePlayer("", 0.0) else dePlayers[position]
         var dBinding: DialogEditDePlayerBinding? = DialogEditDePlayerBinding.inflate(LayoutInflater.from(context))
         val dialogBinding = dBinding!!
 
@@ -159,6 +200,7 @@ class DeFragment : BaseBindingFragment<FragmentDeBinding>() {
                 tvTitle.text = "新增玩家"
                 tvName.visibility = View.VISIBLE
                 etInputName.visibility = View.VISIBLE
+                etInputName.hint = "请输入名称"
                 etInputName.requestFocus()
             } else {
                 tvTitle.text = dePlayer.name
@@ -166,7 +208,12 @@ class DeFragment : BaseBindingFragment<FragmentDeBinding>() {
                 etInputName.visibility = View.GONE
             }
 
-            etInputScore.setText(dePlayer.score.toString())
+            if (dePlayer.score == 0.0) {
+                etInputScore.hint = "请输入剩余筹码"
+                etInputScore.setText("")
+            } else {
+                etInputScore.setText(dePlayer.score.toString())
+            }
             etInputBuyCount.setText(dePlayer.buyCount.toString())
 
             val updatePlayerProfit: (DePlayer) -> Unit = {
@@ -179,11 +226,9 @@ class DeFragment : BaseBindingFragment<FragmentDeBinding>() {
             }
             etInputBuyCount.doAfterTextChanged {
                 dePlayer.buyCount = it.toString().safeToInt()
-                updatePlayerProfit(dePlayer)
             }
             etInputScore.doAfterTextChanged {
-                dePlayer.score = it.toString().safeToInt()
-                updatePlayerProfit(dePlayer)
+                dePlayer.score = it.toString().safeToInt().toDouble()
             }
             etInputAa.doAfterTextChanged {
                 dePlayer.size = it.toString().safeToInt()
@@ -195,6 +240,7 @@ class DeFragment : BaseBindingFragment<FragmentDeBinding>() {
             etInputAa.setText(dePlayer.size.toString())
 
             tvConfirm.setOnClickListener {
+                updatePlayerProfit(dePlayer)
                 continuation.safeResume(dePlayer)
                 dialog.dismiss()
             }
@@ -202,6 +248,22 @@ class DeFragment : BaseBindingFragment<FragmentDeBinding>() {
 
         dialog.show()
 
+    }
+
+    private operator fun PlayerEntity.minusAssign(dePlayer: DePlayer) {
+        this.totalCount--
+        this.totalCost -= dePlayer.cost
+        this.totalScore -= (dePlayer.score - (dePlayer.buyCount + 1) * game.configs["单次买入"]!!.toInt()) / game.configs["汇率"]!!
+        val win = if (dePlayer.profit > 0) 1 else -1
+        this.winCount -= win
+    }
+
+    private operator fun PlayerEntity.plusAssign(dePlayer: DePlayer) {
+        this.totalCount++
+        this.totalCost += dePlayer.cost
+        this.totalScore += (dePlayer.score - (dePlayer.buyCount + 1) * game.configs["单次买入"]!!.toInt()) / game.configs["汇率"]!!
+        val win = if (dePlayer.profit > 0) 1 else -1
+        this.winCount += win
     }
 
     companion object {

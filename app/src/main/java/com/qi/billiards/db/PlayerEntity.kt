@@ -8,6 +8,10 @@ data class PlayerEntity(
     val playerName: String,
     @ColumnInfo(name = "total_score")
     var totalScore: Long,
+    @ColumnInfo(name = "total_count")
+    var totalCount: Long,
+    @ColumnInfo(name = "win_count")
+    var winCount: Long,
     @PrimaryKey(autoGenerate = true)
     var id: Long? = null,
 )

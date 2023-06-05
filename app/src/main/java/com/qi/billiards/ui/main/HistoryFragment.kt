@@ -11,8 +11,6 @@ import com.qi.billiards.config.Config
 import com.qi.billiards.databinding.FragmentHistoryBinding
 import com.qi.billiards.db.DbUtil
 import com.qi.billiards.game.DeGame
-import com.qi.billiards.game.ZhongBaGame
-import com.qi.billiards.game.ZhuiFenGame
 import com.qi.billiards.ui.base.BaseBindingFragment
 import kotlinx.coroutines.launch
 
@@ -60,18 +58,6 @@ class HistoryFragment : BaseBindingFragment<FragmentHistoryBinding>() {
         clickedPos = position
         val game = games[position]
         when (game.game.gameType) {
-            Config.TYPE_ZHUI_FEN -> {
-                val action = HistoryFragmentDirections.actionToZhuiFen(
-                    Gson().fromJson(game.game.detail, ZhuiFenGame::class.java), true
-                )
-                findNavController().navigate(action)
-            }
-            Config.TYPE_ZHONG_BA -> {
-                val action = HistoryFragmentDirections.actionToZhongBa(
-                    Gson().fromJson(game.game.detail, ZhongBaGame::class.java), true
-                )
-                findNavController().navigate(action)
-            }
             Config.TYPE_DE -> {
                 val deGame = Gson().fromJson(game.game.detail, DeGame::class.java)
                 val action = HistoryFragmentDirections.actionToDe(

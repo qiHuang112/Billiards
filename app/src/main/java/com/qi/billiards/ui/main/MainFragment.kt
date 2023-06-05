@@ -24,18 +24,10 @@ class MainFragment : BaseBindingFragment<FragmentMainBinding>() {
 
     private fun getMainItems(): List<MainAdapter.MainItem> {
         return listOf(
-            MainAdapter.MainItem("追分") {
-                val action = MainFragmentDirections.actionToZhuiFenConfig()
-                findNavController().navigate(action)
-            },
             MainAdapter.MainItem("德") {
                 val action = MainFragmentDirections.actionToDe(
                     DeGame(mutableListOf(), DeFragment.getDeConfigs()), false
                 )
-                findNavController().navigate(action)
-            },
-            MainAdapter.MainItem("中八") {
-                val action = MainFragmentDirections.actionToZhongBa()
                 findNavController().navigate(action)
             },
             MainAdapter.MainItem("历史记录") {
@@ -43,11 +35,7 @@ class MainFragment : BaseBindingFragment<FragmentMainBinding>() {
                 findNavController().navigate(action)
             },
             MainAdapter.MainItem("玩家列表") {
-                val action = MainFragmentDirections.actionToNewPlayer()
-                findNavController().navigate(action)
-            },
-            MainAdapter.MainItem("附录") {
-                val action = MainFragmentDirections.actionToAppendix()
+                val action = MainFragmentDirections.actionToPlayer()
                 findNavController().navigate(action)
             },
         )

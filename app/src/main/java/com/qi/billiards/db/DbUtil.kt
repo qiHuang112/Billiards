@@ -7,8 +7,4 @@ private val gameDb by lazy {
     Room.databaseBuilder(AppContext, GameDatabase::class.java, "a.db").build()
 }
 
-private val ruleDb by lazy {
-    Room.databaseBuilder(AppContext, RuleDatabase::class.java, "rule.db").build()
-}
-
-object DbUtil : PlayerDao by gameDb.playerDao(), GameDao by gameDb.gameDao(), RuleDao by ruleDb.ruleDao()
+object DbUtil : PlayerDao by gameDb.playerDao(), GameDao by gameDb.gameDao()

@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.qi.billiards.databinding.FragmentMainBinding
+import com.qi.billiards.game.DeGame
 import com.qi.billiards.ui.base.BaseBindingFragment
 
 class MainFragment : BaseBindingFragment<FragmentMainBinding>() {
@@ -25,6 +26,12 @@ class MainFragment : BaseBindingFragment<FragmentMainBinding>() {
         return listOf(
             MainAdapter.MainItem("追分") {
                 val action = MainFragmentDirections.actionToZhuiFenConfig()
+                findNavController().navigate(action)
+            },
+            MainAdapter.MainItem("德") {
+                val action = MainFragmentDirections.actionToDe(
+                    DeGame(mutableListOf(), DeFragment.getDeConfigs()), false
+                )
                 findNavController().navigate(action)
             },
             MainAdapter.MainItem("中八") {

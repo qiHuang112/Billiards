@@ -12,6 +12,10 @@
         tools:layout="@layout/fragment_main">
 
         <action
+            android:id="@+id/action_to_de"
+            app:destination="@id/deFragment" />
+
+        <action
             android:id="@+id/action_to_zhuiFenConfig"
             app:destination="@id/zhuiFenConfigFragment" />
 
@@ -28,6 +32,22 @@
         <action
             android:id="@+id/action_to_appendix"
             app:destination="@id/appendixFragment" />
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/deFragment"
+        android:name="com.qi.billiards.ui.main.DeFragment"
+        android:label="De Fragment"
+        tools:layout="@layout/fragment_de">
+
+        <argument
+            android:name="deGame"
+            app:argType="com.qi.billiards.game.DeGame" />
+        <argument
+            android:name="reload"
+            app:argType="boolean" />
+
     </fragment>
 
     <fragment
@@ -104,6 +124,9 @@
         <action
             android:id="@+id/action_to_zhongBa"
             app:destination="@id/zhongBaFragment" />
+        <action
+            android:id="@+id/action_to_de"
+            app:destination="@id/deFragment" />
     </fragment>
     <fragment
         android:id="@+id/appendixFragment"

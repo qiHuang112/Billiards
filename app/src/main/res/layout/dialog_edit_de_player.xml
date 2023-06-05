@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:height="40dp"
+        android:gravity="center"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="黄麒" />
+
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:gravity="center"
+        android:text="姓名"
+        android:textColor="@color/black"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toStartOf="@+id/et_input_name"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_title" />
+
+    <EditText
+        android:id="@+id/et_input_name"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:background="@null"
+        android:gravity="center"
+        android:inputType="text"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/tv_score"
+        app:layout_constraintTop_toBottomOf="@+id/tv_title"
+        tools:text="黄麒" />
+
+    <TextView
+        android:id="@+id/tv_score"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:gravity="center"
+        android:text="剩余筹码"
+        android:textColor="@color/black"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toStartOf="@+id/et_input_score"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_name" />
+
+    <EditText
+        android:id="@+id/et_input_score"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:background="@null"
+        android:gravity="center"
+        android:inputType="number"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/tv_score"
+        app:layout_constraintTop_toBottomOf="@+id/tv_name"
+        tools:text="2120" />
+
+    <TextView
+        android:id="@+id/tv_buy_count"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:gravity="center"
+        android:text="买入次数"
+        android:textColor="@color/black"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toStartOf="@+id/et_input_buy_count"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_score" />
+
+    <EditText
+        android:id="@+id/et_input_buy_count"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:background="@null"
+        android:gravity="center"
+        android:inputType="number"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/tv_buy_count"
+        app:layout_constraintTop_toBottomOf="@id/tv_score"
+        tools:text="0" />
+
+    <TextView
+        android:id="@+id/tv_aa"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:gravity="center"
+        android:text="AA人数"
+        android:textColor="@color/black"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toStartOf="@+id/et_input_aa"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_buy_count" />
+
+    <EditText
+        android:id="@+id/et_input_aa"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:background="@null"
+        android:gravity="center"
+        android:inputType="number"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/tv_aa"
+        app:layout_constraintTop_toBottomOf="@id/tv_buy_count"
+        tools:text="0" />
+
+    <TextView
+        android:id="@+id/tv_confirm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#2196F3"
+        android:padding="5dp"
+        android:text="确定"
+        android:textColor="@color/white"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/et_input_aa" />
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -17,7 +17,7 @@ import kotlin.coroutines.resume
 
 fun String.safeToInt(): Int {
     return try {
-        toInt()
+        toDouble().toInt()
     } catch (t: Throwable) {
         0
     }

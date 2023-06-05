@@ -6,10 +6,12 @@ object Config {
 
     const val TYPE_ZHUI_FEN = 1
     const val TYPE_ZHONG_BA = 2
+    const val TYPE_DE = 3
 
     val gameType = mapOf(
         TYPE_ZHUI_FEN to "追分",
         TYPE_ZHONG_BA to "中八",
+        TYPE_DE to "德",
     )
 
     object ZhuiFen {

@@ -10,6 +10,7 @@ import com.google.gson.Gson
 import com.qi.billiards.config.Config
 import com.qi.billiards.databinding.FragmentHistoryBinding
 import com.qi.billiards.db.DbUtil
+import com.qi.billiards.game.DeGame
 import com.qi.billiards.game.ZhongBaGame
 import com.qi.billiards.game.ZhuiFenGame
 import com.qi.billiards.ui.base.BaseBindingFragment
@@ -68,6 +69,13 @@ class HistoryFragment : BaseBindingFragment<FragmentHistoryBinding>() {
             Config.TYPE_ZHONG_BA -> {
                 val action = HistoryFragmentDirections.actionToZhongBa(
                     Gson().fromJson(game.game.detail, ZhongBaGame::class.java), true
+                )
+                findNavController().navigate(action)
+            }
+            Config.TYPE_DE -> {
+                val deGame = Gson().fromJson(game.game.detail, DeGame::class.java)
+                val action = HistoryFragmentDirections.actionToDe(
+                    deGame, true
                 )
                 findNavController().navigate(action)
             }

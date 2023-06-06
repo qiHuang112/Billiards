@@ -23,8 +23,9 @@ class GameEntityAdapter(
         holder.binding.apply {
             tvId.text = game.game.gameId.toString()
             tvGameType.text = Config.gameType[game.game.gameType] ?: "未知"
-            tvStartTime.text = game.game.startTime?.let { Date(it) }.format("yyyy年MM月dd日HH:mm:ss")
-
+            tvStartTime.text = game.game.startTime?.let { Date(it) }
+                .format("yyyy年MM月dd日HH:mm:ss")
+                .removeSuffix("00:00:00")
             root.setOnClickListener {
                 onClickGame(position)
             }

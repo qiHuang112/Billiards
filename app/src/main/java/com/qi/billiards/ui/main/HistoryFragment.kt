@@ -14,6 +14,9 @@ import com.qi.billiards.game.DeGame
 import com.qi.billiards.ui.base.BaseBindingFragment
 import kotlinx.coroutines.launch
 
+/**
+ * 历史对局
+ */
 class HistoryFragment : BaseBindingFragment<FragmentHistoryBinding>() {
 
     private val games = mutableListOf<GameEntityAdapter.HistoryGame>()

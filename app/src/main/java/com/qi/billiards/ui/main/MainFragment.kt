@@ -10,6 +10,9 @@ import com.qi.billiards.databinding.FragmentMainBinding
 import com.qi.billiards.game.DeGame
 import com.qi.billiards.ui.base.BaseBindingFragment
 
+/**
+ * 首页
+ */
 class MainFragment : BaseBindingFragment<FragmentMainBinding>() {
 
     override fun getBinding(inflater: LayoutInflater, container: ViewGroup?): FragmentMainBinding {

@@ -11,6 +11,9 @@ import com.qi.billiards.db.PlayerEntity
 import com.qi.billiards.ui.base.BaseBindingFragment
 import kotlinx.coroutines.launch
 
+/**
+ * 玩家列表
+ */
 class PlayerFragment : BaseBindingFragment<FragmentPlayerBinding>() {
 
     private val players = mutableListOf<PlayerEntity>()

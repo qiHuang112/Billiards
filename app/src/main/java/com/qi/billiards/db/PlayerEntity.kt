@@ -16,4 +16,11 @@ data class PlayerEntity(
     var winCount: Long = 0,
     @PrimaryKey(autoGenerate = true)
     var id: Long? = null,
-)
+) {
+    fun getWinRate(): String {
+        if (totalCount == 0L) {
+            return "0.00%"
+        }
+        return "${String.format("%.2f", 100.0 * winCount / totalCount)}%"
+    }
+}

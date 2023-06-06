@@ -208,11 +208,11 @@ class DeFragment : BaseBindingFragment<FragmentDeBinding>() {
                 etInputName.visibility = View.GONE
             }
 
-            if (dePlayer.score == 0.0) {
+            if (dePlayer.score == 0.0 && position == -1) {
                 etInputScore.hint = "请输入剩余筹码"
                 etInputScore.setText("")
             } else {
-                etInputScore.setText(dePlayer.score.toString())
+                etInputScore.setText(dePlayer.score.toInt().toString())
             }
             etInputBuyCount.setText(dePlayer.buyCount.toString())
 

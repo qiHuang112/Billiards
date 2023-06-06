@@ -254,7 +254,7 @@ class DeFragment : BaseBindingFragment<FragmentDeBinding>() {
         this.totalCount--
         this.totalCost -= dePlayer.cost
         this.totalScore -= (dePlayer.score - (dePlayer.buyCount + 1) * game.configs["单次买入"]!!.toInt()) / game.configs["汇率"]!!
-        val win = if (dePlayer.profit > 0) 1 else -1
+        val win = if (dePlayer.profit > 0) 1 else 0
         this.winCount -= win
     }
 
@@ -262,7 +262,7 @@ class DeFragment : BaseBindingFragment<FragmentDeBinding>() {
         this.totalCount++
         this.totalCost += dePlayer.cost
         this.totalScore += (dePlayer.score - (dePlayer.buyCount + 1) * game.configs["单次买入"]!!.toInt()) / game.configs["汇率"]!!
-        val win = if (dePlayer.profit > 0) 1 else -1
+        val win = if (dePlayer.profit > 0) 1 else 0
         this.winCount += win
     }
 

@@ -5,12 +5,50 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <RadioGroup
+        android:id="@+id/rg_sort"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <RadioButton
+            android:id="@+id/rb_default"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:checked="true"
+            android:text="默认顺序"
+            android:textColor="@color/black"
+            android:textSize="15sp" />
+
+        <RadioButton
+            android:id="@+id/rb_win_rate"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="按胜率"
+            android:textColor="@color/black"
+            android:textSize="15sp" />
+
+        <RadioButton
+            android:id="@+id/rb_profits"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="按收益"
+            android:textColor="@color/black"
+            android:textSize="15sp" />
+
+    </RadioGroup>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_player_entity"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rg_sort"
         app:layout_constraintVertical_bias="0.0"
         tools:listitem="@layout/item_player" />
 

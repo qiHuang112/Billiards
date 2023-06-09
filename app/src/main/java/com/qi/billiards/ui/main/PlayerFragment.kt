@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.qi.billiards.R
 import com.qi.billiards.databinding.FragmentPlayerBinding
 import com.qi.billiards.db.DbUtil
 import com.qi.billiards.db.PlayerEntity
@@ -28,6 +29,23 @@ class PlayerFragment : BaseBindingFragment<FragmentPlayerBinding>() {
     }
 
     private fun initView() {
+
+        binding.rgSort.setOnCheckedChangeListener { _, checkedId ->
+            when (checkedId) {
+                R.id.rb_win_rate -> players.sortBy {
+                    -it.getWinRate().removeSuffix("%").toDouble()
+                }
+                R.id.rb_profits -> players.sortBy {
+                    -it.totalScore
+                }
+
+                else -> players.sortBy {
+                    it.id
+                }
+            }
+            playerAdapter.notifyItemRangeChanged(0, players.size)
+        }
+
         binding.rvPlayerEntity.apply {
             adapter = playerAdapter
             layoutManager = LinearLayoutManager(context)

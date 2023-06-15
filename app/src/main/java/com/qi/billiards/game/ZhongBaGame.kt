@@ -46,7 +46,7 @@ data class ZhongBaGame(
         val win: Int, // 普胜得分
         val zhaqing: Int, // 炸清得分
         val jieqing: Int, // 接清得分
-    )
+    ) : Serializable
 
 }
 

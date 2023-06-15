@@ -5,7 +5,7 @@ object Config {
     const val TYPE_DE = 3
 
     val gameType = mapOf(
-        TYPE_DE to "德",
+        TYPE_DE to "麻将",
     )
 
 }

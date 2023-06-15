@@ -268,8 +268,8 @@ class DeFragment : BaseBindingFragment<FragmentDeBinding>() {
 
     companion object {
         fun getDeConfigs() = linkedMapOf(
-            "单次买入" to 1000.0,
-            "汇率" to 5.0,
+            "单次买入" to 3000.0,
+            "汇率" to 10.0,
             "台费" to 0.0,
             "误差筹码" to 0.0
         )

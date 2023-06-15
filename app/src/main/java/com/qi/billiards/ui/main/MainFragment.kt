@@ -27,7 +27,7 @@ class MainFragment : BaseBindingFragment<FragmentMainBinding>() {
 
     private fun getMainItems(): List<MainAdapter.MainItem> {
         return listOf(
-            MainAdapter.MainItem("德") {
+            MainAdapter.MainItem("麻将") {
                 val action = MainFragmentDirections.actionToDe(
                     DeGame(mutableListOf(), DeFragment.getDeConfigs()), false
                 )

@@ -110,16 +110,6 @@ class DeFragment : BaseBindingFragment<FragmentDeBinding>() {
         DbUtil.addPlayer(entity)
     }
 
-    private suspend fun getPlayerEntity(name: String): PlayerEntity {
-        var entity = DbUtil.getPlayerByName(name)
-        if (entity == null) {
-            entity = PlayerEntity(name)
-            val id = DbUtil.addPlayer(entity)
-            entity.id = id
-        }
-        return entity
-    }
-
     private fun showEditDialog(position: Int) = launch {
         val dePlayer = getPlayerByDialog(position)
         if (dePlayer != null) {
@@ -273,6 +263,16 @@ class DeFragment : BaseBindingFragment<FragmentDeBinding>() {
             "台费" to 0.0,
             "误差筹码" to 0.0
         )
+
+        suspend fun getPlayerEntity(name: String): PlayerEntity {
+            var entity = DbUtil.getPlayerByName(name)
+            if (entity == null) {
+                entity = PlayerEntity(name)
+                val id = DbUtil.addPlayer(entity)
+                entity.id = id
+            }
+            return entity
+        }
 
     }
 

@@ -9,9 +9,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.qi.billiards.config.Config.dividerKey
 import com.qi.billiards.databinding.FragmentMainBinding
 import com.qi.billiards.db.DbUtil
+import com.qi.billiards.db.PlayerEntity
 import com.qi.billiards.game.DeGame
+import com.qi.billiards.game.DePlayer
 import com.qi.billiards.ui.base.BaseBindingFragment
 import com.qi.billiards.util.copyToClipboard
+import com.qi.billiards.util.fromJson
 import com.qi.billiards.util.toJson
 import com.qi.billiards.util.toast
 import kotlinx.coroutines.launch
@@ -51,9 +54,46 @@ class MainFragment : BaseBindingFragment<FragmentMainBinding>() {
             MainAdapter.MainItem("导入历史") {
                 val action = MainFragmentDirections.actionToImport()
                 findNavController().navigate(action)
-            }
+            },
+            MainAdapter.MainItem("修复数据", ::restore),
         )
     }
+
+    private fun PlayerEntity.plusAssign(game: DeGame, dePlayer: DePlayer) {
+        this.totalCount++
+        this.totalCost += dePlayer.cost
+        this.totalScore += (dePlayer.score - (dePlayer.buyCount + 1) * game.configs["单次买入"]!!.toInt()) / game.configs["汇率"]!!
+        val win = if (dePlayer.profit > 0) 1 else 0
+        this.winCount += win
+    }
+
+    private fun restore() {
+        launch {
+            val playerMap = mutableMapOf<String, PlayerEntity>()
+
+            DbUtil.getAllGames().map {
+                it.detail.fromJson<DeGame>()!!.apply {
+                    players.map { dePlayer ->
+                        val player = if (playerMap.contains(dePlayer.name)) {
+                            playerMap[dePlayer.name]!!
+                        } else {
+                            val playerEntity = DeFragment.getPlayerEntity(dePlayer.name)
+                            playerMap[dePlayer.name] = playerEntity
+                            playerEntity
+                        }
+                        player.plusAssign(this, dePlayer)
+                    }
+                }
+            }
+
+            DbUtil.deleteAllPlayers()
+            DbUtil.addPlayers(*playerMap.values.toTypedArray())
+            toast("修复完成")
+
+        }
+
+    }
+
 
     private fun exportData() {
         launch {

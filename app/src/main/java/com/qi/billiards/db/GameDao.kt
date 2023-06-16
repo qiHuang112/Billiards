@@ -22,4 +22,10 @@ interface GameDao {
 
     @Delete
     suspend fun deleteGame(gameEntity: GameEntity)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun addGames(vararg games: GameEntity)
+
+    @Query("DELETE FROM game")
+    suspend fun deleteAllGames()
 }

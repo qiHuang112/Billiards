@@ -6,9 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.qi.billiards.config.Config.dividerKey
 import com.qi.billiards.databinding.FragmentMainBinding
+import com.qi.billiards.db.DbUtil
 import com.qi.billiards.game.DeGame
 import com.qi.billiards.ui.base.BaseBindingFragment
+import com.qi.billiards.util.copyToClipboard
+import com.qi.billiards.util.toJson
+import com.qi.billiards.util.toast
+import kotlinx.coroutines.launch
 
 /**
  * 首页
@@ -41,7 +47,20 @@ class MainFragment : BaseBindingFragment<FragmentMainBinding>() {
                 val action = MainFragmentDirections.actionToPlayer()
                 findNavController().navigate(action)
             },
+            MainAdapter.MainItem("导出历史", ::exportData),
+            MainAdapter.MainItem("导入历史") {
+                val action = MainFragmentDirections.actionToImport()
+                findNavController().navigate(action)
+            }
         )
+    }
+
+    private fun exportData() {
+        launch {
+            val data = "${DbUtil.getAllPlayers().toJson()}${dividerKey}${DbUtil.getAllGames().toJson()}"
+            copyToClipboard(data)
+            toast("本地数据已复制到剪切板")
+        }
     }
 
 }

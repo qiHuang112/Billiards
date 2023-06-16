@@ -22,6 +22,10 @@
         <action
             android:id="@+id/action_to_player"
             app:destination="@id/playerFragment" />
+
+        <action
+            android:id="@+id/action_to_import"
+            app:destination="@id/importFragment" />
     </fragment>
 
 
@@ -56,5 +60,11 @@
             android:id="@+id/action_to_de"
             app:destination="@id/deFragment" />
     </fragment>
+
+    <fragment
+        android:id="@+id/importFragment"
+        android:name="com.qi.billiards.ui.main.ImportFragment"
+        android:label="ImportFragment"
+        tools:layout="@layout/fragment_import" />
 
 </navigation>

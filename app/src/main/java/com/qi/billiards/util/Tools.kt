@@ -1,5 +1,7 @@
 package com.qi.billiards.util
 
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.res.Resources
 import android.util.DisplayMetrics
@@ -87,9 +89,15 @@ fun <T> Continuation<T>.safeResume(value: T): Unit =
 
 inline fun <reified T> T.toJson(): String = Gson().toJson(this)
 
-inline fun <reified T> String.fromJson(): T = Gson().fromJson(this, T::class.java)
+inline fun <reified T> String.fromJson(): T? = Gson().fromJson(this, T::class.java)
 
 fun Fragment.hideSystemKeyboard(et: EditText) {
     val imm = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     imm.hideSoftInputFromWindow(et.windowToken, 0)
+}
+
+fun copyToClipboard(text: String) {
+    val clipboardManager = AppContext.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+    val clipData = ClipData.newPlainText("label", text)
+    clipboardManager.setPrimaryClip(clipData)
 }

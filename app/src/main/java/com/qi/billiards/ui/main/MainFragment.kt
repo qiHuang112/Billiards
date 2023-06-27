@@ -71,6 +71,8 @@ class MainFragment : BaseBindingFragment<FragmentMainBinding>() {
         launch {
             val playerMap = mutableMapOf<String, PlayerEntity>()
 
+            DbUtil.deleteAllPlayers()
+
             DbUtil.getAllGames().map {
                 it.detail.fromJson<DeGame>()!!.apply {
                     players.map { dePlayer ->
@@ -86,7 +88,6 @@ class MainFragment : BaseBindingFragment<FragmentMainBinding>() {
                 }
             }
 
-            DbUtil.deleteAllPlayers()
             DbUtil.addPlayers(*playerMap.values.toTypedArray())
             toast("修复完成")
 

@@ -11,9 +11,6 @@ interface GameDao {
     @Query("SELECT * FROM game ORDER BY game_id DESC")
     suspend fun getAllGamesDESC(): List<GameEntity>
 
-    @Query("SELECT * FROM game WHERE game_type=:type")
-    suspend fun getGamesByType(type: Int): List<GameEntity>
-
     @Query("SELECT * FROM game WHERE game_id=:id")
     suspend fun getGameById(id: Long): GameEntity?
 

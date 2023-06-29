@@ -2,12 +2,11 @@ package com.qi.billiards.ui.main
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import com.qi.billiards.config.Config
 import com.qi.billiards.databinding.ItemGameBinding
 import com.qi.billiards.db.GameEntity
 import com.qi.billiards.ui.base.BaseBindingAdapter
 import com.qi.billiards.util.format
-import java.util.Date
+import java.util.*
 
 class GameEntityAdapter(
     private val games: MutableList<HistoryGame>,
@@ -22,7 +21,6 @@ class GameEntityAdapter(
         val game = games[position]
         holder.binding.apply {
             tvId.text = game.game.gameId.toString()
-            tvGameType.text = Config.gameType[game.game.gameType] ?: "未知"
             tvStartTime.text = game.game.startTime?.let { Date(it) }.format("yyyy年MM月dd日")
             root.setOnClickListener {
                 onClickGame(position)

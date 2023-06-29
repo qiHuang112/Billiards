@@ -10,7 +10,6 @@ import androidx.core.widget.doAfterTextChanged
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.qi.billiards.config.Config
 import com.qi.billiards.databinding.DialogDeletePlayerBinding
 import com.qi.billiards.databinding.DialogEditDePlayerBinding
 import com.qi.billiards.databinding.FragmentDeBinding
@@ -105,7 +104,7 @@ class DeFragment : BaseBindingFragment<FragmentDeBinding>() {
     }
 
     private fun removePlayerEntity(removed: DePlayer) = launch {
-        val entity = getPlayerEntity(removed.name)
+        val entity = DbUtil.getPlayerEntity(removed.name)
         entity -= removed
         DbUtil.addPlayer(entity)
     }
@@ -142,7 +141,7 @@ class DeFragment : BaseBindingFragment<FragmentDeBinding>() {
 
     private fun savePlayer() = launch {
         lastDePlayers.map { dePlayer ->
-            val entity = getPlayerEntity(dePlayer.name)
+            val entity = DbUtil.getPlayerEntity(dePlayer.name)
             entity -= dePlayer
             entity
         }.toTypedArray().let {
@@ -152,7 +151,7 @@ class DeFragment : BaseBindingFragment<FragmentDeBinding>() {
         lastDePlayers = dePlayers.map { it.copy() }
 
         dePlayers.map { dePlayer ->
-            val entity = getPlayerEntity(dePlayer.name)
+            val entity = DbUtil.getPlayerEntity(dePlayer.name)
             entity += dePlayer
             entity
         }.toTypedArray().let {
@@ -162,10 +161,10 @@ class DeFragment : BaseBindingFragment<FragmentDeBinding>() {
 
     private fun saveGame() = launch {
         if (game.id == null) {
-            val gameEntity = GameEntity(Config.TYPE_DE, game.startTime, game.startTime, game.toJson())
+            val gameEntity = GameEntity(game.startTime, game.startTime, game.toJson())
             game.id = DbUtil.addOrUpdateGame(gameEntity)
         } else {
-            val gameEntity = GameEntity(Config.TYPE_DE, game.startTime, game.startTime, game.toJson(), game.id)
+            val gameEntity = GameEntity(game.startTime, game.startTime, game.toJson(), game.id)
             DbUtil.addOrUpdateGame(gameEntity)
         }
     }
@@ -263,16 +262,6 @@ class DeFragment : BaseBindingFragment<FragmentDeBinding>() {
             "台费" to 0.0,
             "误差筹码" to 0.0
         )
-
-        suspend fun getPlayerEntity(name: String): PlayerEntity {
-            var entity = DbUtil.getPlayerByName(name)
-            if (entity == null) {
-                entity = PlayerEntity(name)
-                val id = DbUtil.addPlayer(entity)
-                entity.id = id
-            }
-            return entity
-        }
 
     }
 

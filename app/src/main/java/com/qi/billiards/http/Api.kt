@@ -32,7 +32,7 @@ val api by lazy {
 interface Api {
 
     @Streaming
-    @GET("https://github.com/qiHuang112/Billiards/releases/download/v1.0/{key}")
+    @GET("https://github.com/qiHuang112/Billiards/releases/download/v1.1/{key}")
     suspend fun getHistory(@Path("key") key: String): ResponseBody
 
 }

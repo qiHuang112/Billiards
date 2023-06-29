@@ -11,23 +11,11 @@
         android:layout_height="40dp"
         android:gravity="center"
         android:textColor="@color/black"
-        app:layout_constraintEnd_toStartOf="@id/tv_game_type"
+        app:layout_constraintEnd_toStartOf="@id/tv_start_time"
         app:layout_constraintHorizontal_weight="1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="1" />
-
-    <TextView
-        android:id="@+id/tv_game_type"
-        android:layout_width="0dp"
-        android:layout_height="40dp"
-        android:gravity="center"
-        android:textColor="@color/black"
-        app:layout_constraintEnd_toStartOf="@id/tv_start_time"
-        app:layout_constraintHorizontal_weight="1"
-        app:layout_constraintStart_toEndOf="@id/tv_id"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="追分" />
 
     <TextView
         android:id="@+id/tv_start_time"
@@ -37,7 +25,7 @@
         android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_weight="1"
-        app:layout_constraintStart_toEndOf="@id/tv_game_type"
+        app:layout_constraintStart_toEndOf="@id/tv_id"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="2023年05月13日09:38:58" />
 

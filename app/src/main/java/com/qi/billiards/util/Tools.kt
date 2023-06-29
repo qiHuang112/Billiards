@@ -1,10 +1,12 @@
 package com.qi.billiards.util
 
+import android.app.AlertDialog
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.res.Resources
 import android.util.DisplayMetrics
+import android.view.LayoutInflater
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
@@ -12,10 +14,13 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.google.gson.Gson
 import com.qi.billiards.AppContext
+import com.qi.billiards.databinding.DialogNormalTipsBinding
+import com.qi.billiards.ui.base.BaseBindingFragment
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 fun String.safeToInt(): Int {
     return try {
@@ -100,4 +105,41 @@ fun copyToClipboard(text: String) {
     val clipboardManager = AppContext.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
     val clipData = ClipData.newPlainText("label", text)
     clipboardManager.setPrimaryClip(clipData)
+}
+
+
+suspend fun BaseBindingFragment<*>.getBooleanByDialog(
+    content: String = "",
+    title: String = "温馨提示",
+    confirm: String = "确认",
+    cancel: String = "取消",
+) = suspendCoroutine { continuation ->
+    var dBinding: DialogNormalTipsBinding? = DialogNormalTipsBinding.inflate(LayoutInflater.from(context))
+    val dialogBinding = dBinding!!
+
+    val dialog = AlertDialog.Builder(context)
+        .setView(dialogBinding.root)
+        .create()
+
+    dialog.setOnDismissListener {
+        continuation.safeResume(false)
+        dBinding = null
+    }
+
+    dialogBinding.apply {
+        tvTitle.text = title
+        tvConfirm.text = confirm
+        tvCancel.text = cancel
+        tvContent.text = content
+
+        tvConfirm.setOnClickListener {
+            dialog.dismiss()
+            continuation.safeResume(true)
+        }
+        tvCancel.setOnClickListener {
+            dialog.dismiss()
+            continuation.safeResume(false)
+        }
+    }
+    dialog.show()
 }

@@ -10,6 +10,8 @@ import com.qi.billiards.databinding.FragmentPlayerBinding
 import com.qi.billiards.db.DbUtil
 import com.qi.billiards.db.PlayerEntity
 import com.qi.billiards.ui.base.BaseBindingFragment
+import com.qi.billiards.util.get
+import com.qi.billiards.util.save
 import kotlinx.coroutines.launch
 
 /**
@@ -43,6 +45,7 @@ class PlayerFragment : BaseBindingFragment<FragmentPlayerBinding>() {
                     it.id
                 }
             }
+            save(KEY_LAST_SORTED_METHOD, checkedId)
             playerAdapter.notifyItemRangeChanged(0, players.size)
         }
 
@@ -54,7 +57,12 @@ class PlayerFragment : BaseBindingFragment<FragmentPlayerBinding>() {
         launch {
             DbUtil.getAllPlayers().let(players::addAll)
             playerAdapter.notifyItemRangeChanged(0, players.size)
+            binding.rgSort.check(get(KEY_LAST_SORTED_METHOD, R.id.rb_default))
         }
 
+    }
+
+    companion object {
+        const val KEY_LAST_SORTED_METHOD = "KEY_LAST_SORTED_METHOD"
     }
 }

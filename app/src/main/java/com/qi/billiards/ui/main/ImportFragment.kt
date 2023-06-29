@@ -6,12 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.qi.billiards.config.Config.dividerKey
 import com.qi.billiards.databinding.DialogImportItemBinding
 import com.qi.billiards.databinding.FragmentImportBinding
 import com.qi.billiards.db.DbUtil
 import com.qi.billiards.db.GameEntity
-import com.qi.billiards.db.PlayerEntity
 import com.qi.billiards.http.api
 import com.qi.billiards.ui.base.BaseBindingFragment
 import com.qi.billiards.util.*
@@ -28,9 +26,7 @@ class ImportFragment : BaseBindingFragment<FragmentImportBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding.rvImport.apply {
-            adapter = ImportAdapter(importItems) {
-                applyItem(importItems[it])
-            }
+            adapter = ImportAdapter(importItems, ::onClickItem, ::onLongClickItem)
             layoutManager = LinearLayoutManager(context)
         }
 
@@ -46,23 +42,41 @@ class ImportFragment : BaseBindingFragment<FragmentImportBinding>() {
         }
     }
 
-    private fun applyItem(item: ImportAdapter.ImportItem) {
+    private suspend fun applyItem(item: ImportAdapter.ImportItem) {
         try {
-            val arr = item.content!!.split(dividerKey)
-            val players = arr[0].fromJson<Array<PlayerEntity>>()!!
-            val games = arr[1].fromJson<Array<GameEntity>>()!!
-            launch {
-                DbUtil.deleteAllPlayers()
-                DbUtil.deleteAllGames()
-                DbUtil.addPlayers(*players)
-                DbUtil.addGames(*games)
-                toast("应用成功")
-            }
+            val games = item.content!!.fromJson<Array<GameEntity>>()!!
+            DbUtil.deleteAllGames()
+            DbUtil.addGames(*games)
+            DbUtil.updatePlayersByGames(games)
+            toast("应用成功")
         } catch (t: Throwable) {
             toast("应用失败")
         }
     }
 
+    private fun onClickItem(position: Int) = launch {
+        val item = importItems[position]
+        val key = item.key
+        if (getBooleanByDialog("确定应用${key}数据吗？")) {
+            applyItem(item)
+        }
+    }
+
+    private fun onLongClickItem(position: Int) = launch {
+        val item = importItems[position]
+        val key = item.key
+        if (getBooleanByDialog("重新拉取${key}数据吗？")) {
+            val (content, error) = getContentOrError(key)
+            if (error.isNotEmpty()) {
+                toast(error)
+            } else if (judgeContent(content)) {
+                importItems[position] = ImportAdapter.ImportItem(key, content)
+                toast("拉取成功！")
+            } else {
+                toast("数据错误！")
+            }
+        }
+    }
 
     private suspend fun getImportItemByDialog() = suspendCoroutine { continuation ->
 
@@ -132,14 +146,9 @@ class ImportFragment : BaseBindingFragment<FragmentImportBinding>() {
         if (content.isBlank()) {
             return false
         }
-        val arr = content.split(dividerKey)
-        if (arr.size != 2) {
-            return false
-        }
         var isOk = true
         try {
-            arr[0].fromJson<Array<PlayerEntity>>()
-            arr[1].fromJson<Array<GameEntity>>()
+            content.fromJson<Array<GameEntity>>()
         } catch (t: Throwable) {
             isOk = false
         }
@@ -148,7 +157,7 @@ class ImportFragment : BaseBindingFragment<FragmentImportBinding>() {
 
     private fun getImportItems(): MutableList<ImportAdapter.ImportItem> {
         return get(KEY_IMPORT_ITEMS, "")
-            ?.fromJson<Array<ImportAdapter.ImportItem>>()
+            .fromJson<Array<ImportAdapter.ImportItem>>()
             ?.toMutableList()
             ?: mutableListOf()
     }

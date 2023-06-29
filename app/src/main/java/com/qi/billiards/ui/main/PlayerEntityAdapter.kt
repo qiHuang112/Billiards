@@ -18,7 +18,6 @@ class PlayerEntityAdapter(
         val player = players[position]
         holder.binding.apply {
             tvPlayerName.text = player.playerName
-            tvId.text = player.id.toString()
             tvTotalScore.text = player.totalScore.toString()
             tvWinCount.text = player.winCount.toString()
             tvTotalCount.text = player.totalCount.toString()

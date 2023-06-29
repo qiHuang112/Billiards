@@ -9,6 +9,7 @@ import java.util.Date
 
 class ImportAdapter(
     private val importItems: MutableList<ImportItem>,
+    private val onClick: (Int) -> Unit = {},
     private val onLongClick: (Int) -> Unit = {}
 ) : BaseBindingAdapter<ItemImportBinding>() {
 
@@ -23,6 +24,9 @@ class ImportAdapter(
         holder.binding.apply {
             tvKey.text = importItem.key
             tvTime.text = Date(importItem.createTime).format("yyyy/MM/dd HH:mm:ss")
+            root.setOnClickListener {
+                onClick(position)
+            }
             root.setOnLongClickListener {
                 onLongClick(position)
                 true

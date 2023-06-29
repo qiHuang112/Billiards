@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
-import com.qi.billiards.config.Config
 import com.qi.billiards.databinding.FragmentHistoryBinding
 import com.qi.billiards.db.DbUtil
 import com.qi.billiards.game.DeGame
@@ -60,14 +59,10 @@ class HistoryFragment : BaseBindingFragment<FragmentHistoryBinding>() {
 
         clickedPos = position
         val game = games[position]
-        when (game.game.gameType) {
-            Config.TYPE_DE -> {
-                val deGame = Gson().fromJson(game.game.detail, DeGame::class.java)
-                val action = HistoryFragmentDirections.actionToDe(
-                    deGame, true
-                )
-                findNavController().navigate(action)
-            }
-        }
+        val deGame = Gson().fromJson(game.game.detail, DeGame::class.java)
+        val action = HistoryFragmentDirections.actionToDe(
+            deGame, true
+        )
+        findNavController().navigate(action)
     }
 }

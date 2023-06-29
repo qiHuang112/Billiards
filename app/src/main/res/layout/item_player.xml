@@ -30,31 +30,6 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="黄麒" />
 
-
-            <TextView
-                android:id="@+id/tv_id"
-                android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:gravity="center"
-                android:minWidth="30dp"
-                android:textColor="@color/black"
-                android:textSize="15sp"
-                app:layout_constraintBottom_toTopOf="@id/tv_id_desc"
-                app:layout_constraintLeft_toLeftOf="parent"
-                tools:text="1" />
-
-            <TextView
-                android:id="@+id/tv_id_desc"
-                android:layout_width="wrap_content"
-                android:layout_height="20dp"
-                android:gravity="center"
-                android:text="id"
-                android:textColor="@color/black"
-                android:textSize="11sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toLeftOf="@id/tv_id"
-                app:layout_constraintRight_toRightOf="@id/tv_id" />
-
             <TextView
                 android:id="@+id/tv_win_count"
                 android:layout_width="wrap_content"
@@ -64,7 +39,7 @@
                 android:textColor="@color/black"
                 android:textSize="15sp"
                 app:layout_constraintBottom_toTopOf="@id/tv_win_count_desc"
-                app:layout_constraintLeft_toRightOf="@+id/tv_id"
+                app:layout_constraintLeft_toLeftOf="parent"
                 tools:text="10" />
 
             <TextView

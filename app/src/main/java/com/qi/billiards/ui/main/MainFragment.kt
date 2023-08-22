@@ -6,13 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.qi.billiards.bean.Game
+import com.qi.billiards.data.AppData
 import com.qi.billiards.databinding.FragmentMainBinding
-import com.qi.billiards.db.DbUtil
-import com.qi.billiards.game.DeGame
 import com.qi.billiards.ui.base.BaseBindingFragment
-import com.qi.billiards.util.copyToClipboard
-import com.qi.billiards.util.toJson
-import com.qi.billiards.util.toast
+import com.qi.billiards.util.getBooleanByDialog
 import kotlinx.coroutines.launch
 
 /**
@@ -30,35 +28,55 @@ class MainFragment : BaseBindingFragment<FragmentMainBinding>() {
         binding.rvMain.layoutManager = LinearLayoutManager(context)
     }
 
-    private fun getMainItems(): List<MainAdapter.MainItem> {
-        return listOf(
-            MainAdapter.MainItem("开始") {
-                val action = MainFragmentDirections.actionToDe(
-                    DeGame(mutableListOf(), DeFragment.getDeConfigs()), false
-                )
-                findNavController().navigate(action)
-            },
-            MainAdapter.MainItem("历史记录") {
-                val action = MainFragmentDirections.actionToHistory()
-                findNavController().navigate(action)
-            },
-            MainAdapter.MainItem("玩家列表") {
-                val action = MainFragmentDirections.actionToPlayer()
-                findNavController().navigate(action)
-            },
-            MainAdapter.MainItem("导出历史", ::exportData),
-            MainAdapter.MainItem("导入历史") {
-                val action = MainFragmentDirections.actionToImport()
-                findNavController().navigate(action)
-            },
-        )
+    override fun onCustomResume() {
+
+        launch {
+            if (AppData.keys.isEmpty()) {
+                if (getBooleanByDialog("请至少添加一种游戏！")) {
+                    val action = MainFragmentDirections.actionToSettings()
+                    findNavController().navigate(action)
+                }
+            } else if (AppData.keyUpdated) {
+                binding.rvMain.adapter = MainAdapter(getMainItems())
+                AppData.keyUpdated = false
+            }
+        }
     }
 
-    private fun exportData() {
-        launch {
-            val data = DbUtil.getAllGames().toJson()
-            copyToClipboard(data)
-            toast("本地数据已复制到剪切板")
+    private fun getMainItems(): List<MainAdapter.MainItem> {
+
+        return AppData.keys.map {
+            MainAdapter.MainItem(it) {
+                val action = MainFragmentDirections.actionToGame(
+                    Game(GameFragment.getConfigs(), mutableListOf(), it), false
+                )
+                findNavController().navigate(action)
+            }
+        }.toMutableList().apply {
+            addAll(
+                listOf(
+                    MainAdapter.MainItem("历史记录") {
+                        val action = MainFragmentDirections.actionToHistory()
+                        findNavController().navigate(action)
+                    },
+                    MainAdapter.MainItem("盈亏榜单") {
+                        val action = MainFragmentDirections.actionToData()
+                        findNavController().navigate(action)
+                    },
+//                    MainAdapter.MainItem("盈亏榜单") {
+//                        val action = MainFragmentDirections.actionToPlayer()
+//                        findNavController().navigate(action)
+//                    },
+//                    MainAdapter.MainItem("导入历史") {
+//                        val action = MainFragmentDirections.actionToImport()
+//                        findNavController().navigate(action)
+//                    },
+                    MainAdapter.MainItem("设置") {
+                        val action = MainFragmentDirections.actionToSettings()
+                        findNavController().navigate(action)
+                    }
+                )
+            )
         }
     }
 

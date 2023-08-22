@@ -7,35 +7,34 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.widget.doAfterTextChanged
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.qi.billiards.databinding.DialogDeletePlayerBinding
 import com.qi.billiards.databinding.DialogEditDePlayerBinding
-import com.qi.billiards.databinding.FragmentDeBinding
-import com.qi.billiards.db.DbUtil
-import com.qi.billiards.db.GameEntity
-import com.qi.billiards.db.PlayerEntity
-import com.qi.billiards.game.DeGame
-import com.qi.billiards.game.DePlayer
+import com.qi.billiards.databinding.FragmentGameBinding
+import com.qi.billiards.bean.Game
+import com.qi.billiards.bean.Player
+import com.qi.billiards.data.AppData
 import com.qi.billiards.ui.base.BaseBindingFragment
 import com.qi.billiards.util.safeResume
 import com.qi.billiards.util.safeToInt
-import com.qi.billiards.util.toJson
+import com.qi.billiards.util.toast
 import kotlinx.coroutines.launch
 import kotlin.coroutines.suspendCoroutine
 
 @SuppressLint("NotifyDataSetChanged")
-class DeFragment : BaseBindingFragment<FragmentDeBinding>() {
+class GameFragment : BaseBindingFragment<FragmentGameBinding>() {
 
-    private val args: DeFragmentArgs by navArgs()
-    private lateinit var game: DeGame
-    private lateinit var deConfigs: LinkedHashMap<String, Double>
-    private lateinit var dePlayers: MutableList<DePlayer>
-    private lateinit var lastDePlayers: List<DePlayer> // 用于数据库统计收益
+    private val args: GameFragmentArgs by navArgs()
+    private lateinit var game: Game
+    private lateinit var configs: LinkedHashMap<String, Double>
+    private lateinit var players: MutableList<Player>
+    private lateinit var lastDePlayers: List<Player> // 用于数据库统计收益
 
-    override fun getBinding(inflater: LayoutInflater, container: ViewGroup?): FragmentDeBinding {
-        return FragmentDeBinding.inflate(inflater, container, false)
+    override fun getBinding(inflater: LayoutInflater, container: ViewGroup?): FragmentGameBinding {
+        return FragmentGameBinding.inflate(inflater, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -47,13 +46,27 @@ class DeFragment : BaseBindingFragment<FragmentDeBinding>() {
 
         initGame()
 
+        binding.tbTitle.apply {
+            setTitle("${game.type}:${game.date.split(" ")[0]}")
+            setOnBackClickListener {
+                findNavController().navigateUp()
+            }
+            setOnMenuClickListener {
+                launch {
+                    if (saveGame()) {
+                        findNavController().navigateUp()
+                    }
+                }
+            }
+        }
+
         binding.rvConfig.apply {
-            adapter = DeConfigAdapter(deConfigs)
+            adapter = ConfigAdapter(configs)
             layoutManager = GridLayoutManager(context, 2)
         }
 
         binding.rvPlayer.apply {
-            adapter = DePlayerAdapter(dePlayers, ::showDeleteDialog, ::showEditDialog)
+            adapter = PlayerAdapter(players, ::showDeleteDialog, ::showEditDialog)
             layoutManager = LinearLayoutManager(context)
         }
 
@@ -61,7 +74,7 @@ class DeFragment : BaseBindingFragment<FragmentDeBinding>() {
             launch {
                 val dePlayer = getPlayerByDialog(-1)
                 if (dePlayer != null) {
-                    dePlayers.add(dePlayer)
+                    players.add(dePlayer)
                     updateCost()
                 }
             }
@@ -69,15 +82,15 @@ class DeFragment : BaseBindingFragment<FragmentDeBinding>() {
     }
 
     private fun initGame() {
-        game = args.deGame
-        deConfigs = game.configs
-        dePlayers = game.players
-        lastDePlayers = dePlayers.map { it.copy() }
+        game = args.game
+        configs = game.configs
+        players = game.players
+        lastDePlayers = players.map { it.copy() }
     }
 
     private fun showDeleteDialog(position: Int) {
 
-        val dePlayer = dePlayers[position]
+        val dePlayer = players[position]
 
         var dBinding: DialogDeletePlayerBinding? = DialogDeletePlayerBinding.inflate(LayoutInflater.from(context))
         val dialogBinding = dBinding!!
@@ -93,37 +106,31 @@ class DeFragment : BaseBindingFragment<FragmentDeBinding>() {
         dialogBinding.apply {
             tvPlayer.text = dePlayer.name
             tvConfirm.setOnClickListener {
-                val removed = dePlayers.removeAt(position)
+                players.removeAt(position)
                 updateCost()
                 dialog.dismiss()
-                removePlayerEntity(removed)
             }
         }
 
         dialog.show()
     }
 
-    private fun removePlayerEntity(removed: DePlayer) = launch {
-        val entity = DbUtil.getPlayerEntity(removed.name)
-        entity -= removed
-        DbUtil.addPlayer(entity)
-    }
 
     private fun showEditDialog(position: Int) = launch {
         val dePlayer = getPlayerByDialog(position)
         if (dePlayer != null) {
-            dePlayers[position] = dePlayer
+            players[position] = dePlayer
             updateCost()
         }
     }
 
     private fun updateCost() {
-        val totalSize = dePlayers.fold(0) { acc, dePlayer ->
-            acc + dePlayer.size
+        val totalSize = players.fold(0) { acc, player ->
+            acc + player.aa
         }
-        dePlayers.forEach { player ->
-            player.cost = if (player.size <= 0) 0.0 else {
-                player.size * deConfigs.getOrDefault("台费", 0.0) / totalSize
+        players.forEach { player ->
+            player.cost = if (player.aa <= 0) 0.0 else {
+                player.aa * configs.getOrDefault("台费", 0.0) / totalSize
             }
         }
         notifyPlayerChanged()
@@ -131,47 +138,15 @@ class DeFragment : BaseBindingFragment<FragmentDeBinding>() {
 
     private fun notifyPlayerChanged() {
         binding.rvPlayer.adapter?.notifyDataSetChanged()
-        game.configs["误差筹码"] = dePlayers.fold(0.0) { acc, dePlayer ->
+        game.configs["误差筹码"] = players.fold(0.0) { acc, dePlayer ->
             acc + dePlayer.profit * game.configs["汇率"]!!
         }
         binding.rvConfig.adapter?.notifyItemChanged(3)
-        saveGame()
-        savePlayer()
-    }
-
-    private fun savePlayer() = launch {
-        lastDePlayers.map { dePlayer ->
-            val entity = DbUtil.getPlayerEntity(dePlayer.name)
-            entity -= dePlayer
-            entity
-        }.toTypedArray().let {
-            DbUtil.addPlayers(*it)
-        }
-
-        lastDePlayers = dePlayers.map { it.copy() }
-
-        dePlayers.map { dePlayer ->
-            val entity = DbUtil.getPlayerEntity(dePlayer.name)
-            entity += dePlayer
-            entity
-        }.toTypedArray().let {
-            DbUtil.addPlayers(*it)
-        }
-    }
-
-    private fun saveGame() = launch {
-        if (game.id == null) {
-            val gameEntity = GameEntity(game.startTime, game.startTime, game.toJson())
-            game.id = DbUtil.addOrUpdateGame(gameEntity)
-        } else {
-            val gameEntity = GameEntity(game.startTime, game.startTime, game.toJson(), game.id)
-            DbUtil.addOrUpdateGame(gameEntity)
-        }
     }
 
     private suspend fun getPlayerByDialog(position: Int) = suspendCoroutine { continuation ->
 
-        val dePlayer = if (position == -1) DePlayer("", 0.0) else dePlayers[position]
+        val dePlayer = if (position == -1) Player("", score = 0.0) else players[position]
         var dBinding: DialogEditDePlayerBinding? = DialogEditDePlayerBinding.inflate(LayoutInflater.from(context))
         val dialogBinding = dBinding!!
 
@@ -205,7 +180,7 @@ class DeFragment : BaseBindingFragment<FragmentDeBinding>() {
             }
             etInputBuyCount.setText(dePlayer.buyCount.toString())
 
-            val updatePlayerProfit: (DePlayer) -> Unit = {
+            val updatePlayerProfit: (Player) -> Unit = {
                 val buyUnit = game.configs["单次买入"]!!
                 it.profit = (-it.buyCount * buyUnit + it.score - buyUnit) / game.configs["汇率"]!!
             }
@@ -220,13 +195,13 @@ class DeFragment : BaseBindingFragment<FragmentDeBinding>() {
                 dePlayer.score = it.toString().safeToInt().toDouble()
             }
             etInputAa.doAfterTextChanged {
-                dePlayer.size = it.toString().safeToInt()
-                val totalSize = dePlayers.fold(if (position == -1) dePlayer.size else 0) { acc, player ->
-                    acc + player.size
+                dePlayer.aa = it.toString().safeToInt()
+                val totalSize = players.fold(if (position == -1) dePlayer.aa else 0) { acc, player ->
+                    acc + player.aa
                 }
-                dePlayer.cost = dePlayer.size * game.configs["台费"]!! / totalSize
+                dePlayer.cost = dePlayer.aa * game.configs["台费"]!! / totalSize
             }
-            etInputAa.setText(dePlayer.size.toString())
+            etInputAa.setText(dePlayer.aa.toString())
 
             tvConfirm.setOnClickListener {
                 updatePlayerProfit(dePlayer)
@@ -239,24 +214,18 @@ class DeFragment : BaseBindingFragment<FragmentDeBinding>() {
 
     }
 
-    private operator fun PlayerEntity.minusAssign(dePlayer: DePlayer) {
-        this.totalCount--
-        this.totalCost -= dePlayer.cost
-        this.totalScore -= (dePlayer.score - (dePlayer.buyCount + 1) * game.configs["单次买入"]!!.toInt()) / game.configs["汇率"]!!
-        val win = if (dePlayer.profit > 0) 1 else 0
-        this.winCount -= win
-    }
+    private fun saveGame(): Boolean {
+        if (players.isEmpty()) {
+            toast("请添加玩家")
+            return false
+        }
 
-    private operator fun PlayerEntity.plusAssign(dePlayer: DePlayer) {
-        this.totalCount++
-        this.totalCost += dePlayer.cost
-        this.totalScore += (dePlayer.score - (dePlayer.buyCount + 1) * game.configs["单次买入"]!!.toInt()) / game.configs["汇率"]!!
-        val win = if (dePlayer.profit > 0) 1 else 0
-        this.winCount += win
+        AppData.addGame(game)
+        return true
     }
 
     companion object {
-        fun getDeConfigs() = linkedMapOf(
+        fun getConfigs() = linkedMapOf(
             "单次买入" to 1000.0,
             "汇率" to 5.0,
             "台费" to 0.0,

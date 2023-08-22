@@ -1,13 +1,17 @@
 package com.qi.billiards.http
 
 import android.util.Log
+import com.qi.billiards.bean.Game
+import com.qi.billiards.ui.main.SettingsFragment
+import com.qi.billiards.util.get
 import okhttp3.OkHttpClient
-import okhttp3.ResponseBody
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.POST
 import retrofit2.http.Path
-import retrofit2.http.Streaming
 import java.util.concurrent.TimeUnit
 
 val api by lazy {
@@ -29,10 +33,22 @@ val api by lazy {
     retrofit.create(Api::class.java)
 }
 
+val apiHost: String
+    get() = get(SettingsFragment.SETTINGS_KEY + SettingsFragment.KEY_HOST, "")
+
+
 interface Api {
 
-    @Streaming
-    @GET("https://github.com/qiHuang112/Billiards/releases/download/v1.1/{key}")
-    suspend fun getHistory(@Path("key") key: String): ResponseBody
+    @GET("http://{host}/getAll/{name}")
+    suspend fun getAll(@Path("host") host: String, @Path("name") name: String): AjaxResponse<Game>
+
+    @POST("http://{host}/addGame")
+    suspend fun addGame(@Path("host") host: String, @Body game: Game): AjaxResponse<*>
+
+    @POST("http://{host}/addAllGame")
+    suspend fun addAllGame(@Path("host") host: String, @Body games: List<Game>): AjaxResponse<*>
+
+    @DELETE("http://{host}/removeAllGames/{name}")
+    suspend fun removeAllGames(@Path("host") host: String, @Path("name") name: String): AjaxResponse<*>
 
 }

@@ -12,12 +12,16 @@
         tools:layout="@layout/fragment_main">
 
         <action
-            android:id="@+id/action_to_de"
-            app:destination="@id/deFragment" />
+            android:id="@+id/action_to_game"
+            app:destination="@id/gameFragment" />
 
         <action
             android:id="@+id/action_to_history"
             app:destination="@id/historyFragment" />
+
+        <action
+            android:id="@+id/action_to_data"
+            app:destination="@id/dataFragment" />
 
         <action
             android:id="@+id/action_to_player"
@@ -26,18 +30,22 @@
         <action
             android:id="@+id/action_to_import"
             app:destination="@id/importFragment" />
+
+        <action
+            android:id="@+id/action_to_settings"
+            app:destination="@id/settingsFragment" />
     </fragment>
 
 
     <fragment
-        android:id="@+id/deFragment"
-        android:name="com.qi.billiards.ui.main.DeFragment"
-        android:label="De Fragment"
-        tools:layout="@layout/fragment_de">
+        android:id="@+id/gameFragment"
+        android:name="com.qi.billiards.ui.main.GameFragment"
+        android:label="Game Fragment"
+        tools:layout="@layout/fragment_game">
 
         <argument
-            android:name="deGame"
-            app:argType="com.qi.billiards.game.DeGame" />
+            android:name="game"
+            app:argType="com.qi.billiards.bean.Game" />
         <argument
             android:name="reload"
             app:argType="boolean" />
@@ -57,8 +65,8 @@
         tools:layout="@layout/fragment_history">
 
         <action
-            android:id="@+id/action_to_de"
-            app:destination="@id/deFragment" />
+            android:id="@+id/action_to_game"
+            app:destination="@id/gameFragment" />
     </fragment>
 
     <fragment
@@ -66,5 +74,18 @@
         android:name="com.qi.billiards.ui.main.ImportFragment"
         android:label="ImportFragment"
         tools:layout="@layout/fragment_import" />
+
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.qi.billiards.ui.main.SettingsFragment"
+        android:label="SettingsFragment"
+        tools:layout="@layout/fragment_settings" />
+
+    <fragment
+        android:id="@+id/dataFragment"
+        android:name="com.qi.billiards.ui.main.DataFragment"
+        android:label="DataFragment"
+        tools:layout="@layout/fragment_data" />
+
 
 </navigation>

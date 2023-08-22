@@ -6,9 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.qi.billiards.R
+import com.qi.billiards.data.AppData
 import com.qi.billiards.databinding.FragmentPlayerBinding
-import com.qi.billiards.db.DbUtil
-import com.qi.billiards.db.PlayerEntity
 import com.qi.billiards.ui.base.BaseBindingFragment
 import com.qi.billiards.util.get
 import com.qi.billiards.util.save
@@ -17,10 +16,10 @@ import kotlinx.coroutines.launch
 /**
  * 玩家列表
  */
-class PlayerFragment : BaseBindingFragment<FragmentPlayerBinding>() {
+class PlayerFragment(val key: String) : BaseBindingFragment<FragmentPlayerBinding>() {
 
-    private val players = mutableListOf<PlayerEntity>()
-    private val playerAdapter = PlayerEntityAdapter(players)
+    private val players = AppData.globalPlayer[key]?.toList()?.map { it.second }?.toMutableList() ?: mutableListOf()
+    private val playerAdapter = GlobalPlayerAdapter(players)
 
     override fun getBinding(inflater: LayoutInflater, container: ViewGroup?): FragmentPlayerBinding {
         return FragmentPlayerBinding.inflate(inflater, container, false)
@@ -38,14 +37,14 @@ class PlayerFragment : BaseBindingFragment<FragmentPlayerBinding>() {
                     -it.getWinRate().removeSuffix("%").toDouble()
                 }
                 R.id.rb_profits -> players.sortBy {
-                    -it.totalScore
+                    -it.score
                 }
 
                 else -> players.sortBy {
-                    it.id
+                    it.name
                 }
             }
-            save(KEY_LAST_SORTED_METHOD, checkedId)
+            save(KEY_LAST_SORTED_METHOD + key, checkedId)
             playerAdapter.notifyItemRangeChanged(0, players.size)
         }
 
@@ -55,14 +54,13 @@ class PlayerFragment : BaseBindingFragment<FragmentPlayerBinding>() {
         }
 
         launch {
-            DbUtil.getAllPlayers().let(players::addAll)
             playerAdapter.notifyItemRangeChanged(0, players.size)
-            binding.rgSort.check(get(KEY_LAST_SORTED_METHOD, R.id.rb_default))
+            binding.rgSort.check(get(KEY_LAST_SORTED_METHOD + key, R.id.rb_default))
         }
 
     }
 
     companion object {
-        const val KEY_LAST_SORTED_METHOD = "KEY_LAST_SORTED_METHOD"
+        const val KEY_LAST_SORTED_METHOD = "KEY_LAST_SORTED_METHOD_"
     }
 }

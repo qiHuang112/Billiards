@@ -32,7 +32,7 @@ object AppData : CoroutineScope by MainScope() {
         keys = get(KEY_GAMES_KEY, "").fromJson<MutableSet<String>>() ?: mutableSetOf()
 
         globalGames = keys.associateWith {
-            get(KEY_GLOBAL_GAMES + it, "").fromJson<List<Game>>() ?: listOf()
+            get(KEY_GLOBAL_GAMES + it, "").fromJson<Array<Game>>()?.toMutableList() ?: listOf()
         }.toMutableMap()
 
         globalGames.forEach { (key, games) ->

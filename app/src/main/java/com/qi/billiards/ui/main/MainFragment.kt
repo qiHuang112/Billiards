@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.qi.billiards.bean.Game
 import com.qi.billiards.data.AppData
 import com.qi.billiards.databinding.FragmentMainBinding
+import com.qi.billiards.http.apiHost
 import com.qi.billiards.ui.base.BaseBindingFragment
 import com.qi.billiards.util.getBooleanByDialog
 import kotlinx.coroutines.launch
@@ -63,16 +64,25 @@ class MainFragment : BaseBindingFragment<FragmentMainBinding>() {
                         val action = MainFragmentDirections.actionToData()
                         findNavController().navigate(action)
                     },
-//                    MainAdapter.MainItem("盈亏榜单") {
-//                        val action = MainFragmentDirections.actionToPlayer()
-//                        findNavController().navigate(action)
-//                    },
-//                    MainAdapter.MainItem("导入历史") {
-//                        val action = MainFragmentDirections.actionToImport()
-//                        findNavController().navigate(action)
-//                    },
+                    MainAdapter.MainItem("导入历史") {
+                        if (apiHost.isBlank()) {
+                            launch {
+                                if (getBooleanByDialog("请先配置服务器地址")) {
+                                    val action = MainFragmentDirections.actionToSettings()
+                                    findNavController().navigate(action)
+                                }
+                            }
+                        } else {
+                            val action = MainFragmentDirections.actionToImport()
+                            findNavController().navigate(action)
+                        }
+                    },
                     MainAdapter.MainItem("设置") {
                         val action = MainFragmentDirections.actionToSettings()
+                        findNavController().navigate(action)
+                    },
+                    MainAdapter.MainItem("开发者功能") {
+                        val action = MainFragmentDirections.actionToDev()
                         findNavController().navigate(action)
                     }
                 )

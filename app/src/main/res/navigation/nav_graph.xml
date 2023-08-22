@@ -34,6 +34,12 @@
         <action
             android:id="@+id/action_to_settings"
             app:destination="@id/settingsFragment" />
+
+<!--        actionToDev-->
+        <action
+            android:id="@+id/action_to_dev"
+            app:destination="@id/devFragment" />
+
     </fragment>
 
 
@@ -87,5 +93,10 @@
         android:label="DataFragment"
         tools:layout="@layout/fragment_data" />
 
+    <fragment
+        android:id="@+id/devFragment"
+        android:name="com.qi.billiards.ui.main.DevFragment"
+        android:label="DevFragment"
+        tools:layout="@layout/fragment_dev" />
 
 </navigation>

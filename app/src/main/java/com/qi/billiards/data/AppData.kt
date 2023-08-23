@@ -3,10 +3,9 @@ package com.qi.billiards.data
 import com.qi.billiards.bean.Game
 import com.qi.billiards.bean.GlobalPlayer
 import com.qi.billiards.bean.Player
-import com.qi.billiards.util.fromJson
-import com.qi.billiards.util.get
-import com.qi.billiards.util.save
-import com.qi.billiards.util.toJson
+import com.qi.billiards.http.api
+import com.qi.billiards.http.apiHost
+import com.qi.billiards.util.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 
@@ -26,6 +25,12 @@ object AppData : CoroutineScope by MainScope() {
     var keys = mutableSetOf<String>()
         private set
     var keyUpdated = false
+
+    var remoteSize = mutableMapOf<String, Int>()
+        private set
+
+    // 是否是在application启动后或者key更新后首次进入mainFragment
+    var needUpdateRemoteKeyInMainFragment = true
 
     fun initFromSp() {
 
@@ -101,5 +106,20 @@ object AppData : CoroutineScope by MainScope() {
         keyUpdated = true
     }
 
+
+    suspend fun updateRemoteSize(key: String) {
+        api.getSize(apiHost, key).data
+            ?.first()
+            ?.safeAs<Double>()
+            ?.toInt()
+            ?.let {
+                remoteSize[key] = it
+            }
+    }
+
+    //用内存中的对应key-size，更新对应key的size
+    fun updateRemoteSizeByAppData(key: String) {
+        remoteSize[key] = globalGames[key]?.size ?: 0
+    }
 
 }

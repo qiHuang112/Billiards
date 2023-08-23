@@ -51,4 +51,8 @@ interface Api {
     @DELETE("http://{host}/removeAllGames/{name}")
     suspend fun removeAllGames(@Path("host") host: String, @Path("name") name: String): AjaxResponse<*>
 
+    @GET("http://{host}/getSize/{name}")
+    suspend fun getSize(@Path("host") host: String, @Path("name") name: String): AjaxResponse<*>
+
+
 }

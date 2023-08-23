@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.google.gson.Gson
@@ -28,6 +29,10 @@ fun String.safeToInt(): Int {
     } catch (t: Throwable) {
         0
     }
+}
+
+fun <T> Any?.safeAs(): T? {
+    return this as? T
 }
 
 fun getScreenWidth(): Int {

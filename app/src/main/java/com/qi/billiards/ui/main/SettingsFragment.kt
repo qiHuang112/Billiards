@@ -32,6 +32,7 @@ class SettingsFragment : BaseBindingFragment<FragmentSettingsBinding>() {
             }
             setOnMenuClickListener {
                 AppData.updateKeys(games)
+                AppData.needUpdateRemoteKeyInMainFragment = true
                 findNavController().navigateUp()
             }
         }

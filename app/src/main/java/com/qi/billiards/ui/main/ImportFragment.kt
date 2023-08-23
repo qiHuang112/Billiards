@@ -17,7 +17,9 @@ import kotlinx.coroutines.launch
 
 class ImportFragment : BaseBindingFragment<FragmentImportBinding>() {
 
-    private val importItems = AppData.keys.toMutableList()
+    private val importItems =
+        AppData.keys.map { it to ((AppData.remoteSize[it] ?: 0) - (AppData.globalGames[it]?.size ?: 0)) }
+            .toMutableList()
 
     override fun getBinding(inflater: LayoutInflater, container: ViewGroup?): FragmentImportBinding {
         return FragmentImportBinding.inflate(inflater, container, false)
@@ -27,14 +29,17 @@ class ImportFragment : BaseBindingFragment<FragmentImportBinding>() {
 
         binding.tvUpdateAll.setOnClickListener {
             launch {
+                binding.pbImport.visibility = View.VISIBLE
                 importItems.forEach {
-                    val (content, error) = getContentOrError(it)
+                    val (content, error) = getContentOrError(it.first)
                     if (error.isNotEmpty()) {
                         toast(error)
                     } else {
-                        AppData.addGlobalGame(it, content)
+                        AppData.addGlobalGame(it.first, content)
+                        AppData.updateRemoteSizeByAppData(it.first)
                     }
                 }
+                binding.pbImport.visibility = View.GONE
                 toast("更新成功！")
             }
         }
@@ -47,13 +52,16 @@ class ImportFragment : BaseBindingFragment<FragmentImportBinding>() {
     }
 
     private fun onLongClickItem(position: Int) = launch {
-        val key = importItems[position]
-        if (getBooleanByDialog("重新拉取${key}数据吗？")) {
-            val (content, error) = getContentOrError(key)
+        val importItem = importItems[position]
+        if (getBooleanByDialog("重新拉取${importItem}数据吗？")) {
+            binding.pbImport.visibility = View.VISIBLE
+            val (content, error) = getContentOrError(importItem.first)
+            binding.pbImport.visibility = View.GONE
             if (error.isNotEmpty()) {
                 toast(error)
             } else {
-                AppData.addGlobalGame(key, content)
+                AppData.addGlobalGame(importItem.first, content)
+                AppData.updateRemoteSizeByAppData(importItem.first)
                 toast("应用成功！")
             }
         }

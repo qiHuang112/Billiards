@@ -1,6 +1,7 @@
 package com.qi.billiards.ui.main
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,6 +26,9 @@ class MainFragment : BaseBindingFragment<FragmentMainBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
+        binding.tvRemind.setOnClickListener {
+            findNavController().navigate(MainFragmentDirections.actionToImport())
+        }
         binding.rvMain.adapter = MainAdapter(getMainItems())
         binding.rvMain.layoutManager = LinearLayoutManager(context)
     }
@@ -40,6 +44,41 @@ class MainFragment : BaseBindingFragment<FragmentMainBinding>() {
             } else if (AppData.keyUpdated) {
                 binding.rvMain.adapter = MainAdapter(getMainItems())
                 AppData.keyUpdated = false
+            }
+        }
+
+        // 如果是application启动后首次来到MainFragment的onCustomResume方法
+        // 拉取一下服务器上的数据
+        if (AppData.needUpdateRemoteKeyInMainFragment) {
+
+            launch {
+                try {
+
+                    AppData.keys.forEach { key ->
+                        AppData.updateRemoteSize(key)
+                    }
+                    val needShowRemind = AppData.remoteSize.any { (key, size) ->
+                        size != (AppData.globalGames[key]?.size ?: 0)
+                    }
+
+                    if (needShowRemind) {
+                        binding.tvRemind.visibility = View.VISIBLE
+                    } else {
+                        binding.tvRemind.visibility = View.GONE
+                    }
+                    AppData.needUpdateRemoteKeyInMainFragment = false
+                } catch (t: Throwable) {
+                    Log.e("MainFragment", "onCustomResume: ", t)
+                }
+            }
+
+        } else {
+            if (AppData.remoteSize.any { (key, size) ->
+                    size != (AppData.globalGames[key]?.size ?: 0)
+                }) {
+                binding.tvRemind.visibility = View.VISIBLE
+            } else {
+                binding.tvRemind.visibility = View.GONE
             }
         }
     }

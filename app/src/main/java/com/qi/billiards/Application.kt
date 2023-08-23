@@ -12,6 +12,7 @@ class Application : Application() {
         instance = this
 
         AppData.initFromSp()
+
     }
 }
 

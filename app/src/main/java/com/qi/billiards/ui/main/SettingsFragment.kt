@@ -8,6 +8,7 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.qi.billiards.data.AppData
 import com.qi.billiards.databinding.FragmentSettingsBinding
+import com.qi.billiards.http.apiHost
 import com.qi.billiards.ui.base.BaseBindingFragment
 import com.qi.billiards.util.*
 
@@ -53,7 +54,7 @@ class SettingsFragment : BaseBindingFragment<FragmentSettingsBinding>() {
 
     private fun getSettingsItemsKt(): MutableList<SettingsAdapter.SettingsItem> {
         return mutableListOf(
-            SettingsAdapter.SettingsItem(KEY_HOST, get(SETTINGS_KEY + KEY_HOST, "")) { config ->
+            SettingsAdapter.SettingsItem(KEY_HOST, apiHost) { config ->
                 save(SETTINGS_KEY + KEY_HOST, config)
             }
         ).apply {

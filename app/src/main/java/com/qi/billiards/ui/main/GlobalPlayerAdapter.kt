@@ -18,7 +18,7 @@ class GlobalPlayerAdapter(
         val player = players[position]
         holder.binding.apply {
             tvPlayerName.text = player.name
-            tvTotalScore.text = player.score.toString()
+            tvTotalScore.text = player.totalProfit.toString()
             tvWinCount.text = player.winCount.toString()
             tvTotalCount.text = player.totalCount.toString()
             tvWinRate.text = player.getWinRate()

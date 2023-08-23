@@ -3,7 +3,7 @@ package com.qi.billiards.bean
 
 data class GlobalPlayer(
     var name: String,
-    var score: Double = 0.0, // 总分
+    var totalProfit: Double = 0.0, // 总盈亏
     var totalCount: Long = 0, // 总局数
     var totalCost: Double = 0.0,  // 总台费
     var winCount: Long = 0, // 胜利局数

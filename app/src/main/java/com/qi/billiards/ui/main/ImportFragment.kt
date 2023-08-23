@@ -49,7 +49,7 @@ class ImportFragment : BaseBindingFragment<FragmentImportBinding>() {
             if (error.isNotEmpty()) {
                 toast(error)
             } else {
-                AppData.globalGames[key] = content.toMutableList()
+                AppData.addGlobalGame(key, content)
                 toast("拉取成功！")
             }
         }

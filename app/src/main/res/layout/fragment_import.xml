@@ -6,29 +6,14 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/tv_key"
-        android:layout_width="0dp"
-        android:layout_height="40dp"
+        android:id="@+id/tv_update_all"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="key"
+        android:padding="8dp"
+        android:text="全部更新"
         android:textColor="@color/black"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toStartOf="@id/tv__time"
-        app:layout_constraintHorizontal_weight="1"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/tv__time"
-        android:layout_width="0dp"
-        android:layout_height="40dp"
-        android:gravity="center"
-        android:text="时间"
-        android:textColor="@color/black"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_weight="1"
-        app:layout_constraintStart_toEndOf="@id/tv_key"
+        android:textSize="18sp"
         app:layout_constraintTop_toTopOf="parent" />
 
     <View
@@ -36,7 +21,7 @@
         android:layout_width="match_parent"
         android:layout_height="1px"
         android:background="#aaaaaa"
-        app:layout_constraintTop_toBottomOf="@id/tv_key" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_update_all" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_import"

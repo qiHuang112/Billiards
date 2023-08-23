@@ -24,6 +24,21 @@ class ImportFragment : BaseBindingFragment<FragmentImportBinding>() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
+        binding.tvUpdateAll.setOnClickListener {
+            launch {
+                importItems.forEach {
+                    val (content, error) = getContentOrError(it)
+                    if (error.isNotEmpty()) {
+                        toast(error)
+                    } else {
+                        AppData.addGlobalGame(it, content)
+                    }
+                }
+                toast("更新成功！")
+            }
+        }
+
         binding.rvImport.apply {
             adapter = ImportAdapter(importItems, ::onLongClickItem)
             layoutManager = LinearLayoutManager(context)

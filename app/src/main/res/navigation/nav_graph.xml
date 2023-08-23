@@ -17,7 +17,7 @@
 
         <action
             android:id="@+id/action_to_history"
-            app:destination="@id/historyFragment" />
+            app:destination="@id/historyFrameFragment" />
 
         <action
             android:id="@+id/action_to_data"
@@ -35,7 +35,6 @@
             android:id="@+id/action_to_settings"
             app:destination="@id/settingsFragment" />
 
-<!--        actionToDev-->
         <action
             android:id="@+id/action_to_dev"
             app:destination="@id/devFragment" />
@@ -98,5 +97,17 @@
         android:name="com.qi.billiards.ui.main.DevFragment"
         android:label="DevFragment"
         tools:layout="@layout/fragment_dev" />
+
+    <fragment
+        android:id="@+id/historyFrameFragment"
+        android:name="com.qi.billiards.ui.main.HistoryFrameFragment"
+        android:label="HistoryFrameFragment"
+        tools:layout="@layout/fragment_history_frame">
+        <action
+            android:id="@+id/action_to_game"
+            app:destination="@id/gameFragment" />
+
+    </fragment>
+
 
 </navigation>

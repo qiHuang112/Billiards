@@ -120,10 +120,10 @@ class MainFragment : BaseBindingFragment<FragmentMainBinding>() {
                         val action = MainFragmentDirections.actionToSettings()
                         findNavController().navigate(action)
                     },
-                    MainAdapter.MainItem("开发者功能") {
-                        val action = MainFragmentDirections.actionToDev()
-                        findNavController().navigate(action)
-                    }
+//                    MainAdapter.MainItem("开发者功能") {
+//                        val action = MainFragmentDirections.actionToDev()
+//                        findNavController().navigate(action)
+//                    }
                 )
             )
         }

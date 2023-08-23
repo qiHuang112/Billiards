@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 
 class ImportFragment : BaseBindingFragment<FragmentImportBinding>() {
 
-    private val importItems =
+    private val importItems: MutableList<Pair<String, Int>> =
         AppData.keys.map { it to ((AppData.remoteSize[it] ?: 0) - (AppData.globalGames[it]?.size ?: 0)) }
             .toMutableList()
 
@@ -30,13 +30,15 @@ class ImportFragment : BaseBindingFragment<FragmentImportBinding>() {
         binding.tvUpdateAll.setOnClickListener {
             launch {
                 binding.pbImport.visibility = View.VISIBLE
-                importItems.forEach {
+                importItems.forEachIndexed { index, it ->
                     val (content, error) = getContentOrError(it.first)
                     if (error.isNotEmpty()) {
                         toast(error)
                     } else {
                         AppData.addGlobalGame(it.first, content)
                         AppData.updateRemoteSizeByAppData(it.first)
+                        importItems[index] = it.first to AppData.getRemoteSizeDiff(it.first)
+                        binding.rvImport.adapter?.notifyItemChanged(index)
                     }
                 }
                 binding.pbImport.visibility = View.GONE
@@ -62,6 +64,8 @@ class ImportFragment : BaseBindingFragment<FragmentImportBinding>() {
             } else {
                 AppData.addGlobalGame(importItem.first, content)
                 AppData.updateRemoteSizeByAppData(importItem.first)
+                importItems[position] = importItem.first to (AppData.getRemoteSizeDiff(importItem.first))
+                binding.rvImport.adapter?.notifyItemChanged(position)
                 toast("应用成功！")
             }
         }

@@ -117,6 +117,10 @@ object AppData : CoroutineScope by MainScope() {
             }
     }
 
+    fun getRemoteSizeDiff(key: String): Int {
+        return (remoteSize[key] ?: 0) - (globalGames[key]?.size ?: 0)
+    }
+
     //用内存中的对应key-size，更新对应key的size
     fun updateRemoteSizeByAppData(key: String) {
         remoteSize[key] = globalGames[key]?.size ?: 0

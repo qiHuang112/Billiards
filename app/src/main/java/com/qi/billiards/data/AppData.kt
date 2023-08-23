@@ -46,7 +46,14 @@ object AppData : CoroutineScope by MainScope() {
 
     fun addGlobalGame(key: String, value: List<Game>) {
         globalGames[key] = value.toMutableList()
-        value.forEach(::addGame)
+        globalPlayer[key]?.clear()
+        value.forEach { game ->
+            game.players.forEach {
+                addPlayer(key, it)
+            }
+        }
+        save(KEY_GLOBAL_GAMES + key, value.toJson())
+
     }
 
     fun addGame(game: Game) {
@@ -75,7 +82,7 @@ object AppData : CoroutineScope by MainScope() {
         globalPlayer.totalProfit += player.profit
         globalPlayer.totalCount++
         globalPlayer.totalCost += player.cost
-        if (player.score > 0) {
+        if (player.profit > 0) {
             globalPlayer.winCount++
         }
         this.globalPlayer[type]!![player.name] = globalPlayer

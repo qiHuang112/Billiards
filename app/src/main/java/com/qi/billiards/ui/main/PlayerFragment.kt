@@ -11,7 +11,6 @@ import com.qi.billiards.databinding.FragmentPlayerBinding
 import com.qi.billiards.ui.base.BaseBindingFragment
 import com.qi.billiards.util.get
 import com.qi.billiards.util.save
-import kotlinx.coroutines.launch
 
 /**
  * 玩家列表
@@ -31,31 +30,29 @@ class PlayerFragment(val key: String) : BaseBindingFragment<FragmentPlayerBindin
 
     private fun initView() {
 
-        binding.rgSort.setOnCheckedChangeListener { _, checkedId ->
-            when (checkedId) {
-                R.id.rb_win_rate -> players.sortBy {
-                    -it.getWinRate().removeSuffix("%").toDouble()
-                }
-                R.id.rb_profits -> players.sortBy {
-                    -it.totalProfit
-                }
+        binding.rgSort.apply {
+            setOnCheckedChangeListener { _, checkedId ->
+                when (checkedId) {
+                    R.id.rb_win_rate -> players.sortBy {
+                        -it.getWinRate().removeSuffix("%").toDouble()
+                    }
+                    R.id.rb_profits -> players.sortBy {
+                        -it.totalProfit
+                    }
 
-                else -> players.sortBy {
-                    it.name
+                    else -> players.sortBy {
+                        it.name
+                    }
                 }
+                save(KEY_LAST_SORTED_METHOD + key, checkedId)
+                playerAdapter.notifyItemRangeChanged(0, players.size)
             }
-            save(KEY_LAST_SORTED_METHOD + key, checkedId)
-            playerAdapter.notifyItemRangeChanged(0, players.size)
+            check(get(KEY_LAST_SORTED_METHOD + key, R.id.rb_default))
         }
 
         binding.rvPlayerEntity.apply {
             adapter = playerAdapter
             layoutManager = LinearLayoutManager(context)
-        }
-
-        launch {
-            playerAdapter.notifyItemRangeChanged(0, players.size)
-            binding.rgSort.check(get(KEY_LAST_SORTED_METHOD + key, R.id.rb_default))
         }
 
     }

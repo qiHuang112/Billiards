@@ -19,6 +19,7 @@ class SettingsAdapter(private val items: List<SettingsItem>) : BaseBindingAdapte
             tvName.text = item.name
             etInput.setText(item.config)
             etInput.hint = "请输入${item.name}"
+            etInput.requestFocus()
             etInput.addTextChangedListener {
                 item.config = it.toString()
                 item.onConfigChanged(it.toString())

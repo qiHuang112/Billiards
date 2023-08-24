@@ -9,6 +9,9 @@ import com.qi.billiards.databinding.FragmentHistoryFrameBinding
 import com.qi.billiards.ui.base.BaseBindingFragment
 
 class HistoryFrameFragment : BaseBindingFragment<FragmentHistoryFrameBinding>() {
+
+    private val historyFragments by lazy { getFragments() }
+
     override fun getBinding(inflater: LayoutInflater, container: ViewGroup?): FragmentHistoryFrameBinding {
         return FragmentHistoryFrameBinding.inflate(LayoutInflater.from(context), container, false)
     }
@@ -20,9 +23,17 @@ class HistoryFrameFragment : BaseBindingFragment<FragmentHistoryFrameBinding>() 
     private fun initView() {
         binding.tlTab.setupWithViewPager(binding.vpContent)
 
-        binding.vpContent.apply {
-            adapter = HistoryPagerAdapter(getFragments(), childFragmentManager)
+        binding.ivSearch.setOnClickListener {
+            showOrHideSearchView()
         }
+
+        binding.vpContent.apply {
+            adapter = HistoryPagerAdapter(historyFragments, childFragmentManager)
+        }
+    }
+
+    private fun showOrHideSearchView() {
+        historyFragments.getOrNull(binding.vpContent.currentItem)?.showOrHideSearchView()
     }
 
     private fun getFragments() = AppData.keys.map {

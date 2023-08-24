@@ -1,5 +1,6 @@
 package com.qi.billiards.ui.main
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.qi.billiards.bean.Game
@@ -9,8 +10,8 @@ import com.qi.billiards.databinding.ItemPlayerSummaryBinding
 import com.qi.billiards.ui.base.BaseBindingAdapter
 
 class GameAdapter(
-    private val games: MutableList<Game>,
-    val onClick: (Int) -> Unit
+    private val games: MutableList<HistoryGame>,
+    val onClick: (Int) -> Unit,
 ) : BaseBindingAdapter<ItemHistoryGameBinding>() {
     override fun getBinding(parent: ViewGroup): ItemHistoryGameBinding {
         return ItemHistoryGameBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -24,10 +25,10 @@ class GameAdapter(
                 append(games.size - position)
                 append("]")
                 append(":")
-                append(game.date)
+                append(game.game.date)
             }
             rvPlayerSummary.apply {
-                adapter = PlayerSummaryAdapter(game.players)
+                adapter = PlayerSummaryAdapter(game.keyword, game.game.players)
             }
             root.setOnClickListener {
                 onClick(position)
@@ -38,7 +39,10 @@ class GameAdapter(
     override fun getItemCount() = games.size
 
 
-    class PlayerSummaryAdapter(private val players: List<Player>) : BaseBindingAdapter<ItemPlayerSummaryBinding>() {
+    class PlayerSummaryAdapter(
+        private val keyword: String,
+        private val players: List<Player>
+    ) : BaseBindingAdapter<ItemPlayerSummaryBinding>() {
         override fun getBinding(parent: ViewGroup): ItemPlayerSummaryBinding {
             return ItemPlayerSummaryBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         }
@@ -48,9 +52,26 @@ class GameAdapter(
             holder.binding.apply {
                 tvPlayerName.text = player.name
                 tvPlayerProfit.text = player.profit.toString()
+                if (keyword.isNotEmpty() && player.name.contains(keyword, true)) {
+                    tvPlayerName.setTextColor(Color.RED)
+                    tvPlayerProfit.setTextColor(Color.RED)
+                } else {
+                    tvPlayerName.setTextColor(Color.BLACK)
+                    tvPlayerProfit.setTextColor(Color.BLACK)
+                }
             }
         }
 
         override fun getItemCount() = players.size
+    }
+
+    data class HistoryGame(
+        val game: Game,
+        var keyword: String = "",
+    ) {
+        fun setKeyword(keyword: String): HistoryGame {
+            this.keyword = keyword
+            return this
+        }
     }
 }

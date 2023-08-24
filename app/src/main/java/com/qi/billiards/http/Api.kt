@@ -34,7 +34,7 @@ val api by lazy {
 }
 
 val apiHost: String
-    get() = get(SettingsFragment.SETTINGS_KEY + SettingsFragment.KEY_HOST, "34.64.103.91:8181")
+    get() = get(SettingsFragment.SETTINGS_KEY + SettingsFragment.KEY_HOST, "34.143.217.244:8181")
 
 
 interface Api {

@@ -33,16 +33,16 @@ class ImportFragment : BaseBindingFragment<FragmentImportBinding>() {
                 importItems.forEachIndexed { index, it ->
                     val (content, error) = getContentOrError(it.first)
                     if (error.isNotEmpty()) {
-                        toast(error)
+                        getBooleanByDialog(error)
                     } else {
                         AppData.addGlobalGame(it.first, content)
                         AppData.updateRemoteSizeByAppData(it.first)
                         importItems[index] = it.first to AppData.getRemoteSizeDiff(it.first)
                         binding.rvImport.adapter?.notifyItemChanged(index)
+                        toast("更新成功！")
                     }
                 }
                 binding.pbImport.visibility = View.GONE
-                toast("更新成功！")
             }
         }
 

@@ -20,6 +20,8 @@ import kotlinx.coroutines.launch
  */
 class MainFragment : BaseBindingFragment<FragmentMainBinding>() {
 
+    private val isDev = false
+
     override fun getBinding(inflater: LayoutInflater, container: ViewGroup?): FragmentMainBinding {
         return FragmentMainBinding.inflate(inflater, container, false)
     }
@@ -118,13 +120,17 @@ class MainFragment : BaseBindingFragment<FragmentMainBinding>() {
                     MainAdapter.MainItem("设置") {
                         val action = MainFragmentDirections.actionToSettings()
                         findNavController().navigate(action)
-                    },
+                    }
+                )
+            )
+            if (isDev) {
+                add(
                     MainAdapter.MainItem("开发者功能") {
                         val action = MainFragmentDirections.actionToDev()
                         findNavController().navigate(action)
                     }
                 )
-            )
+            }
         }
     }
 

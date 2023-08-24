@@ -20,7 +20,7 @@ class DevAdapter(
             tvName.text = devItem.name
             tvStatus.text = devItem.getStatusString()
             root.setOnClickListener {
-                devItem.onClick(devItem.status)
+                devItem.onClick(devItem.status, devItem.index)
             }
         }
     }
@@ -30,13 +30,20 @@ class DevAdapter(
     data class DevItem(
         val name: String,
         var status: Int = -1,
-        val onClick: (Int) -> Unit = {}
+        val onClick: (Int, Int) -> Unit = { _, _ -> }
     ) {
+        var index = -1
+
         fun getStatusString() = when (status) {
             0 -> "请求中"
             1 -> "成功"
             2 -> "失败"
             else -> ""
+        }
+
+        fun setIndex(i: Int): DevItem {
+            index = i
+            return this
         }
     }
 

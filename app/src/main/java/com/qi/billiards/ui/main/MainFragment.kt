@@ -57,11 +57,8 @@ class MainFragment : BaseBindingFragment<FragmentMainBinding>() {
                     AppData.keys.forEach { key ->
                         AppData.updateRemoteSize(key)
                     }
-                    val needShowRemind = AppData.remoteSize.any { (key, size) ->
-                        size != (AppData.globalGames[key]?.size ?: 0)
-                    }
 
-                    if (needShowRemind) {
+                    if (needShowRemind()) {
                         binding.tvRemind.visibility = View.VISIBLE
                     } else {
                         binding.tvRemind.visibility = View.GONE
@@ -73,14 +70,16 @@ class MainFragment : BaseBindingFragment<FragmentMainBinding>() {
             }
 
         } else {
-            if (AppData.remoteSize.any { (key, size) ->
-                    size != (AppData.globalGames[key]?.size ?: 0)
-                }) {
+            if (needShowRemind()) {
                 binding.tvRemind.visibility = View.VISIBLE
             } else {
                 binding.tvRemind.visibility = View.GONE
             }
         }
+    }
+
+    private fun needShowRemind(): Boolean {
+        return AppData.keys.map { AppData.getRemoteSizeDiff(it) }.any { it > 0 }
     }
 
     private fun getMainItems(): List<MainAdapter.MainItem> {
@@ -120,10 +119,10 @@ class MainFragment : BaseBindingFragment<FragmentMainBinding>() {
                         val action = MainFragmentDirections.actionToSettings()
                         findNavController().navigate(action)
                     },
-//                    MainAdapter.MainItem("开发者功能") {
-//                        val action = MainFragmentDirections.actionToDev()
-//                        findNavController().navigate(action)
-//                    }
+                    MainAdapter.MainItem("开发者功能") {
+                        val action = MainFragmentDirections.actionToDev()
+                        findNavController().navigate(action)
+                    }
                 )
             )
         }

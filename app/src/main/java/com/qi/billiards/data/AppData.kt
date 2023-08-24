@@ -26,6 +26,7 @@ object AppData : CoroutineScope by MainScope() {
         private set
     var keyUpdated = false
 
+    // 服务器保存的每个key对应的数据条数
     var remoteSize = mutableMapOf<String, Int>()
         private set
 
@@ -117,6 +118,10 @@ object AppData : CoroutineScope by MainScope() {
             }
     }
 
+    /**
+     * 返回值大于0表示需要拉数据
+     * 返回值小于0表示需要上传数据
+     */
     fun getRemoteSizeDiff(key: String): Int {
         return (remoteSize[key] ?: 0) - (globalGames[key]?.size ?: 0)
     }

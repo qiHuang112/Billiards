@@ -8,9 +8,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.MarginLayoutParams
 import androidx.core.animation.addListener
+import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.qi.billiards.bean.Player
 import com.qi.billiards.data.AppData
 import com.qi.billiards.databinding.FragmentHistoryBinding
 import com.qi.billiards.ui.base.BaseBindingFragment
@@ -27,7 +29,7 @@ import kotlinx.coroutines.launch
 class HistoryFragment(val key: String) : BaseBindingFragment<FragmentHistoryBinding>() {
 
     private val games = getHistoryGames()
-    private val gameAdapter = GameAdapter(games, ::jumpToDetail)
+    private val gameAdapter = GameAdapter(games, ::jumpToDetail, ::onClickPlayer)
     private var clickedPos = -1
     private var searchJob: Job? = null
 
@@ -56,6 +58,12 @@ class HistoryFragment(val key: String) : BaseBindingFragment<FragmentHistoryBind
         if (clickedPos >= 0) {
             gameAdapter.notifyItemChanged(clickedPos)
             clickedPos = -1
+        }
+    }
+
+    private fun onClickPlayer(player: Player) {
+        if (binding.etSearch.isVisible) {
+            binding.etSearch.setText(player.name)
         }
     }
 

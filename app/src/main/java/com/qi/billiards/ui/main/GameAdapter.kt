@@ -12,6 +12,7 @@ import com.qi.billiards.ui.base.BaseBindingAdapter
 class GameAdapter(
     private val games: MutableList<HistoryGame>,
     val onClick: (Int) -> Unit,
+    val onClickPlayer: (Player) -> Unit
 ) : BaseBindingAdapter<ItemHistoryGameBinding>() {
     override fun getBinding(parent: ViewGroup): ItemHistoryGameBinding {
         return ItemHistoryGameBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -27,9 +28,10 @@ class GameAdapter(
                 append(":")
                 append(game.game.date)
             }
-            rvPlayerSummary.apply {
-                adapter = PlayerSummaryAdapter(game.keyword, game.game.players)
+            rvPlayerSummary.adapter = PlayerSummaryAdapter(game.keyword, game.game.players) {
+                onClickPlayer(it)
             }
+
             root.setOnClickListener {
                 onClick(position)
             }
@@ -41,7 +43,8 @@ class GameAdapter(
 
     class PlayerSummaryAdapter(
         private val keyword: String,
-        private val players: List<Player>
+        private val players: List<Player>,
+        private val onClickPlayer: (Player) -> Unit
     ) : BaseBindingAdapter<ItemPlayerSummaryBinding>() {
         override fun getBinding(parent: ViewGroup): ItemPlayerSummaryBinding {
             return ItemPlayerSummaryBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -58,6 +61,9 @@ class GameAdapter(
                 } else {
                     tvPlayerName.setTextColor(Color.BLACK)
                     tvPlayerProfit.setTextColor(Color.BLACK)
+                }
+                root.setOnClickListener {
+                    onClickPlayer(player)
                 }
             }
         }

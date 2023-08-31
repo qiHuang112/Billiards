@@ -21,7 +21,7 @@
             android:checked="true"
             android:text="默认顺序"
             android:textColor="@color/black"
-            android:textSize="15sp" />
+            android:textSize="15dp" />
 
         <RadioButton
             android:id="@+id/rb_win_rate"
@@ -30,7 +30,7 @@
             android:layout_weight="1"
             android:text="按胜率"
             android:textColor="@color/black"
-            android:textSize="15sp" />
+            android:textSize="15dp" />
 
         <RadioButton
             android:id="@+id/rb_profits"
@@ -39,7 +39,7 @@
             android:layout_weight="1"
             android:text="按收益"
             android:textColor="@color/black"
-            android:textSize="15sp" />
+            android:textSize="15dp" />
 
     </RadioGroup>
 

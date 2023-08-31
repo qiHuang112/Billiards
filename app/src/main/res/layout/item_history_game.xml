@@ -13,7 +13,7 @@
         android:paddingTop="5dp"
         android:paddingBottom="5dp"
         android:textColor="@color/black"
-        android:textSize="15sp"
+        android:textSize="15dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="de:2023年08月23日" />

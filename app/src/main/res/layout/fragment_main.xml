@@ -17,7 +17,7 @@
         android:paddingEnd="10dp"
         android:text="有待更新的数据，点击进入【导入历史】页更新数据"
         android:textColor="@color/black"
-        android:textSize="14sp"
+        android:textSize="14dp"
         android:visibility="gone"
         app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible" />

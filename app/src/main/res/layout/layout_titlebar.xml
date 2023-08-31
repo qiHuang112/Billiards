@@ -21,7 +21,7 @@
         android:layout_centerHorizontal="true"
         android:gravity="center"
         android:textColor="@color/white"
-        android:textSize="18sp"
+        android:textSize="18dp"
         tools:text="de:05-06" />
 
     <ImageView

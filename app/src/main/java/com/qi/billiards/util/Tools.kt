@@ -10,7 +10,6 @@ import android.view.LayoutInflater
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
-import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.google.gson.Gson
@@ -119,6 +118,10 @@ suspend fun BaseBindingFragment<*>.getBooleanByDialog(
     confirm: String = "确认",
     cancel: String = "取消",
 ) = suspendCoroutine { continuation ->
+    if (context == null) {
+        continuation.safeResume(false)
+        return@suspendCoroutine
+    }
     var dBinding: DialogNormalTipsBinding? = DialogNormalTipsBinding.inflate(LayoutInflater.from(context))
     val dialogBinding = dBinding!!
 

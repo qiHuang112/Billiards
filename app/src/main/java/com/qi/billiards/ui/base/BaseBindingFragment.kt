@@ -56,7 +56,7 @@ abstract class BaseBindingFragment<T : ViewBinding> : Fragment(), CoroutineScope
     override fun onDestroyView() {
         super.onDestroyView()
         destroyed = true
-        _binding = null
         cancel()
+        _binding = null
     }
 }

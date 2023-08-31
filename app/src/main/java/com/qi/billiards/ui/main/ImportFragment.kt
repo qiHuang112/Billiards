@@ -42,7 +42,9 @@ class ImportFragment : BaseBindingFragment<FragmentImportBinding>() {
                         toast("更新成功！")
                     }
                 }
-                binding.pbImport.visibility = View.GONE
+                if (!destroyed) {
+                    binding.pbImport.visibility = View.GONE
+                }
             }
         }
 

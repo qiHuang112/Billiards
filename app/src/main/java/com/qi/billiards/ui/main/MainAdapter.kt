@@ -19,12 +19,17 @@ class MainAdapter(
         holder.binding.tvBtnName.setOnClickListener {
             item.onClick()
         }
+        holder.binding.tvBtnName.setOnLongClickListener {
+            item.onLongClick()
+            true
+        }
     }
 
     override fun getItemCount() = mainItems.size
 
     data class MainItem(
         val name: String,
+        val onLongClick: () -> Unit = {},
         val onClick: () -> Unit = {}
     )
 

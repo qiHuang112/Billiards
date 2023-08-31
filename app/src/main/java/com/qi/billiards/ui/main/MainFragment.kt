@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
  */
 class MainFragment : BaseBindingFragment<FragmentMainBinding>() {
 
-    private val isDev = false
+    private var isDev = false
 
     override fun getBinding(inflater: LayoutInflater, container: ViewGroup?): FragmentMainBinding {
         return FragmentMainBinding.inflate(inflater, container, false)
@@ -67,6 +67,8 @@ class MainFragment : BaseBindingFragment<FragmentMainBinding>() {
                     }
                     AppData.needUpdateRemoteKeyInMainFragment = false
                 } catch (t: Throwable) {
+                    // 请求失败 不提示
+                    AppData.keys.forEach(AppData::updateRemoteSizeByAppData)
                     Log.e("MainFragment", "onCustomResume: ", t)
                 }
             }
@@ -87,12 +89,24 @@ class MainFragment : BaseBindingFragment<FragmentMainBinding>() {
     private fun getMainItems(): List<MainAdapter.MainItem> {
 
         return AppData.keys.map {
-            MainAdapter.MainItem(it) {
-                val action = MainFragmentDirections.actionToGame(
-                    Game(GameFragment.getConfigs(), mutableListOf(), it), false
-                )
-                findNavController().navigate(action)
-            }
+            MainAdapter.MainItem(
+                name = it,
+                onLongClick = {
+                    launch {
+                        if (getBooleanByDialog("确定删除游戏【${it}】吗？")) {
+                            AppData.keys.remove(it)
+                            AppData.updateKeys(AppData.keys.toMutableList())
+                            binding.rvMain.adapter = MainAdapter(getMainItems())
+                        }
+                    }
+                },
+                onClick = {
+                    val action = MainFragmentDirections.actionToGame(
+                        Game(GameFragment.getConfigs(), mutableListOf(), it), false
+                    )
+                    findNavController().navigate(action)
+                }
+            )
         }.toMutableList().apply {
             addAll(
                 listOf(
@@ -117,7 +131,12 @@ class MainFragment : BaseBindingFragment<FragmentMainBinding>() {
                             findNavController().navigate(action)
                         }
                     },
-                    MainAdapter.MainItem("设置") {
+                    MainAdapter.MainItem("设置",
+                        onLongClick = {
+                            isDev = !isDev
+                            binding.rvMain.adapter = MainAdapter(getMainItems())
+                        }
+                    ) {
                         val action = MainFragmentDirections.actionToSettings()
                         findNavController().navigate(action)
                     }

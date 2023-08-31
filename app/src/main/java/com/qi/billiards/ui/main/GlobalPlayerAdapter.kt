@@ -7,6 +7,7 @@ import com.qi.billiards.databinding.ItemPlayerBinding
 import com.qi.billiards.ui.base.BaseBindingAdapter
 
 class GlobalPlayerAdapter(
+    private val key: String,
     private val players: MutableList<GlobalPlayer>,
     private val onLongClick: (Int) -> Unit = {}
 ) : BaseBindingAdapter<ItemPlayerBinding>() {
@@ -22,6 +23,7 @@ class GlobalPlayerAdapter(
             tvWinCount.text = player.winCount.toString()
             tvTotalCount.text = player.totalCount.toString()
             tvWinRate.text = player.getWinRate()
+            tvLast5.text = player.getLast5Profit(key)
             tvCost.text = String.format("%.1f", player.totalCost)
             root.setOnLongClickListener {
                 onLongClick(position)

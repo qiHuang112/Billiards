@@ -18,7 +18,7 @@ import com.qi.billiards.util.save
 class PlayerFragment(val key: String) : BaseBindingFragment<FragmentPlayerBinding>() {
 
     private val players = AppData.globalPlayer[key]?.toList()?.map { it.second }?.toMutableList() ?: mutableListOf()
-    private val playerAdapter = GlobalPlayerAdapter(players)
+    private val playerAdapter = GlobalPlayerAdapter(key, players)
 
     override fun getBinding(inflater: LayoutInflater, container: ViewGroup?): FragmentPlayerBinding {
         return FragmentPlayerBinding.inflate(inflater, container, false)
@@ -37,7 +37,7 @@ class PlayerFragment(val key: String) : BaseBindingFragment<FragmentPlayerBindin
                         -it.getWinRate().removeSuffix("%").toDouble()
                     }
                     R.id.rb_profits -> players.sortBy {
-                        -it.totalProfit
+                        -it.getLast5Profit(key).toFloat()
                     }
 
                     else -> players.sortBy {

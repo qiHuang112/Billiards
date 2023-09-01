@@ -37,11 +37,11 @@ class PlayerFragment(val key: String) : BaseBindingFragment<FragmentPlayerBindin
                         -it.getWinRate().removeSuffix("%").toDouble()
                     }
                     R.id.rb_profits -> players.sortBy {
-                        -it.getLast5Profit(key).toFloat()
+                        -it.totalProfit
                     }
 
                     else -> players.sortBy {
-                        it.name
+                        -it.getLast5Profit(key).toFloat()
                     }
                 }
                 save(KEY_LAST_SORTED_METHOD + key, checkedId)

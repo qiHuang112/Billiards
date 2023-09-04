@@ -77,6 +77,21 @@ object AppData : CoroutineScope by MainScope() {
         saveToSp()
     }
 
+    fun deleteGame(game: Game) {
+        if (game.type.isEmpty()) {
+            return
+        }
+        val games = globalGames[game.type]?.toMutableList() ?: mutableListOf()
+        games.remove(game)
+        globalGames[game.type] = games
+
+        game.players.forEach {
+            deletePlayer(game.type, it)
+        }
+
+        saveToSp()
+    }
+
     private fun addPlayer(type: String, player: Player) {
         if (player.name.isEmpty()) {
             return
@@ -90,6 +105,23 @@ object AppData : CoroutineScope by MainScope() {
         globalPlayer.totalCost += player.cost
         if (player.profit > 0) {
             globalPlayer.winCount++
+        }
+        this.globalPlayer[type]!![player.name] = globalPlayer
+    }
+
+    private fun deletePlayer(type: String, player: Player) {
+        if (player.name.isEmpty()) {
+            return
+        }
+        if (globalPlayer[type] == null) {
+            globalPlayer[type] = mutableMapOf()
+        }
+        val globalPlayer = globalPlayer[type]!![player.name] ?: GlobalPlayer(player.name)
+        globalPlayer.totalProfit -= player.profit
+        globalPlayer.totalCount--
+        globalPlayer.totalCost -= player.cost
+        if (player.profit > 0) {
+            globalPlayer.winCount--
         }
         this.globalPlayer[type]!![player.name] = globalPlayer
     }

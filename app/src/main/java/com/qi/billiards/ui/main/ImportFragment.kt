@@ -1,19 +1,26 @@
 package com.qi.billiards.ui.main
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.qi.billiards.R
 import com.qi.billiards.bean.Game
 import com.qi.billiards.data.AppData
+import com.qi.billiards.databinding.DialogSelectKeyBinding
 import com.qi.billiards.databinding.FragmentImportBinding
+import com.qi.billiards.databinding.ItemSelectKeyBinding
 import com.qi.billiards.http.api
 import com.qi.billiards.http.apiHost
+import com.qi.billiards.ui.base.BaseBindingAdapter
 import com.qi.billiards.ui.base.BaseBindingFragment
 import com.qi.billiards.util.getBooleanByDialog
+import com.qi.billiards.util.safeResume
 import com.qi.billiards.util.toast
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
 
 class ImportFragment : BaseBindingFragment<FragmentImportBinding>() {
 
@@ -57,20 +64,88 @@ class ImportFragment : BaseBindingFragment<FragmentImportBinding>() {
 
     private fun onLongClickItem(position: Int) = launch {
         val importItem = importItems[position]
-        if (getBooleanByDialog("重新拉取${importItem}数据吗？")) {
-            binding.pbImport.visibility = View.VISIBLE
-            val (content, error) = getContentOrError(importItem.first)
-            binding.pbImport.visibility = View.GONE
-            if (error.isNotEmpty()) {
-                toast(error)
-            } else {
-                AppData.addGlobalGame(importItem.first, content)
-                AppData.updateRemoteSizeByAppData(importItem.first)
-                importItems[position] = importItem.first to (AppData.getRemoteSizeDiff(importItem.first))
-                binding.rvImport.adapter?.notifyItemChanged(position)
-                toast("应用成功！")
+        val key = getKeyByDialog(importItem.first)
+        if (key.isNotEmpty()) {
+            val games = AppData.globalGames[key]?.map { it.copy(type = importItem.first) } ?: emptyList()
+            AppData.addGlobalGame(importItems[position].first, games)
+            toast("导入成功！")
+        }
+    }
+
+    private suspend fun getKeyByDialog(key: String) = suspendCancellableCoroutine { continuation ->
+
+        var dBinding: DialogSelectKeyBinding? = DialogSelectKeyBinding.inflate(LayoutInflater.from(context))
+        val dialogBinding = dBinding!!
+        val keys = AppData.keys.filter { it != key }
+        val dialog = AlertDialog.Builder(context)
+            .setView(dialogBinding.root)
+            .create()
+
+        var selectedKey = ""
+
+        dialog.setOnDismissListener {
+            continuation.safeResume("")
+            dBinding = null
+        }
+
+        dialogBinding.apply {
+            tvTitle.text = "请选择要导入到【${key}】的数据"
+            rvKeys.adapter = SelectKeyAdapter(keys) {
+                selectedKey = it
+            }
+            rvKeys.layoutManager = LinearLayoutManager(context)
+
+            tvConfirm.setOnClickListener {
+                dialog.dismiss()
+                continuation.safeResume(selectedKey)
+            }
+            tvCancel.setOnClickListener {
+                dialog.dismiss()
+                continuation.safeResume("")
             }
         }
+
+        dialog.show()
+    }
+
+    class SelectKeyAdapter(
+
+        private val keys: List<String>,
+        private val onSelected: (String) -> Unit
+    ) : BaseBindingAdapter<ItemSelectKeyBinding>() {
+
+        private var selectedPosition = -1
+        override fun getBinding(parent: ViewGroup): ItemSelectKeyBinding {
+            return ItemSelectKeyBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        }
+
+        override fun onBindViewHolder(holder: BaseBindingViewHolder<ItemSelectKeyBinding>, position: Int) {
+            val key = keys[position]
+            holder.binding.apply {
+                tvKeyName.text = key
+                if (selectedPosition == position) {
+                    ivSelected.setImageResource(R.drawable.ic_selected)
+                } else {
+                    ivSelected.setImageResource(R.drawable.ic_unselected)
+                }
+                if (position == keys.size - 1) {
+                    vDivider.visibility = View.GONE
+                } else {
+                    vDivider.visibility = View.VISIBLE
+                }
+                root.setOnClickListener {
+                    onSelected(key)
+                    updateState(position)
+                }
+            }
+        }
+
+        private fun updateState(position: Int) {
+            selectedPosition = position
+            notifyItemRangeChanged(0, keys.size)
+        }
+
+        override fun getItemCount() = keys.size
     }
 
     private suspend fun getContentOrError(key: String): Pair<List<Game>, String> {

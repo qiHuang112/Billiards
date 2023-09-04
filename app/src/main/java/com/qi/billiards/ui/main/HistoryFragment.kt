@@ -12,11 +12,13 @@ import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.qi.billiards.bean.Game
 import com.qi.billiards.bean.Player
 import com.qi.billiards.data.AppData
 import com.qi.billiards.databinding.FragmentHistoryBinding
 import com.qi.billiards.ui.base.BaseBindingFragment
 import com.qi.billiards.util.dp
+import com.qi.billiards.util.getBooleanByDialog
 import com.qi.billiards.util.hideSystemKeyboard
 import com.qi.billiards.util.safeAs
 import kotlinx.coroutines.Job
@@ -29,7 +31,7 @@ import kotlinx.coroutines.launch
 class HistoryFragment(val key: String) : BaseBindingFragment<FragmentHistoryBinding>() {
 
     private val games = getHistoryGames()
-    private val gameAdapter = GameAdapter(games, ::jumpToDetail, ::onClickPlayer)
+    private val gameAdapter = GameAdapter(games, ::jumpToDetail, ::onClickPlayer, ::onLongClick)
     private var clickedPos = -1
     private var searchJob: Job? = null
 
@@ -74,6 +76,16 @@ class HistoryFragment(val key: String) : BaseBindingFragment<FragmentHistoryBind
             games[position].game, true
         )
         findNavController().navigate(action)
+    }
+
+    private fun onLongClick(game: Game) {
+        launch {
+            if (getBooleanByDialog("确定要删除${game.type}[${game.date}]吗？")) {
+                AppData.deleteGame(game)
+                games.removeIf { it.game == game }
+                gameAdapter.notifyDataSetChanged()
+            }
+        }
     }
 
     @SuppressLint("NotifyDataSetChanged")

@@ -11,7 +11,7 @@
         android:id="@+id/tv_remind"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#D6DD74"
+        android:background="#1ED1E9"
         android:gravity="center|start"
         android:minHeight="40dp"
         android:paddingStart="10dp"

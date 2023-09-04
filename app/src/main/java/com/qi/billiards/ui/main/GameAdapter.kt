@@ -12,7 +12,8 @@ import com.qi.billiards.ui.base.BaseBindingAdapter
 class GameAdapter(
     private val games: MutableList<HistoryGame>,
     val onClick: (Int) -> Unit,
-    val onClickPlayer: (Player) -> Unit
+    val onClickPlayer: (Player) -> Unit,
+    val onLongClick: (Game) -> Unit = {}
 ) : BaseBindingAdapter<ItemHistoryGameBinding>() {
     override fun getBinding(parent: ViewGroup): ItemHistoryGameBinding {
         return ItemHistoryGameBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -34,6 +35,10 @@ class GameAdapter(
 
             root.setOnClickListener {
                 onClick(position)
+            }
+            root.setOnLongClickListener {
+                onLongClick(game.game)
+                true
             }
         }
     }

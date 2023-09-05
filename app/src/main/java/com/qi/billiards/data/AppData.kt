@@ -67,6 +67,9 @@ object AppData : CoroutineScope by MainScope() {
             return
         }
         val games = globalGames[game.type]?.toMutableList() ?: mutableListOf()
+        if (games.contains(game)) {
+            return
+        }
         games.add(game)
         globalGames[game.type] = games
 

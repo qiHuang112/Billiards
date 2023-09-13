@@ -8,7 +8,7 @@
         android:id="@+id/tb_title"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="@color/purple_700"
+        android:background="@color/translucent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView

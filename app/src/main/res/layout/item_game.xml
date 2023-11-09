@@ -6,26 +6,28 @@
     android:layout_height="wrap_content">
 
     <TextView
-        android:id="@+id/tv_id"
+        android:id="@+id/tv_base"
         android:layout_width="0dp"
         android:layout_height="40dp"
+        android:background="#FFDFDEDE"
         android:gravity="center"
         android:textColor="@color/black"
-        app:layout_constraintEnd_toStartOf="@id/tv_game_type"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_weight="1"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@id/tv_game_type"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="1" />
+        tools:text="x1" />
 
     <TextView
         android:id="@+id/tv_game_type"
         android:layout_width="0dp"
         android:layout_height="40dp"
+        android:background="#FFDFDEDE"
         android:gravity="center"
         android:textColor="@color/black"
-        app:layout_constraintEnd_toStartOf="@id/tv_start_time"
+        app:layout_constraintEnd_toStartOf="@id/tv_base"
         app:layout_constraintHorizontal_weight="1"
-        app:layout_constraintStart_toEndOf="@id/tv_id"
+        app:layout_constraintStart_toEndOf="@id/tv_start_time"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="追分" />
 
@@ -33,19 +35,49 @@
         android:id="@+id/tv_start_time"
         android:layout_width="0dp"
         android:layout_height="40dp"
+        android:background="#FFDFDEDE"
+        android:gravity="center"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toStartOf="@id/tv_game_type"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="2023年05月13日" />
+
+    <TextView
+        android:id="@+id/tv_p1"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:gravity="center"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toStartOf="@id/tv_p2"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_base"
+        tools:text="黄麒（10）" />
+
+    <TextView
+        android:id="@+id/tv_p2"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:gravity="center"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toStartOf="@id/tv_p3"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toEndOf="@id/tv_p1"
+        app:layout_constraintTop_toBottomOf="@id/tv_base"
+        tools:text="辛宇（-20）" />
+
+    <TextView
+        android:id="@+id/tv_p3"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
         android:gravity="center"
         android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_weight="1"
-        app:layout_constraintStart_toEndOf="@id/tv_game_type"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="2023年05月13日09:38:58" />
-
-    <View
-        android:id="@+id/v_divider"
-        android:layout_width="match_parent"
-        android:layout_height="1px"
-        android:background="#aaaaaa"
-        app:layout_constraintTop_toBottomOf="@id/tv_id" />
+        app:layout_constraintStart_toEndOf="@id/tv_p2"
+        app:layout_constraintTop_toBottomOf="@id/tv_base"
+        tools:text="李逸波（10）" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

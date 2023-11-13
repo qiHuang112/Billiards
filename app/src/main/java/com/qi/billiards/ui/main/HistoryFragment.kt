@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 class HistoryFragment : BaseBindingFragment<FragmentHistoryBinding>() {
 
     private val games = mutableListOf<GameEntityAdapter.HistoryGame>()
-    private val gameAdapter = GameEntityAdapter(games, ::jumpToDetail)
+    private val gameAdapter by lazy { GameEntityAdapter(games, this, ::jumpToDetail) }
     private var clickedPos = -1
 
     override fun getBinding(inflater: LayoutInflater, container: ViewGroup?): FragmentHistoryBinding {
@@ -68,6 +68,7 @@ class HistoryFragment : BaseBindingFragment<FragmentHistoryBinding>() {
                 )
                 findNavController().navigate(action)
             }
+
             Config.TYPE_ZHONG_BA -> {
                 val action = HistoryFragmentDirections.actionToZhongBa(
                     Gson().fromJson(game.game.detail, ZhongBaGame::class.java), true

@@ -44,8 +44,8 @@ class ScoreBoardAdapter(
             holder.binding.tvScore.setTextColor(holder.binding.root.resources.getColor(R.color.player_selected))
             holder.binding.root.setBackgroundResource(R.drawable.bg_total_score_selected)
         } else {
-            holder.binding.tvName.setTextColor(holder.binding.root.resources.getColor(R.color.player_normal))
-            holder.binding.tvScore.setTextColor(holder.binding.root.resources.getColor(R.color.player_normal))
+            holder.binding.tvName.setTextColor(holder.binding.root.resources.getColor(R.color.black))
+            holder.binding.tvScore.setTextColor(holder.binding.root.resources.getColor(R.color.black))
             holder.binding.root.setBackgroundResource(R.drawable.bg_total_score_normal)
         }
     }

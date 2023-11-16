@@ -31,7 +31,7 @@ class GameEntityAdapter(
             val gameDetail = withContext(Dispatchers.IO) {
                 Gson().fromJson(game.game.detail, ZhuiFenGame::class.java)
             }
-            val players = gameDetail.players.sortedBy { it.name }
+            val players = gameDetail.players.sortedByDescending { it.name }
             val p1 = players.getOrNull(0)
             val p2 = players.getOrNull(1)
             val p3 = players.getOrNull(2)

@@ -1,6 +1,7 @@
 package com.qi.billiards.ui.main.zhuifen.start
 
 import android.os.Bundle
+import android.speech.tts.TextToSpeech
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -12,12 +13,20 @@ import androidx.recyclerview.widget.RecyclerView
 import com.qi.billiards.config.Config
 import com.qi.billiards.databinding.FragmentZhuifenBinding
 import com.qi.billiards.db.DbUtil
-import com.qi.billiards.game.*
+import com.qi.billiards.game.Operator
+import com.qi.billiards.game.Player
+import com.qi.billiards.game.Round
+import com.qi.billiards.game.addOpProfit
 import com.qi.billiards.ui.base.BaseBindingFragment
+import com.qi.billiards.ui.main.SETTINGS_KEY_
+import com.qi.billiards.ui.main.yybb
 import com.qi.billiards.ui.widget.SummaryDialog
+import com.qi.billiards.util.get
 import com.qi.billiards.util.toast
 import kotlinx.coroutines.launch
-import java.util.*
+import java.util.Date
+import java.util.Locale
+import kotlin.math.absoluteValue
 
 private const val TAG = "ZhuiFenFragment"
 
@@ -25,6 +34,8 @@ class ZhuiFenFragment : BaseBindingFragment<FragmentZhuifenBinding>() {
     private val args: ZhuiFenFragmentArgs by navArgs()
     private val game by lazy { args.zhuiFenGame } // 一场游戏，包含多局游戏
     private var currentPlayerIndex = -1
+    private val enableTTS by lazy { get(SETTINGS_KEY_ + yybb, false) }
+    private lateinit var textToSpeech: TextToSpeech
     private val currentRound: Round // 当前游戏
         get() {
             return game.group.first()
@@ -39,7 +50,25 @@ class ZhuiFenFragment : BaseBindingFragment<FragmentZhuifenBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
+        initTTS()
         initView()
+    }
+
+    private fun initTTS() {
+        textToSpeech = TextToSpeech(context) { status ->
+            if (status == TextToSpeech.SUCCESS) {
+                // TTS引擎初始化成功
+                val result = textToSpeech.setLanguage(Locale.CHINESE) // 设置语言
+                if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                    // 语言数据丢失或不支持
+                    Log.e("TTS", "Language not supported")
+                } else {
+                    Log.d("TTS", "Initialization success")
+                }
+            } else {
+                Log.e("TTS", "Initialization failed")
+            }
+        }
     }
 
     private fun initView() {
@@ -56,6 +85,13 @@ class ZhuiFenFragment : BaseBindingFragment<FragmentZhuifenBinding>() {
             showSummaryDialog()
         }
 
+    }
+
+    private fun speak(text: String) {
+        Log.d(TAG, "speak:$text")
+        if (enableTTS) {
+            textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null, "")
+        }
     }
 
     private fun showSummaryDialog() {
@@ -137,12 +173,15 @@ class ZhuiFenFragment : BaseBindingFragment<FragmentZhuifenBinding>() {
             OperatorGridAdapter(Config.ZhuiFen.userOperators) { id ->
                 if (id == Config.ZhuiFen.OP_7) {
                     onClickUndo()
+                    speak("撤回")
                 } else if (currentPlayerIndex == -1) {
                     toast("请选择玩家")
                 } else {
                     val operator = Operator(id, game.players[currentPlayerIndex])
                     currentRound.operators.add(operator) // 操作记录
                     val operatorProfit = getOperatorProfit(operator)
+                    val detailString = getDetailString(game.players[currentPlayerIndex].name, id, operatorProfit)
+                    speak(detailString)
                     currentRound.profits.opProfits.add(operatorProfit) // 单局总收益统计
                     currentRound.profits.totalProfits.addOpProfit(operatorProfit) // 单局单次收益记录
                     game.players.addOpProfit(operatorProfit) // 整场游戏总收益统计
@@ -160,6 +199,31 @@ class ZhuiFenFragment : BaseBindingFragment<FragmentZhuifenBinding>() {
                 saveToDb()
             }
         binding.rvOperatorGrid.layoutManager = GridLayoutManager(context, 4)
+    }
+
+    private fun getDetailString(name: String, operatorId: Int, operatorProfit: List<Player>): String {
+        return buildString {
+            append(name)
+            append(Config.ZhuiFen.opMap.getOrDefault(operatorId, "[未定义操作]"))
+            append(",")
+            val currentPlayer = operatorProfit.first { player -> player.name == name }
+            append(score2Text(currentPlayer.score))
+            append(",")
+            operatorProfit.filter { player -> player.name != name && player.score != 0 }.forEach { player ->
+                append(player.name)
+                append(",")
+                append(score2Text(player.score))
+                append(",")
+            }
+        }
+    }
+
+    private fun score2Text(score: Int): String {
+        return if (score >= 0) {
+            "得分${score}分"
+        } else {
+            "扣分${score.absoluteValue}分"
+        }
     }
 
     private fun addToTotalScore(operatorProfit: List<Player>) {
@@ -209,11 +273,13 @@ class ZhuiFenFragment : BaseBindingFragment<FragmentZhuifenBinding>() {
                 addScore(opPlayer, -rule.foul)
                 addScore(last, rule.foul)
             }
+
             Config.ZhuiFen.OP_1 -> {
                 addSummary(opPlayer, "犯规")
                 addScore(opPlayer, -rule.foul)
                 addScore(next, rule.foul)
             }
+
             Config.ZhuiFen.OP_2 -> {
                 addSummary(opPlayer, "普胜")
                 addSummary(opPlayer, "胜局")
@@ -222,6 +288,7 @@ class ZhuiFenFragment : BaseBindingFragment<FragmentZhuifenBinding>() {
                 addScore(opPlayer, rule.win)
                 addScore(last, -rule.win)
             }
+
             Config.ZhuiFen.OP_3 -> {
                 addSummary(opPlayer, "普胜")
                 addSummary(opPlayer, "胜局")
@@ -230,6 +297,7 @@ class ZhuiFenFragment : BaseBindingFragment<FragmentZhuifenBinding>() {
                 addScore(opPlayer, rule.win)
                 addScore(next, -rule.win)
             }
+
             Config.ZhuiFen.OP_4 -> {
                 addSummary(opPlayer, "小金")
                 addSummary(opPlayer, "胜局")
@@ -238,6 +306,7 @@ class ZhuiFenFragment : BaseBindingFragment<FragmentZhuifenBinding>() {
                 addScore(opPlayer, rule.xiaojin)
                 addScore(last, -rule.xiaojin)
             }
+
             Config.ZhuiFen.OP_5 -> {
                 addSummary(opPlayer, "小金")
                 addSummary(opPlayer, "胜局")
@@ -246,6 +315,7 @@ class ZhuiFenFragment : BaseBindingFragment<FragmentZhuifenBinding>() {
                 addScore(opPlayer, rule.xiaojin)
                 addScore(next, -rule.xiaojin)
             }
+
             Config.ZhuiFen.OP_6 -> {
                 addSummary(opPlayer, "大金")
                 addSummary(opPlayer, "胜局")
@@ -258,6 +328,7 @@ class ZhuiFenFragment : BaseBindingFragment<FragmentZhuifenBinding>() {
                     }
                 }
             }
+
             else -> Unit
         }
         return profits

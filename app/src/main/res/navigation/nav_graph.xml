@@ -28,6 +28,10 @@
         <action
             android:id="@+id/action_to_appendix"
             app:destination="@id/appendixFragment" />
+        <action
+            android:id="@+id/action_to_settings"
+            app:destination="@id/settingsFragment" />
+
     </fragment>
 
     <fragment
@@ -129,5 +133,12 @@
 
     </fragment>
 
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.qi.billiards.ui.main.SettingsFragment"
+        android:label="SettingsFragment"
+        tools:layout="@layout/fragment_settings">
+
+    </fragment>
 
 </navigation>

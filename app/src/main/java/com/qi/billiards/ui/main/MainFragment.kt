@@ -43,6 +43,10 @@ class MainFragment : BaseBindingFragment<FragmentMainBinding>() {
                 val action = MainFragmentDirections.actionToAppendix()
                 findNavController().navigate(action)
             },
+            MainAdapter.MainItem("设置") {
+                val action = MainFragmentDirections.actionToSettings()
+                findNavController().navigate(action)
+            },
         )
     }
 

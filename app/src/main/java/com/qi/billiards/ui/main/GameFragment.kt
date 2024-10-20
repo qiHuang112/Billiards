@@ -11,17 +11,18 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.qi.billiards.databinding.DialogDeletePlayerBinding
-import com.qi.billiards.databinding.DialogEditDePlayerBinding
-import com.qi.billiards.databinding.FragmentGameBinding
 import com.qi.billiards.bean.Game
 import com.qi.billiards.bean.Player
 import com.qi.billiards.data.AppData
+import com.qi.billiards.databinding.DialogDeletePlayerBinding
+import com.qi.billiards.databinding.DialogEditDePlayerBinding
+import com.qi.billiards.databinding.FragmentGameBinding
 import com.qi.billiards.ui.base.BaseBindingFragment
 import com.qi.billiards.util.safeResume
 import com.qi.billiards.util.safeToInt
 import com.qi.billiards.util.toast
 import kotlinx.coroutines.launch
+import kotlin.collections.*
 import kotlin.coroutines.suspendCoroutine
 
 @SuppressLint("NotifyDataSetChanged")
@@ -225,12 +226,16 @@ class GameFragment : BaseBindingFragment<FragmentGameBinding>() {
     }
 
     companion object {
-        fun getConfigs() = linkedMapOf(
-            "单次买入" to 1000.0,
-            "汇率" to 5.0,
-            "台费" to 0.0,
-            "误差筹码" to 0.0
-        )
+        fun getConfigs(type: String) =
+            AppData.globalGames[type]?.lastOrNull()?.configs?.also {
+                it["台费"] = 0.0
+                it["误差筹码"] = 0.0
+            } ?: linkedMapOf(
+                "单次买入" to 1000.0,
+                "汇率" to 5.0,
+                "台费" to 0.0,
+                "误差筹码" to 0.0
+            )
 
     }
 

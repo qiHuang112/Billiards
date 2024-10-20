@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="10dp"
-    android:background="@drawable/selector_home_item">
+    android:background="@drawable/selector_home_item"
+    android:padding="10dp">
 
     <ImageView
         android:id="@+id/iv_btn"
@@ -29,4 +29,22 @@
         app:layout_constraintLeft_toRightOf="@id/iv_btn"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="追分" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_desc"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:autoSizeMaxTextSize="20dp"
+        android:autoSizeMinTextSize="10dp"
+        android:autoSizeTextType="uniform"
+        android:gravity="start|center_vertical"
+        android:maxLines="1"
+        android:textColor="@color/black"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/tv_btn_name"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="东:黄|南:坚|西:汤|北:粒" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -16,6 +16,8 @@ import com.qi.billiards.ui.base.BaseBindingFragment
 import com.qi.billiards.ui.widget.ListDialog
 import com.qi.billiards.util.getBooleanByDialog
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 /**
  * 首页
@@ -23,6 +25,7 @@ import kotlinx.coroutines.launch
 class MainFragment : BaseBindingFragment<FragmentMainBinding>() {
 
     private var isDev = false
+    private var lastPlayers = getLastPlayer()
     private val mGameDialog by lazy { ListDialog(requireContext()) }
 
     override fun getBinding(inflater: LayoutInflater, container: ViewGroup?): FragmentMainBinding {
@@ -56,6 +59,7 @@ class MainFragment : BaseBindingFragment<FragmentMainBinding>() {
 
     override fun onCustomResume() {
 
+        lastPlayers = getLastPlayer()
         // 如果是application启动后首次来到MainFragment的onCustomResume方法
         // 拉取一下服务器上的数据
         if (AppData.needUpdateRemoteKeyInMainFragment) {
@@ -116,6 +120,9 @@ class MainFragment : BaseBindingFragment<FragmentMainBinding>() {
                     findNavController().navigate(action)
                 }
             },
+            MainAdapter.MainItem("东南西北", R.drawable.ic_fengxiang, getDesc(lastPlayers)) {
+                binding.rvMain.adapter = MainAdapter(getMainItems())
+            },
             MainAdapter.MainItem("设置",
                 imageId = R.drawable.set,
                 onLongClick = {
@@ -155,7 +162,7 @@ class MainFragment : BaseBindingFragment<FragmentMainBinding>() {
                 onClick = {
                     mGameDialog.dismiss()
                     val action = MainFragmentDirections.actionToGame(
-                        Game(GameFragment.getConfigs(), mutableListOf(), it), false
+                        Game(GameFragment.getConfigs(it), mutableListOf(), it), false
                     )
                     findNavController().navigate(action)
                 },
@@ -166,11 +173,38 @@ class MainFragment : BaseBindingFragment<FragmentMainBinding>() {
 
     companion object {
         fun getGameImageId(name: String): Int {
-            return when (name) {
-                "德州" -> R.drawable.poker
-                "麻将" -> R.drawable.fa
+            return when {
+                name.contains("德州") -> R.drawable.poker
+                name.contains("麻将") -> R.drawable.fa
                 else -> R.drawable.heart
             }
+        }
+
+        fun getLastPlayer(): List<String> {
+            return AppData.globalGames.filterValues {
+                it.lastOrNull()?.players?.size == 4
+            }.map {
+                it.value.last() to try {
+                    SimpleDateFormat(
+                        "yyyy-MM-dd HH:mm:ss",
+                        Locale.CHINA
+                    ).parse(it.value.last().date)?.time ?: 0
+                } catch (t: Throwable) {
+                    0
+                }
+            }.maxByOrNull {
+                it.second
+            }?.first?.players?.map {
+                it.name
+            } ?: (1..4).map { "玩家$it" }
+        }
+
+        fun getDesc(lastDesc: List<String>): List<String> {
+            var res = lastDesc.shuffled()
+            while ((res.joinToString() + res.joinToString()).contains(lastDesc.joinToString())) {
+                res = res.shuffled()
+            }
+            return res
         }
     }
 }

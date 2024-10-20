@@ -28,6 +28,7 @@ class MainAdapter(
         }
         holder.binding.tvBtnName.text = item.name
         holder.binding.ivBtn.setImageResource(item.imageId)
+        holder.binding.tvDesc.text = item.desc.joinToString("|")
     }
 
     override fun getItemCount() = mainItems.size
@@ -35,6 +36,7 @@ class MainAdapter(
     data class MainItem(
         val name: String,
         val imageId: Int = R.drawable.heart,
+        var desc: List<String> = arrayListOf(),
         val onLongClick: () -> Unit = {},
         val onClick: () -> Unit = {}
     )
